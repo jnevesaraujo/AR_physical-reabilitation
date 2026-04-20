@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dac62966677d057439b8265a3aaeea28, type: 3}
+  m_Name: NeckRotationDef
+  m_EditorClassIdentifier: Assembly-CSharp::App.Data.ScriptableObjects.NeckRotationDefinition
+  exerciseId: 
+  exerciseName: 
+  description: 
+  targetRepetitions: 10
+  durationInSeconds: 60
+  basePointsPerRep: 50
+  perfectFormBonus: 20
+  achievementIdToUnlock: 
+  visualGuidePrefab: {fileID: 1522755408299056861, guid: 0e48509d86e059541a40f199a6c3ad17, type: 3}
+  guideAnchor: 1
+  guideOffset: {x: 0, y: 0, z: 0}
+  tutorialIcon: {fileID: 0}
+  shoulderAlignmentTolerance: 1.5
+  minimumRotationAmplitude: 0.08
+  neutralZoneRadius: 0.05
+  targetSecondsPerRep: 8
