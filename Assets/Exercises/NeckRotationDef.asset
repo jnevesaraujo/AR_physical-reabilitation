@@ -27,4 +27,4 @@ MonoBehaviour:
   shoulderAlignmentTolerance: 1.5
   minimumRotationAmplitude: 0.08
   neutralZoneRadius: 0.05
-  targetSecondsPerRep: 8
+  targetSecondsPerRep: 6

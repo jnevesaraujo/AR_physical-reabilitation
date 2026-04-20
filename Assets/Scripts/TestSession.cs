@@ -60,6 +60,7 @@ public class TestSession : MonoBehaviour
 
         if (_isCalibrated)
         {
+            visualizer.UpdatePacerFeedback(_nose.position);
             _evaluator.EvaluateFrame(_nose, _leftShoulder, _rightShoulder);
         }
     }
