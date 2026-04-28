@@ -1361,7 +1361,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::App.Vision.ARExerciseVisualizer
   visualScaleMultiplier: 100
-  zOffset: -30
+  zOffset: -10
 --- !u!114 &1871017061
 MonoBehaviour:
   m_ObjectHideFlags: 0
