@@ -67,5 +67,5 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "RA_helloworld_mobile.slnx"
+    "dotnet.defaultSolution": "AR_physical-reabilitation.slnx"
 }
