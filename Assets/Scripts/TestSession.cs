@@ -73,10 +73,10 @@ public class TestSession : MonoBehaviour
             return;
         }
 
-        float currentShoulderDiff = AngleCalculator.GetVerticalDifference(
-            _leftShoulder.position, _rightShoulder.position);
+        /* float currentShoulderDiff = AngleCalculator.GetVerticalDifference(
+            _leftShoulder.position, _rightShoulder.position); */
 
-        _evaluator.CalibrateOrigin(_nose.position, currentShoulderDiff);
+        _evaluator.CalibrateOrigin(_nose.position, _leftShoulder.position, _rightShoulder.position);
         _isCalibrated = true;
 
         visualizer.InitializeGuide(exerciseDefinition, _nose.position);

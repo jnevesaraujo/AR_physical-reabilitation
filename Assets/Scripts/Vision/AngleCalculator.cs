@@ -40,6 +40,11 @@ namespace App.Vision
             return Mathf.Abs(pointA.y - pointB.y);
         }
 
+        public static float GetDepthDifference(Vector3 point1, Vector3 point2)
+        {
+            return Mathf.Abs(point1.z - point2.z);
+        }
+        
         /// <summary>
         /// Calculates the 2D distance between two points, ignoring depth (Z-axis).
         /// Useful for checking if a movement meets the minimum required amplitude.
@@ -47,6 +52,10 @@ namespace App.Vision
         public static float GetDistance2D(Vector2 a, Vector2 b)
         {
             return Vector2.Distance(a, b);
+        }
+        public static float GetDistance3D(Vector3 origin, Vector3 target)
+        {
+            return Vector3.Distance(origin, target);
         }
     }
 }

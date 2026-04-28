@@ -14,6 +14,9 @@ namespace App.Data.ScriptableObjects
 
         [Tooltip("Radius around the origin to consider the head is back in the neutral/rest position.")]
         public float neutralZoneRadius = 0.05f;
+        
+        [Tooltip("Maximum allowed depth difference (Z) between shoulders to prevent torso twisting.")]
+        public float shoulderTwistTolerance = 0.5f;
 
         [Header("Pacing Dynamics")]
         [Tooltip("Time in seconds the patient should take to complete one full 360 degree rotation.")]
