@@ -1171,7 +1171,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3259285889726014651, guid: 5713b959e3c77a58fb258133fc8e4aef, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3259285889726014655, guid: 5713b959e3c77a58fb258133fc8e4aef, type: 3}
       propertyPath: _fitMode
@@ -1909,7 +1909,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1760972990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2134,7 +2134,7 @@ MonoBehaviour:
   handExtractor: {fileID: 994426890}
   solutionPose: {fileID: 1064799459}
   solutionHand: {fileID: 1760972989}
-  debugExerciseDefinition: {fileID: 0}
+  debugExerciseDefinition: {fileID: 11400000, guid: 276f3d96e5d399043808294c6000e28c, type: 2}
 --- !u!1 &1886216815
 GameObject:
   m_ObjectHideFlags: 0

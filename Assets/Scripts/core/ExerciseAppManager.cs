@@ -60,8 +60,8 @@ namespace App.Core
             // Desativar tudo por defeito
             poseExtractor.gameObject.SetActive(false);
             handExtractor.gameObject.SetActive(false);
-            solutionPose.SetActive(false);
-            solutionHand.SetActive(false);
+            /* solutionPose.SetActive(false);
+            solutionHand.SetActive(false); */
 
             if (exercise.requiredTrackingModel == ExerciseDefinition.TrackingModelType.BodyPose)
             {   
