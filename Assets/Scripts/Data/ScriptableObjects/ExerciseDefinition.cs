@@ -17,7 +17,7 @@ namespace App.Data.ScriptableObjects
         public string description;
 
         [Header("Core System Requirements")]
-        [Tooltip("Defines which AI model must be loaded into the device memory for this exercise.")]
+        [Tooltip("Defines which model must be loaded into the device memory for this exercise.")]
         public TrackingModelType requiredTrackingModel = TrackingModelType.BodyPose;
 
         [Header("Base Settings")]

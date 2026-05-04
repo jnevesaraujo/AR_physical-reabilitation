@@ -37,6 +37,21 @@ namespace App.Vision
                         _guideController.InitializeGuide(visualRadius, neckDef.targetSecondsPerRep, startPosition);
                     }
                 }
+            } else if (def is HandGripDefinition handDef)
+            {
+                if (handDef.visualGuidePrefab != null)
+                {
+                    _activeGuide = Instantiate(handDef.visualGuidePrefab);
+                    // Colocamos o guia exatamente onde a mão calibrou
+                    _activeGuide.transform.position = startPosition; 
+
+                    _guideController = _activeGuide.GetComponent<ARGuideController>();
+                    if (_guideController != null)
+                    {
+                        // Passamos a posição zero para a esfera
+                        _guideController.InitializeHandGuide(startPosition);
+                    }
+                }
             }
 
         }
@@ -45,6 +60,22 @@ namespace App.Vision
         {
             if (_guideController != null)
                 _guideController.EvaluateSynchronization(currentNosePosition);
+        }
+
+        public void UpdateHandGripVisuals(Vector3 centerPosition, float apertureRatio, float holdProgress)
+        {
+            if (_guideController != null)
+            {
+                _guideController.UpdateEnergySphere(centerPosition, apertureRatio, holdProgress);
+            }
+        }
+
+        public void TriggerSuccessFeedback()
+        {
+            if (_guideController != null)
+            {
+                _guideController.PlaySuccessParticles();
+            }
         }
 
         public void SetFeedbackMode(bool isCorrectPosture)
