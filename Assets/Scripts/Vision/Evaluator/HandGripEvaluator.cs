@@ -38,19 +38,28 @@ namespace App.Vision.Evaluators
             _calibratedMaxAperture = Mathf.Max(distance, 0.01f); // Evita divisão por zero
         }
 
-        public void EvaluateFrame(Vector3 thumbPos, Vector3 indexPos)
+        public void EvaluateFrame(Vector3 thumbPos, Vector3 indexPos, out float apertureRatio, out float holdProgress)
         {
+            // Valores por defeito de segurança
+            apertureRatio = 1.0f;
+            holdProgress = 0.0f;
+
             float maxAperture = _calibratedMaxAperture;
-            
             if (maxAperture <= 0.001f) return;
 
             float currentDistance = Vector3.Distance(thumbPos, indexPos);
-            float apertureRatio = currentDistance / maxAperture;
+            apertureRatio = currentDistance / maxAperture;
+
+            // Calcula a percentagem do tempo já decorrido (de 0.0 a 1.0)
+            if (_isHolding && _definition.isometricHoldTime > 0)
+            {
+                holdProgress = Mathf.Clamp01(_holdTimer / _definition.isometricHoldTime);
+            }
 
             _logCooldown -= Time.deltaTime;
             if (_logCooldown <= 0f)
             {
-                // Remova ou comente a linha abaixo quando tiver a certeza de que os valores (0.15 e 0.85) estão corretos para a sua câmara
+                // Remova ou comente a linha abaixo quando estiver tudo a funcionar
                 Debug.Log($"[HandPinch] Rácio atual: {apertureRatio:F2} | Alvo Grip: {_definition.targetGripDistance} | Alvo Release: {_definition.releaseDistance}");
                 _logCooldown = 0.5f;
             }
@@ -65,12 +74,12 @@ namespace App.Vision.Evaluators
                     OnPostureRestored?.Invoke();
                 }
                 
-                // Se estava a segurar e abriu antes do tempo
                 if (_isHolding)
                 {
                     Debug.LogWarning("<color=orange>[HandPinch] Contração interrompida precocemente!</color>");
                     _isHolding = false;
                     _holdTimer = 0f;
+                    holdProgress = 0f; // Reset ao progresso visual
                     OnWarningTriggered?.Invoke("Contração interrompida. Mantenha a pinça fechada.");
                 }
             }
@@ -86,14 +95,13 @@ namespace App.Vision.Evaluators
 
                 _holdTimer += Time.deltaTime;
 
-                // Validação da repetição
                 if (_holdTimer >= _definition.isometricHoldTime)
                 {
                     Debug.Log($"<color=yellow>[HandPinch] SUCESSO! Repetição registada após {_definition.isometricHoldTime}s.</color>");
                     OnRepetitionCompleted?.Invoke();
                     
                     _isHolding = false;
-                    _requiresRelease = true; // Bloqueia novas validações até reabrir a mão
+                    _requiresRelease = true; 
                     
                     OnWarningTriggered?.Invoke("Repetição válida. Abra a mão para continuar.");
                 }

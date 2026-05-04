@@ -15,8 +15,11 @@ namespace App.Core
 
         [Header("MediaPipe Extraction & Evaluation")]
         [SerializeField] private PoseDataExtractor poseExtractor;
-        [SerializeField] private HandDataExtractor handExtractor; 
-        
+        [SerializeField] private HandDataExtractor handExtractor;
+        [Header("Solution Objects)")]
+        public GameObject solutionPose;
+        public GameObject solutionHand;
+
         [Header("Debug / Editor Only")]
         [SerializeField] private ExerciseDefinition debugExerciseDefinition;
 
@@ -31,14 +34,14 @@ namespace App.Core
         {
             _activeExercise = SessionContext.CurrentExercise;
 
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             // Injeção de dependência para testes no Editor
             if (_activeExercise == null && debugExerciseDefinition != null)
             {
                 _activeExercise = debugExerciseDefinition;
                 Debug.LogWarning("Modo Editor: A inicializar com o debugExerciseDefinition.");
             }
-            #endif
+#endif
 
             if (_activeExercise == null)
             {
@@ -57,15 +60,18 @@ namespace App.Core
             // Desativar tudo por defeito
             poseExtractor.gameObject.SetActive(false);
             handExtractor.gameObject.SetActive(false);
+            solutionPose.SetActive(false);
+            solutionHand.SetActive(false);
 
             if (exercise.requiredTrackingModel == ExerciseDefinition.TrackingModelType.BodyPose)
-            {
-                // Ativar apenas a captura de corpo inteiro e injetar as definições
+            {   
+                solutionPose.SetActive(true);
                 poseExtractor.gameObject.SetActive(true);
                 poseExtractor.Initialize(exercise as NeckRotationDefinition, exerciseHUD, visualizer);
             }
             else if (exercise.requiredTrackingModel == ExerciseDefinition.TrackingModelType.HandsOnly)
             {
+                solutionHand.SetActive(true);
                 handExtractor.gameObject.SetActive(true);
                 handExtractor.Initialize(exercise, exerciseHUD, visualizer);
             }

@@ -2,20 +2,29 @@ using UnityEngine;
 
 namespace App.Vision
 {
-    [RequireComponent(typeof(LineRenderer))]
+    //    [RequireComponent(typeof(LineRenderer))]
     public class ARGuideController : MonoBehaviour
     {
         [Header("References")]
         [Tooltip("Drag the child 'Glitter' Particle System here.")]
         public Transform pacerObject;
+
+        [Header("Hand Grip Settings")]
+        [Tooltip("The object that will scale up and down like an energy sphere.")]
+        public Transform energySphere;
         private LineRenderer _line;
+        private ParticleSystem _particles;
+        // Váriaveis Neck
         private float _targetSeconds;
         private float _radius;
         private float _currentAngle = 0f;
         private bool _isRunning = false;
-        private ParticleSystem _particles;
         private bool _wasSynchronized = false;
         private Vector3 _worldCenter;
+
+        // Variáveis Hand
+        private bool _isHandMode = false;
+        private Vector3 _originalSphereScale;
 
         private void Awake()
         {
@@ -57,7 +66,7 @@ namespace App.Vision
 
         void Update()
         {
-            if (!_isRunning || _targetSeconds <= 0f || pacerObject == null) return;
+            if (_isHandMode || !_isRunning || _targetSeconds <= 0f || pacerObject == null) return;
 
             // Move the angle
             _currentAngle += (360f / _targetSeconds) * Time.deltaTime;
@@ -112,6 +121,59 @@ namespace App.Vision
             _particles.Clear();
             _particles.Play();
         }
+
+        public void InitializeHandGuide(Vector3 centerPos)
+        {
+            _isHandMode = true;
+            if (energySphere != null)
+            {
+                energySphere.localPosition = Vector3.zero;
+                _originalSphereScale = energySphere.localScale;
+            }
+            if (_line != null) _line.enabled = false; // Desliga o círculo do pescoço se existir no prefab
+        }
+
+        public void UpdateEnergySphere(Vector3 centerPosition, float apertureRatio, float holdProgress)
+        {
+            if (!_isHandMode) return;
+
+            // 1. Atualiza a posição do prefab para estar sempre no meio dos dedos
+            transform.position = new Vector3(centerPosition.x, centerPosition.y, centerPosition.z - 2f);
+
+            if (energySphere != null)
+            {
+                // 2. Esmaga a esfera. Se o rácio diminui, a escala diminui.
+                // Usamos Mathf.Clamp para garantir que a esfera não fica invisível nem gigante.
+                float scaleFactor = Mathf.Clamp(apertureRatio, 0.2f, 1.2f);
+                energySphere.localScale = _originalSphereScale * scaleFactor;
+
+                // 3. Muda a cor consoante o tempo isométrico.
+                // Quando o holdProgress chega a 1.0, o exercício termina.
+                Renderer sphereRenderer = energySphere.GetComponent<Renderer>();
+                if (sphereRenderer != null)
+                {
+                    // Interpola do Azul Escuro (0%) para Laranja Brilhante (100%)
+                    sphereRenderer.material.color = Color.Lerp(Color.blue, new Color(1f, 0.5f, 0f), holdProgress);
+                }
+            }
+        }
+
+        public void PlaySuccessParticles()
+        {
+            if (_particles != null)
+            {
+                // Reinicia o rasto visual da estrela para modo explosão
+                var main = _particles.main;
+                main.startColor = Color.yellow;
+
+                var emission = _particles.emission;
+                emission.rateOverTime = 0; // Para a emissão contínua
+
+                // Dispara um Burst (explosão de 30 partículas)
+                _particles.Emit(30);
+            }
+        }
+
         public void SetColor(Color targetColor)
         {
             if (_line != null)

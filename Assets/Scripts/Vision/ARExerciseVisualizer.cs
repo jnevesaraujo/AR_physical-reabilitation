@@ -11,12 +11,14 @@ namespace App.Vision
         private GameObject _activeGuide;
         private ARGuideController _guideController;
         private Vector3 _anchorOffset;
-        
+
         public void InitializeGuide(ExerciseDefinition def, Vector3 startPosition)
         {
+            Debug.Log($"[Visualizer] A iniciar guia para o tipo: {def.GetType().Name}");
+            CleanUp();
+
             if (def is NeckRotationDefinition neckDef)
             {
-                CleanUp();
 
                 float visualRadius = neckDef.minimumRotationAmplitude * visualScaleMultiplier;
 
@@ -37,18 +39,20 @@ namespace App.Vision
                         _guideController.InitializeGuide(visualRadius, neckDef.targetSecondsPerRep, startPosition);
                     }
                 }
-            } else if (def is HandGripDefinition handDef)
+            }
+            else if (def is HandGripDefinition handDef)
             {
                 if (handDef.visualGuidePrefab != null)
                 {
                     _activeGuide = Instantiate(handDef.visualGuidePrefab);
-                    // Colocamos o guia exatamente onde a mão calibrou
-                    _activeGuide.transform.position = startPosition; 
+
+                    _activeGuide.transform.localScale = handDef.visualGuidePrefab.transform.localScale * visualScaleMultiplier;
+
+                    _activeGuide.transform.position = new Vector3(startPosition.x, startPosition.y, startPosition.z + zOffset);
 
                     _guideController = _activeGuide.GetComponent<ARGuideController>();
                     if (_guideController != null)
                     {
-                        // Passamos a posição zero para a esfera
                         _guideController.InitializeHandGuide(startPosition);
                     }
                 }

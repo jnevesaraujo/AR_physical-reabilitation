@@ -21,10 +21,10 @@ MonoBehaviour:
   basePointsPerRep: 50
   perfectFormBonus: 20
   achievementIdToUnlock: 
-  visualGuidePrefab: {fileID: 0}
+  visualGuidePrefab: {fileID: 7298251019150613943, guid: 27fb420744531de43b126f35c9fdecb8, type: 3}
   guideAnchor: 0
   guideOffset: {x: 0, y: 0, z: 0}
   tutorialIcon: {fileID: 0}
-  targetPinchDistance: 0.02
-  releaseDistance: 0.08
+  targetGripDistance: 0.3
+  releaseDistance: 0.8
   isometricHoldTime: 2
