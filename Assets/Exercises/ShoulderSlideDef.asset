@@ -21,10 +21,11 @@ MonoBehaviour:
   basePointsPerRep: 50
   perfectFormBonus: 20
   achievementIdToUnlock: 
-  visualGuidePrefab: {fileID: 0}
+  visualGuidePrefab: {fileID: 8677091056801292145, guid: 383bc690113ec9f4b825937aabf5a411, type: 3}
   guideAnchor: 0
   guideOffset: {x: 0, y: 0, z: 0}
   tutorialIcon: {fileID: 0}
   isRightArm: 1
-  horizontalTolerance: 0.15
-  discoveryHoldTime: 1
+  horizontalTolerance: 8
+  discoveryHoldTime: 3
+  minimumDiscoveryAmplitude: 0.5

@@ -1,11 +1,14 @@
 using UnityEngine;
 using TMPro;
 using System;
+using UnityEngine.UI;
 
 namespace App.UI
 {
     public class ExerciseHUD : MonoBehaviour
     {
+        public event Action OnPeakConfirmRequested;
+        public Button Confirm_btn;
         [Header("Text References")]
         public TextMeshProUGUI repetitionText;
         public TextMeshProUGUI warningText;
@@ -38,6 +41,21 @@ namespace App.UI
         {
             Debug.Log("[HUD] Botão de calibração pressionado!");
             OnCalibrationRequested?.Invoke();
+        }
+
+        public void ShowConfirmPeakButton()
+        {
+            Confirm_btn.gameObject.SetActive(true);
+        }
+
+        public void HideConfirmPeakButton()
+        {
+            Confirm_btn.gameObject.SetActive(false);
+        }
+        public void OnConfirmPeakButtonPressed()
+        {
+            OnPeakConfirmRequested?.Invoke();
+            HideConfirmPeakButton();
         }
     }
 }

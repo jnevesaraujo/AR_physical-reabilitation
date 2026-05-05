@@ -6,114 +6,132 @@ namespace App.Vision.Evaluators
 {
     public class ShoulderSlideEvaluator
     {
-        private ShoulderSlideDefinition _definition;
+        private readonly ShoulderSlideDefinition _definition;
 
         public event Action<string> OnWarningTriggered;
         public event Action OnPostureRestored;
-        public event Action OnDiscoveryCompleted;
+        public event Action OnCalibrationReady;   // fires after step 1 — show "raise arm" prompt
+        public event Action OnDiscoveryCompleted; // fires after step 2 — exercise begins
         public event Action OnRepetitionCompleted;
 
-        private enum SlideState { Idle, Discovering, MovingDown, MovingUp }
+        private enum SlideState { Idle, Discovering, MovingUp, MovingDown }
         private SlideState _currentState = SlideState.Idle;
 
-        // Posições de referência (Calibração e Descoberta)
         private float _startX;
         private float _startY;
         private float _maxY;
-        
-        // Temporizador para a descoberta da amplitude
-        private float _holdTimer = 0f;
-        private float _lastWristY = 0f;
-        
         private bool _isWarningActive = false;
+
+        public float StartX => _startX;
+        public float StartY => _startY;
+        public float MaxY => _maxY;
 
         public ShoulderSlideEvaluator(ShoulderSlideDefinition def)
         {
             _definition = def;
         }
 
-        public void CalibrateOrigin(Vector3 wristPos)
+        // Step 1 — called when person taps calibrate with arm resting
+        public void CalibrateBaseline(Vector3 wristPos)
         {
-            _startX = wristPos.x; // Cria o carril virtual (linha reta)
-            _startY = wristPos.y; // Base do movimento
-            _maxY = _startY;      // Inicialmente, o máximo é a base
-            
-            _currentState = SlideState.Discovering;
+            _startX = wristPos.x;
+            _startY = wristPos.y;
+            _maxY = _startY;
             _isWarningActive = false;
+            _currentState = SlideState.Discovering;
+
+            // UI should now prompt: "Raise your arm as high as comfortable, then confirm"
+            OnCalibrationReady?.Invoke();
         }
 
-        public void EvaluateFrame(Vector3 shoulderPos, Vector3 elbowPos, Vector3 wristPos, out float progress, out bool isDiscovering)
+        // Step 2 — called when person taps confirm at their maximum height
+        public void ConfirmPeak(Vector3 wristPos)
+        {
+            if (_currentState != SlideState.Discovering) return;
+
+            // Use the higher of: current wrist pos or any peak tracked during raising
+            _maxY = Mathf.Max(_maxY, wristPos.y);
+
+            float rom = _maxY - _startY;
+            Debug.Log($"[ShoulderSlide] ROM locked: {rom:F3} units");
+
+            _currentState = SlideState.MovingUp;
+            OnDiscoveryCompleted?.Invoke();
+        }
+
+        public void EvaluateFrame(
+            Vector3 shoulderPos,
+            Vector3 elbowPos,
+            Vector3 wristPos,
+            out float progress,
+            out bool isDiscovering)
         {
             progress = 0f;
             isDiscovering = (_currentState == SlideState.Discovering);
 
             if (_currentState == SlideState.Idle) return;
 
-            // --- 1. Postura ---
-            bool isElbowTooHigh = elbowPos.y > shoulderPos.y;
-            bool isDrifting = Mathf.Abs(wristPos.x - _startX) > _definition.horizontalTolerance;
+            // During discovery, track peak in case person doesn't hold perfectly still
+            if (_currentState == SlideState.Discovering)
+            {
+                if (wristPos.y > _maxY) _maxY = wristPos.y;
+                return;
+            }
 
-            if (isElbowTooHigh || isDrifting)
+            // Posture check blocks rep counting but not discovery
+            if (!ValidatePosture(shoulderPos, elbowPos, wristPos)) return;
+
+            EvaluateRepetition(wristPos, out progress);
+        }
+
+        private bool ValidatePosture(Vector3 shoulderPos, Vector3 elbowPos, Vector3 wristPos)
+        {
+            bool elbowTooHigh = elbowPos.y > shoulderPos.y;
+            float horizontalDeviation = Mathf.Abs(wristPos.x - _startX);
+            bool isDrifting = horizontalDeviation > _definition.horizontalTolerance;
+
+            if (elbowTooHigh || isDrifting)
             {
                 if (!_isWarningActive)
                 {
-                    string msg = isElbowTooHigh ? "Cotovelo demasiado alto! Baixe um pouco." : "Mantenha a mão alinhada. Não fuja para os lados!";
+                    string msg = elbowTooHigh
+                        ? "Elbow too high. Lower it slightly."
+                        : "Keep your hand aligned. Don't drift sideways!";
                     OnWarningTriggered?.Invoke(msg);
                     _isWarningActive = true;
                 }
-                return; // Bloqueia a progressão do exercício se a postura estiver má
+                return false;
             }
-            else if (_isWarningActive)
+
+            if (_isWarningActive)
             {
                 OnPostureRestored?.Invoke();
                 _isWarningActive = false;
             }
 
-            // --- 2. FASE DE DESCOBERTA (Repetição Zero) ---
-            if (_currentState == SlideState.Discovering)
+            return true;
+        }
+
+        private void EvaluateRepetition(Vector3 wristPos, out float progress)
+        {
+            float rom = _maxY - _startY;
+
+            if (rom < 0.05f)
             {
-                // Se o utilizador subiu a mão mais alto, atualiza o topo e reinicia o temporizador
-                if (wristPos.y > _maxY + 0.02f) 
-                {
-                    _maxY = wristPos.y;
-                    _holdTimer = 0f;
-                }
-                
-                // Verifica se a mão está parada perto do topo atual
-                if (Mathf.Abs(wristPos.y - _maxY) < 0.05f && wristPos.y > _startY + 0.1f)
-                {
-                    _holdTimer += Time.deltaTime;
-                    if (_holdTimer >= _definition.discoveryHoldTime)
-                    {
-                        Debug.Log($"[ShoulderSlide] Amplitude Registada! Subiu: {_maxY - _startY} metros.");
-                        _currentState = SlideState.MovingDown; // Descoberta concluída, manda descer
-                        OnDiscoveryCompleted?.Invoke();
-                    }
-                }
+                progress = 0f;
                 return;
             }
 
-            // --- 3. FASE DE EXERCÍCIO (Contagem) ---
-            float currentRom = _maxY - _startY;
-            if (currentRom > 0.05f) // Evita divisão por zero
-            {
-                progress = Mathf.Clamp01((wristPos.y - _startY) / currentRom);
-            }
+            progress = Mathf.Clamp01((wristPos.y - _startY) / rom);
 
-            if (_currentState == SlideState.MovingDown)
+            if (_currentState == SlideState.MovingUp && progress >= 0.85f)
             {
-                if (progress <= 0.15f) // Voltou à base (15% de tolerância)
-                {
-                    _currentState = SlideState.MovingUp;
-                }
+                _currentState = SlideState.MovingDown;
             }
-            else if (_currentState == SlideState.MovingUp)
+            else if (_currentState == SlideState.MovingDown && progress <= 0.15f)
             {
-                if (progress >= 0.85f) // Atingiu o topo registado (com tolerância)
-                {
-                    OnRepetitionCompleted?.Invoke();
-                    _currentState = SlideState.MovingDown;
-                }
+                OnRepetitionCompleted?.Invoke();
+                _currentState = SlideState.MovingUp;
             }
         }
     }

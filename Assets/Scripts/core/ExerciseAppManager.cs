@@ -64,7 +64,7 @@ namespace App.Core
 
             if (exercise.requiredTrackingModel == ExerciseDefinition.TrackingModelType.BodyPose)
             {
-                Debug.Log("<color=green>[AppManager] A ligar o motor do pescoço!</color>");
+                Debug.Log("<color=green>[AppManager] A ligar o motor da pose!</color>");
                 enableMediaPipePoseVisuals();
                 if (exercise is NeckRotationDefinition)
                 {

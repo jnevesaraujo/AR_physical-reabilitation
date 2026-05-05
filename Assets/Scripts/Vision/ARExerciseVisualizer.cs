@@ -57,6 +57,23 @@ namespace App.Vision
                     }
                 }
             }
+            else if (def is ShoulderSlideDefinition shoulderDef) 
+            {
+                if (shoulderDef.visualGuidePrefab != null)
+                {
+                    _activeGuide = Instantiate(shoulderDef.visualGuidePrefab);
+
+                    // _activeGuide.transform.localScale = shoulderDef.visualGuidePrefab.transform.localScale * visualScaleMultiplier; 
+                    
+                    _activeGuide.transform.position = new Vector3(startPosition.x, startPosition.y, startPosition.z + zOffset);
+
+                    _guideController = _activeGuide.GetComponent<ARGuideController>();
+                    if (_guideController != null)
+                    {
+                        _guideController.InitializeShoulderGuide(startPosition);
+                    }
+                }
+            }
 
         }
 
@@ -71,6 +88,15 @@ namespace App.Vision
             if (_guideController != null)
             {
                 _guideController.UpdateEnergySphere(centerPosition, apertureRatio, holdProgress);
+            }
+        }
+
+        public void UpdateShoulderSlideVisuals(Vector3 wristPos, float progress, bool isDiscovering)
+        {
+            if (_guideController != null)
+            {
+                // Usa o zOffset global da classe para manter a consistência
+                _guideController.UpdateShoulderGuide(wristPos, progress, isDiscovering, zOffset);
             }
         }
 

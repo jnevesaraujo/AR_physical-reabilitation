@@ -12,6 +12,9 @@ namespace App.Vision
         [Header("Hand Grip Settings")]
         [Tooltip("The object that will scale up and down like an energy sphere.")]
         public Transform energySphere;
+        [Header("Shoulder Slide Settings")]
+        [Tooltip("Sphere which will slide along the line.")]
+        public Transform shoulderSliderSphere;
         private LineRenderer _line;
         private ParticleSystem _particles;
         // Váriaveis Neck
@@ -25,6 +28,10 @@ namespace App.Vision
         // Variáveis Hand
         private bool _isHandMode = false;
         private Vector3 _originalSphereScale;
+
+        // Variáveis Shoulder
+        private bool _isShoulderMode = false;
+        private Renderer _shoulderRenderer;
 
         private void Awake()
         {
@@ -154,6 +161,65 @@ namespace App.Vision
                 {
                     // Interpola do Azul Escuro (0%) para Laranja Brilhante (100%)
                     sphereRenderer.material.color = Color.Lerp(Color.blue, new Color(1f, 0.5f, 0f), holdProgress);
+                }
+            }
+        }
+
+        public void InitializeShoulderGuide(Vector3 startPos)
+        {
+            _isShoulderMode = true;
+
+            // 1. Configura a Linha (O Carril Fixo)
+            if (_line != null)
+            {
+                _line.enabled = true;
+                _line.useWorldSpace = true; // Importante para desenhar em coordenadas absolutas
+                _line.positionCount = 2;
+                
+                // Desenha a linha da posição inicial até 2 metros para cima
+                _line.SetPosition(0, new Vector3(startPos.x, startPos.y - 0.2f, startPos.z));
+                _line.SetPosition(1, new Vector3(startPos.x, startPos.y + 2.0f, startPos.z));
+                
+                _line.startWidth = 0.15f; 
+                _line.endWidth = 0.15f;
+                
+                // Começa com uma cor branca/cinza semi-transparente para o carril
+                _line.startColor = new Color(1f, 1f, 1f, 0.5f);
+                _line.endColor = new Color(1f, 1f, 1f, 0.5f);
+            }
+
+            // 2. Configura a Esfera (Que vai mover-se)
+            if (shoulderSliderSphere != null)
+            {
+                _shoulderRenderer = shoulderSliderSphere.GetComponent<Renderer>();
+                
+                if (_particles == null)
+                {
+                    _particles = shoulderSliderSphere.GetComponentInChildren<ParticleSystem>();
+                }
+            }
+        }
+
+        public void UpdateShoulderGuide(Vector3 wristPos, float progress, bool isDiscovering, float zOffset)
+        {
+            if (!_isShoulderMode) return;
+
+            // 1. A Esfera segue exatamente a mão do paciente (incluindo desvios)
+            if (shoulderSliderSphere != null)
+            {
+                shoulderSliderSphere.position = new Vector3(wristPos.x, wristPos.y, wristPos.z + zOffset);
+            }
+
+            // 2. Feedback de Cor na Esfera
+            if (_shoulderRenderer != null)
+            {
+                if (isDiscovering)
+                {
+                    _shoulderRenderer.material.color = Color.blue; 
+                }
+                else
+                {
+                    _shoulderRenderer.material.color = Color.Lerp(Color.yellow, Color.green, progress);
                 }
             }
         }

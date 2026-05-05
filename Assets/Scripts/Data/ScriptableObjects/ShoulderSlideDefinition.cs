@@ -15,5 +15,8 @@ namespace App.Data.ScriptableObjects
         
         [Tooltip("Time (in seconds) the hand must remain still at the top to register the amplitude.")]
         public float discoveryHoldTime = 1.0f;
+
+        [Tooltip("Minimum amplitude required to register a successful discovery.")]
+        public float minimumDiscoveryAmplitude = 0.5f;
     }
 }
