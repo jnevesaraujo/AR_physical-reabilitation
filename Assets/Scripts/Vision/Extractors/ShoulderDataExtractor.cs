@@ -74,6 +74,7 @@ namespace App.Vision.Extractors
                     _wrist.position,
                     out float currentProgress,
                     out bool isDiscovering);
+                _visualizer.UpdateShoulderSlideVisuals(_wrist.position, currentProgress, isDiscovering);
             }
         }
 
@@ -105,7 +106,8 @@ namespace App.Vision.Extractors
             if (_wrist == null) return;
 
             _evaluator.ConfirmPeak(_wrist.position);
-
+            Vector3 startPos = new Vector3(_evaluator.StartX, _evaluator.StartY, _wrist.position.z);
+            _visualizer.InitializeGuide(_exerciseDef, startPos, _evaluator.MaxY);
             // OnDiscoveryCompleted event will handle the UI transition
         }
 
@@ -114,11 +116,6 @@ namespace App.Vision.Extractors
         // Fires after step 1 — prompt user to raise arm
         private void HandleCalibrationReady()
         {
-            if (_visualizer != null && _exerciseDef.visualGuidePrefab != null)
-            {
-                Vector3 startPos = new Vector3(_evaluator.StartX, _evaluator.StartY, _wrist.position.z);
-                _visualizer.InitializeGuide(_exerciseDef, startPos);
-            }
 
             if (_hud != null)
             {

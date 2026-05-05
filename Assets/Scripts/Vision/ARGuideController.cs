@@ -165,34 +165,41 @@ namespace App.Vision
             }
         }
 
-        public void InitializeShoulderGuide(Vector3 startPos)
+        public void InitializeShoulderGuide(Vector3 startPos, float maxY)
         {
             _isShoulderMode = true;
 
-            // 1. Configura a Linha (O Carril Fixo)
+            // Calcula a distância para sabermos onde a linha acaba
+            float amplitude = Mathf.Abs(maxY - startPos.y);
+            float margin = amplitude * 0.15f;
+            float lineWidth = 3.0f;
+            // 1. Configura a Linha (O Carril)
             if (_line != null)
             {
                 _line.enabled = true;
-                _line.useWorldSpace = true; // Importante para desenhar em coordenadas absolutas
+                _line.useWorldSpace = true;
                 _line.positionCount = 2;
-                
-                // Desenha a linha da posição inicial até 2 metros para cima
-                _line.SetPosition(0, new Vector3(startPos.x, startPos.y - 0.2f, startPos.z));
-                _line.SetPosition(1, new Vector3(startPos.x, startPos.y + 2.0f, startPos.z));
-                
-                _line.startWidth = 0.15f; 
-                _line.endWidth = 0.15f;
-                
-                // Começa com uma cor branca/cinza semi-transparente para o carril
+
+                // O comprimento adapta-se ao paciente
+                _line.SetPosition(0, new Vector3(startPos.x, startPos.y - margin, startPos.z));
+                _line.SetPosition(1, new Vector3(startPos.x, maxY + margin, startPos.z));
+
+                _line.startWidth = lineWidth;
+                _line.endWidth = lineWidth;
+
                 _line.startColor = new Color(1f, 1f, 1f, 0.5f);
                 _line.endColor = new Color(1f, 1f, 1f, 0.5f);
             }
 
-            // 2. Configura a Esfera (Que vai mover-se)
+            // 2. Configura a Esfera
             if (shoulderSliderSphere != null)
             {
                 _shoulderRenderer = shoulderSliderSphere.GetComponent<Renderer>();
-                
+
+                shoulderSliderSphere.position = new Vector3(startPos.x, startPos.y, startPos.z);
+                float perfectSphereScale = lineWidth * 1.5f;
+                shoulderSliderSphere.localScale = new Vector3(perfectSphereScale, perfectSphereScale, perfectSphereScale);
+
                 if (_particles == null)
                 {
                     _particles = shoulderSliderSphere.GetComponentInChildren<ParticleSystem>();
@@ -215,7 +222,7 @@ namespace App.Vision
             {
                 if (isDiscovering)
                 {
-                    _shoulderRenderer.material.color = Color.blue; 
+                    _shoulderRenderer.material.color = Color.blue;
                 }
                 else
                 {

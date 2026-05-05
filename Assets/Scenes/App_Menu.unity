@@ -2930,7 +2930,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   neckRotationData: {fileID: 11400000, guid: 276f3d96e5d399043808294c6000e28c, type: 2}
   handGripData: {fileID: 11400000, guid: d68021a75e15fbe4f9ae6474960f4ddf, type: 2}
-  shoulderSlideData: {fileID: 0}
+  shoulderSlideData: {fileID: 11400000, guid: ee0db31bf18307a4297b4a716a04aab3, type: 2}
   arSceneName: App_Exercise
 --- !u!1 &1293787977
 GameObject:

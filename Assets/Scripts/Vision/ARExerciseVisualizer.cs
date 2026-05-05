@@ -12,7 +12,7 @@ namespace App.Vision
         private ARGuideController _guideController;
         private Vector3 _anchorOffset;
 
-        public void InitializeGuide(ExerciseDefinition def, Vector3 startPosition)
+        public void InitializeGuide(ExerciseDefinition def, Vector3 startPosition, float targetY = 0f)
         {
             Debug.Log($"[Visualizer] A iniciar guia para o tipo: {def.GetType().Name}");
             CleanUp();
@@ -57,20 +57,19 @@ namespace App.Vision
                     }
                 }
             }
-            else if (def is ShoulderSlideDefinition shoulderDef) 
+            else if (def is ShoulderSlideDefinition shoulderDef)
             {
                 if (shoulderDef.visualGuidePrefab != null)
                 {
                     _activeGuide = Instantiate(shoulderDef.visualGuidePrefab);
-
-                    // _activeGuide.transform.localScale = shoulderDef.visualGuidePrefab.transform.localScale * visualScaleMultiplier; 
-                    
-                    _activeGuide.transform.position = new Vector3(startPosition.x, startPosition.y, startPosition.z + zOffset);
+                    _activeGuide.transform.position = Vector3.zero; 
 
                     _guideController = _activeGuide.GetComponent<ARGuideController>();
                     if (_guideController != null)
                     {
-                        _guideController.InitializeShoulderGuide(startPosition);
+                        Vector3 trackStartPos = new Vector3(startPosition.x, startPosition.y, startPosition.z + zOffset);
+                        
+                        _guideController.InitializeShoulderGuide(trackStartPos, targetY);
                     }
                 }
             }

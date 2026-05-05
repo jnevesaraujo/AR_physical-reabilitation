@@ -53,8 +53,8 @@ namespace App.Vision.Evaluators
             _maxY = Mathf.Max(_maxY, wristPos.y);
 
             float rom = _maxY - _startY;
-            Debug.Log($"[ShoulderSlide] ROM locked: {rom:F3} units");
-
+            Debug.Log($"[ShoulderSlide] Amplitude detectada: {rom:F3} unidade(s)");
+            
             _currentState = SlideState.MovingUp;
             OnDiscoveryCompleted?.Invoke();
         }
@@ -95,8 +95,8 @@ namespace App.Vision.Evaluators
                 if (!_isWarningActive)
                 {
                     string msg = elbowTooHigh
-                        ? "Elbow too high. Lower it slightly."
-                        : "Keep your hand aligned. Don't drift sideways!";
+                        ? "Cotovelo muito alto, mantenha-o abaixo do ombro."
+                        : "Mantenha a mão alinhada. Não se desvie para os lados.";
                     OnWarningTriggered?.Invoke(msg);
                     _isWarningActive = true;
                 }
