@@ -5,12 +5,12 @@ using App.Vision;
 
 namespace App.Vision
 {
-    public class PoseDataExtractor : MonoBehaviour
+    public class NeckDataExtractor : MonoBehaviour
     {
         private NeckRotationDefinition _exerciseDef;
         private ExerciseHUD _hud;
         private ARExerciseVisualizer _visualizer;
-        
+
         private NeckRotationEvaluator _evaluator;
         private bool _isCalibrated = false;
         private Transform _nose, _leftShoulder, _rightShoulder;
@@ -24,11 +24,12 @@ namespace App.Vision
             _visualizer = visualizer;
 
             _evaluator = new NeckRotationEvaluator(_exerciseDef);
-            
+
             // Subscrição de eventos
             _evaluator.OnWarningTriggered += HandleBadPosture;
             _evaluator.OnPostureRestored += HandlePostureRestored;
             _evaluator.OnRepetitionCompleted += HandleRepetitionSuccess;
+            _hud.OnCalibrationRequested += CalibrateAndStart;
         }
 
         private void Update()
@@ -79,6 +80,11 @@ namespace App.Vision
         {
             _currentRepetitions++;
             if (_hud != null) _hud.UpdateRepetitionCount(_currentRepetitions, _exerciseDef.targetRepetitions);
+        }
+
+        private void OnDestroy()
+        {
+            _hud.OnCalibrationRequested -= CalibrateAndStart;
         }
     }
 }

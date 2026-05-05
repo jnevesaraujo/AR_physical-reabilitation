@@ -8,12 +8,13 @@ namespace App.UI
     public class ExerciseMenuManager : MonoBehaviour
     {
 
-        [Header("Configuração dos Exercícios")]
+        [Header("Exercise Definitions")]
         public NeckRotationDefinition neckRotationData;
         public HandGripDefinition handGripData;
+        public ShoulderSlideDefinition shoulderSlideData;
 
-        [Header("Cena de Destino")]
-        [Tooltip("O nomeda cena onde está o ExerciseAppManager")]
+        [Header("Destination Scene")]
+        [Tooltip("Scene name where the ExerciseAppManager is located")]
         public string arSceneName = "App_Exercise";
 
         public void OnClick_LaunchNeckRotation()
@@ -32,5 +33,14 @@ namespace App.UI
             SessionContext.CurrentExercise = handGripData;
             SceneManager.LoadScene(arSceneName);
         }
+
+        public void OnClick_LaunchShoulderSlide()
+        {
+            Debug.Log("[MainMenu] A preparar Deslizar do Ombro...");
+
+            SessionContext.CurrentExercise = shoulderSlideData;
+            SceneManager.LoadScene(arSceneName);
+        }
+
     }
 }

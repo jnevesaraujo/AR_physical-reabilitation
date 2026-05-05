@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System;
 
 namespace App.UI
 {
@@ -8,6 +9,7 @@ namespace App.UI
         [Header("Text References")]
         public TextMeshProUGUI repetitionText;
         public TextMeshProUGUI warningText;
+        public event Action OnCalibrationRequested;
 
         public void InitializeHUD(int targetRepetitions)
         {
@@ -30,6 +32,12 @@ namespace App.UI
         public void HideWarning()
         {
             warningText.gameObject.SetActive(false);
+        }
+
+        public void TriggerCalibration()
+        {
+            Debug.Log("[HUD] Botão de calibração pressionado!");
+            OnCalibrationRequested?.Invoke();
         }
     }
 }

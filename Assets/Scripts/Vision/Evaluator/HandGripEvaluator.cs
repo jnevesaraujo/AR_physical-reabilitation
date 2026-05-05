@@ -60,7 +60,7 @@ namespace App.Vision.Evaluators
             if (_logCooldown <= 0f)
             {
                 // Remova ou comente a linha abaixo quando estiver tudo a funcionar
-                Debug.Log($"[HandPinch] Rácio atual: {apertureRatio:F2} | Alvo Grip: {_definition.targetGripDistance} | Alvo Release: {_definition.releaseDistance}");
+                Debug.Log($"[HandGripEvaluator] Rácio atual: {apertureRatio:F2} | Alvo Grip: {_definition.targetGripDistance} | Alvo Release: {_definition.releaseDistance}");
                 _logCooldown = 0.5f;
             }
 
@@ -69,26 +69,26 @@ namespace App.Vision.Evaluators
             {
                 if (_requiresRelease)
                 {
-                    Debug.Log("<color=green>[HandPinch] Mão reaberta. O ciclo foi reiniciado.</color>");
+                    Debug.Log("<color=green>[HandGripEvaluator] Mão reaberta. O ciclo foi reiniciado.</color>");
                     _requiresRelease = false;
                     OnPostureRestored?.Invoke();
                 }
                 
                 if (_isHolding)
                 {
-                    Debug.LogWarning("<color=orange>[HandPinch] Contração interrompida precocemente!</color>");
+                    Debug.LogWarning("<color=orange>[HandGripEvaluator] Contração interrompida precocemente!</color>");
                     _isHolding = false;
                     _holdTimer = 0f;
                     holdProgress = 0f; // Reset ao progresso visual
                     OnWarningTriggered?.Invoke("Contração interrompida. Mantenha a pinça fechada.");
                 }
             }
-            // 2. Fase de Contração Isométrica (Pinch / Mão Fechada)
+            // 2. Fase de Contração Isométrica (Grip / Mão Fechada)
             else if (!_requiresRelease && apertureRatio <= _definition.targetGripDistance)
             {
                 if (!_isHolding)
                 {
-                    Debug.Log("<color=cyan>[HandPinch] Pinça fechada! A iniciar temporizador...</color>");
+                    Debug.Log("<color=cyan>[HandGripEvaluator] Mão fechada! A iniciar temporizador...</color>");
                     _isHolding = true;
                     _holdTimer = 0f;
                 }
@@ -97,7 +97,7 @@ namespace App.Vision.Evaluators
 
                 if (_holdTimer >= _definition.isometricHoldTime)
                 {
-                    Debug.Log($"<color=yellow>[HandPinch] SUCESSO! Repetição registada após {_definition.isometricHoldTime}s.</color>");
+                    Debug.Log($"<color=yellow>[HandGripEvaluator] Sucesso! Repetição registada após {_definition.isometricHoldTime}s.</color>");
                     OnRepetitionCompleted?.Invoke();
                     
                     _isHolding = false;

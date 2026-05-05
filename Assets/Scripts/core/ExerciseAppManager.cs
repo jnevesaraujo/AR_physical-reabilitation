@@ -3,7 +3,8 @@ using App.Data.ScriptableObjects;
 using App.UI;
 using App.Vision;
 using Services;
-using App.Vision.Extractors; // Onde se encontra o SessionContext
+using App.Vision.Extractors;
+using System; // Onde se encontra o SessionContext
 
 namespace App.Core
 {
@@ -14,8 +15,9 @@ namespace App.Core
         [SerializeField] private ARExerciseVisualizer visualizer;
 
         [Header("MediaPipe Extraction & Evaluation")]
-        [SerializeField] private PoseDataExtractor poseExtractor;
+        [SerializeField] private NeckDataExtractor neckExtractor;
         [SerializeField] private HandDataExtractor handExtractor;
+        [SerializeField] private ShoulderDataExtractor shoulderExtractor;
         [Header("Solution Objects)")]
         public GameObject solutionPose;
         public GameObject solutionHand;
@@ -41,47 +43,92 @@ namespace App.Core
             if (_activeExercise == null && debugExerciseDefinition != null)
             {
                 _activeExercise = debugExerciseDefinition;
-                Debug.LogWarning("Modo Editor: A inicializar com o debugExerciseDefinition.");
+                Debug.LogWarning("[ExerciseAppManager] Modo Editor: A inicializar com o debugExerciseDefinition.");
             }
 #endif
 
             if (_activeExercise == null)
             {
-                Debug.LogError("Nenhum exercício selecionado no contexto. Encaminhar para Menu...");
+                Debug.LogError("[ExerciseAppManager] Nenhum exercício selecionado no contexto. Encaminhar para Menu...");
                 return;
             }
 
-            if (exerciseHUD != null)
-                exerciseHUD.InitializeHUD(_activeExercise.targetRepetitions);
-
+            exerciseHUD.InitializeHUD(_activeExercise.targetRepetitions);
             ConfigureVisionPipeline(_activeExercise);
         }
 
         private void ConfigureVisionPipeline(ExerciseDefinition exercise)
         {
-            // Desativar tudo por defeito
-            poseExtractor.gameObject.SetActive(false);
-            handExtractor.gameObject.SetActive(false);
-            solutionPose.SetActive(false);
-            solutionHand.SetActive(false);
-            annotatableScreenPose.SetActive(false);
-            annotatableScreenHand.SetActive(false);
+            DisableMediaPipeExtractors();
+            DisableMediaPipeVisuals();
 
             if (exercise.requiredTrackingModel == ExerciseDefinition.TrackingModelType.BodyPose)
-            {   
+            {
                 Debug.Log("<color=green>[AppManager] A ligar o motor do pescoço!</color>");
-                solutionPose.SetActive(true);
-                annotatableScreenPose.SetActive(true);
-                poseExtractor.gameObject.SetActive(true);
-                poseExtractor.Initialize(exercise as NeckRotationDefinition, exerciseHUD, visualizer);
+                enableMediaPipePoseVisuals();
+                if (exercise is NeckRotationDefinition)
+                {
+                    enableMediaPipeExtractor("Neck");
+                    neckExtractor.Initialize(exercise as NeckRotationDefinition, exerciseHUD, visualizer);
+                }
+                else if (exercise is ShoulderSlideDefinition)
+                {
+                    enableMediaPipeExtractor("Shoulder");
+                    shoulderExtractor.Initialize(exercise as ShoulderSlideDefinition, exerciseHUD, visualizer);
+                }
             }
             else if (exercise.requiredTrackingModel == ExerciseDefinition.TrackingModelType.HandsOnly)
             {
                 Debug.Log("<color=blue>[AppManager] A ligar o motor da mão!</color>");
-                solutionHand.SetActive(true);
-                annotatableScreenHand.SetActive(true);
-                handExtractor.gameObject.SetActive(true);
+                enableMediaPipeHandVisuals();
+                enableMediaPipeExtractor("Hand");
                 handExtractor.Initialize(exercise, exerciseHUD, visualizer);
+            }
+        }
+
+        private void DisableMediaPipeExtractors()
+        {
+            neckExtractor.gameObject.SetActive(false);
+            handExtractor.gameObject.SetActive(false);
+            shoulderExtractor.gameObject.SetActive(false);
+        }
+
+        private void DisableMediaPipeVisuals()
+        {
+            solutionPose.SetActive(false);
+            solutionHand.SetActive(false);
+            annotatableScreenPose.SetActive(false);
+            annotatableScreenHand.SetActive(false);
+        }
+
+        private void enableMediaPipePoseVisuals()
+        {
+            solutionPose.SetActive(true);
+            annotatableScreenPose.SetActive(true);
+        }
+
+        private void enableMediaPipeHandVisuals()
+        {
+            solutionHand.SetActive(true);
+            annotatableScreenHand.SetActive(true);
+        }
+
+        private void enableMediaPipeExtractor(String extractorName)
+        {
+            switch (extractorName)
+            {
+                case "Neck":
+                    neckExtractor.gameObject.SetActive(true);
+                    break;
+                case "Hand":
+                    handExtractor.gameObject.SetActive(true);
+                    break;
+                case "Shoulder":
+                    shoulderExtractor.gameObject.SetActive(true);
+                    break;
+                default:
+                    Debug.LogWarning($"Extractor '{extractorName}' desconhecido. Nenhum extractor ativado.");
+                    break;
             }
         }
 

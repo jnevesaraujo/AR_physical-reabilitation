@@ -25,7 +25,6 @@ namespace App.Vision.Extractors
 
         public void Initialize(ExerciseDefinition definition, ExerciseHUD hud, ARExerciseVisualizer visualizer)
         {
-            // O cast assegura que temos acesso às variáveis específicas do HandGrip
             _exerciseDef = definition as HandGripDefinition;
             _hud = hud;
             _visualizer = visualizer;
@@ -34,6 +33,7 @@ namespace App.Vision.Extractors
             _evaluator.OnWarningTriggered += HandleBadPosture;
             _evaluator.OnPostureRestored += HandlePostureRestored;
             _evaluator.OnRepetitionCompleted += HandleRepetitionSuccess;
+            _hud.OnCalibrationRequested += CalibrateAndStart;
         }
 
         private void Update()
@@ -68,7 +68,7 @@ namespace App.Vision.Extractors
 
         public void CalibrateAndStart()
         {
-            Debug.Log("Trying to calibrate");
+            Debug.Log("[HandDataExtractor] Trying to calibrate");
             if (_thumbTip == null || _indexTip == null) return;
 
             _evaluator.CalibrateOrigin(_thumbTip.position, _indexTip.position);
@@ -76,28 +76,33 @@ namespace App.Vision.Extractors
 
             Vector3 startPalmCenter = (_wrist.position + _indexMCP.position + _pinkyMCP.position) / 3f;
             _visualizer.InitializeGuide(_exerciseDef, startPalmCenter);
-            
-            if (_hud != null) _hud.HideWarning();
-            Debug.Log("Calibrated");
+
+            _hud.HideWarning();
+            Debug.Log("[HandDataExtractor] Calibrated");
         }
 
         // --- Event Handlers ---
         private void HandleBadPosture(string warningMessage)
         {
             _visualizer.SetFeedbackMode(false);
-            if (_hud != null) _hud.ShowWarning(warningMessage);
+            _hud.ShowWarning(warningMessage);
         }
 
         private void HandlePostureRestored()
         {
             _visualizer.SetFeedbackMode(true);
-            if (_hud != null) _hud.HideWarning();
+            _hud.HideWarning();
         }
 
         private void HandleRepetitionSuccess()
         {
             _currentRepetitions++;
-            if (_hud != null) _hud.UpdateRepetitionCount(_currentRepetitions, _exerciseDef.targetRepetitions);
+            _hud.UpdateRepetitionCount(_currentRepetitions, _exerciseDef.targetRepetitions);
+        }
+
+        private void OnDestroy()
+        {
+            _hud.OnCalibrationRequested -= CalibrateAndStart;
         }
     }
 }
