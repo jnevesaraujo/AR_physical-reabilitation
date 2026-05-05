@@ -1,5 +1,5 @@
 using UnityEngine;
-using TMPro; // Required for TextMeshPro
+using TMPro;
 
 namespace App.UI
 {
@@ -17,28 +17,19 @@ namespace App.UI
 
         public void UpdateRepetitionCount(int currentReps, int targetReps)
         {
-            if (repetitionText != null)
-            {
-                repetitionText.text = $"Reps: {currentReps} / {targetReps}";
-            }
+            repetitionText.text = $"Reps: {currentReps} / {targetReps}";
         }
 
         public void ShowWarning(string message)
         {
-            if (warningText != null)
-            {
-                warningText.text = message;
-                warningText.color = Color.red;
-                warningText.gameObject.SetActive(true);
-            }
+            warningText.text = message;
+            warningText.color = Color.red;
+            warningText.gameObject.SetActive(true);
         }
 
         public void HideWarning()
         {
-            if (warningText != null)
-            {
-                warningText.gameObject.SetActive(false);
-            }
+            warningText.gameObject.SetActive(false);
         }
     }
 }

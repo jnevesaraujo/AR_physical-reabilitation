@@ -19,6 +19,8 @@ namespace App.Core
         [Header("Solution Objects)")]
         public GameObject solutionPose;
         public GameObject solutionHand;
+        public GameObject annotatableScreenPose;
+        public GameObject annotatableScreenHand;
 
         [Header("Debug / Editor Only")]
         [SerializeField] private ExerciseDefinition debugExerciseDefinition;
@@ -60,18 +62,24 @@ namespace App.Core
             // Desativar tudo por defeito
             poseExtractor.gameObject.SetActive(false);
             handExtractor.gameObject.SetActive(false);
-            /* solutionPose.SetActive(false);
-            solutionHand.SetActive(false); */
+            solutionPose.SetActive(false);
+            solutionHand.SetActive(false);
+            annotatableScreenPose.SetActive(false);
+            annotatableScreenHand.SetActive(false);
 
             if (exercise.requiredTrackingModel == ExerciseDefinition.TrackingModelType.BodyPose)
             {   
+                Debug.Log("<color=green>[AppManager] A ligar o motor do pescoço!</color>");
                 solutionPose.SetActive(true);
+                annotatableScreenPose.SetActive(true);
                 poseExtractor.gameObject.SetActive(true);
                 poseExtractor.Initialize(exercise as NeckRotationDefinition, exerciseHUD, visualizer);
             }
             else if (exercise.requiredTrackingModel == ExerciseDefinition.TrackingModelType.HandsOnly)
             {
+                Debug.Log("<color=blue>[AppManager] A ligar o motor da mão!</color>");
                 solutionHand.SetActive(true);
+                annotatableScreenHand.SetActive(true);
                 handExtractor.gameObject.SetActive(true);
                 handExtractor.Initialize(exercise, exerciseHUD, visualizer);
             }
