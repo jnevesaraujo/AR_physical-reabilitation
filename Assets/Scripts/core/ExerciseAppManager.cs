@@ -15,9 +15,9 @@ namespace App.Core
         [SerializeField] private ARExerciseVisualizer visualizer;
 
         [Header("MediaPipe Extraction & Evaluation")]
-        [SerializeField] private NeckDataExtractor neckExtractor;
-        [SerializeField] private HandDataExtractor handExtractor;
-        [SerializeField] private ShoulderDataExtractor shoulderExtractor;
+        [SerializeField] private NeckRotationExtractor neckExtractor;
+        [SerializeField] private HandGripExtractor handExtractor;
+        [SerializeField] private ShoulderSlideExtractor shoulderExtractor;
         [Header("Solution Objects)")]
         public GameObject solutionPose;
         public GameObject solutionHand;

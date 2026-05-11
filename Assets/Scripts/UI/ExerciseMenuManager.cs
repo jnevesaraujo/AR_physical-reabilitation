@@ -28,7 +28,7 @@ namespace App.UI
 
         public void OnClick_LaunchHandGrip()
         {
-            Debug.Log("[MainMenu] A preparar Preensão Palmar (Hand Grip)...");
+            Debug.Log("[MainMenu] A preparar Exercicio Palmar (Hand Grip)...");
 
             SessionContext.CurrentExercise = handGripData;
             SceneManager.LoadScene(arSceneName);

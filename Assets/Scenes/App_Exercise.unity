@@ -269,6 +269,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1229135959}
     - target: {fileID: 4854035044496938716, guid: af6f87c1f072d207e99065e4712f000d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4854035044496938716, guid: af6f87c1f072d207e99065e4712f000d, type: 3}
       propertyPath: _maskScreen
       value: 
       objectReference: {fileID: 1229135959}
@@ -315,14 +319,17 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 764270978808325597, guid: af6f87c1f072d207e99065e4712f000d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 927413607}
   m_SourcePrefab: {fileID: 100100000, guid: af6f87c1f072d207e99065e4712f000d, type: 3}
 --- !u!114 &138292643 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4854035044496938716, guid: af6f87c1f072d207e99065e4712f000d, type: 3}
   m_PrefabInstance: {fileID: 138292642}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 927413606}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 618f0a05cbf326799b0869858fb2a76a, type: 3}
@@ -342,7 +349,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 298837003}
-  - component: {fileID: 298837002}
+  - component: {fileID: 298837004}
   m_Layer: 0
   m_Name: ShoulderDetector
   m_TagString: Untagged
@@ -350,18 +357,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
---- !u!114 &298837002
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 298837001}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a68728f46bce934da15075c70a7bbbd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::App.Vision.Extractors.ShoulderDataExtractor
 --- !u!4 &298837003
 Transform:
   m_ObjectHideFlags: 0
@@ -377,6 +372,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &298837004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 298837001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a68728f46bce934da15075c70a7bbbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::App.Vision.Extractors.ShoulderDataExtractor
 --- !u!1 &420786853
 GameObject:
   m_ObjectHideFlags: 0
@@ -1005,6 +1012,27 @@ MonoBehaviour:
   Confirm_btn: {fileID: 121008994}
   repetitionText: {fileID: 1379070115}
   warningText: {fileID: 1594128531}
+--- !u!1 &927413606 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 764270978808325597, guid: af6f87c1f072d207e99065e4712f000d, type: 3}
+  m_PrefabInstance: {fileID: 138292642}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &927413607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 927413606}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f152430ce9da8f9f2ae5cfd135b4d061, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mediapipe.Runtime::Mediapipe.Unity.PoseWorldLandmarkListAnnotationController
+  annotation: {fileID: 1915238444563462421, guid: 4418f6a92856c5b51b58a36e3be7ed5c, type: 3}
+  _hipHeightMeter: 0.9
+  _scale: {x: 90, y: 90, z: 90}
+  _visualizeZ: 1
 --- !u!1 &994426889
 GameObject:
   m_ObjectHideFlags: 0
@@ -1171,6 +1199,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8798066379235852099, guid: 5713b959e3c77a58fb258133fc8e4aef, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1006057044}
+    - targetCorrespondingSourceObject: {fileID: 8798066379235852099, guid: 5713b959e3c77a58fb258133fc8e4aef, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1006057046}
   m_SourcePrefab: {fileID: 100100000, guid: 5713b959e3c77a58fb258133fc8e4aef, type: 3}
 --- !u!4 &1006057041 stripped
 Transform:
@@ -1212,6 +1243,20 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3259285889726014651, guid: 5713b959e3c77a58fb258133fc8e4aef, type: 3}
   m_PrefabInstance: {fileID: 1006057040}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1006057046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1006057042}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57efcb914b6a83848a7b128b378c2abd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::app.core.WorldAwarePoseLandmarkerController
+  annotation: {fileID: 138292643}
+  _visualizeZ: 0
 --- !u!1 &1044357233
 GameObject:
   m_ObjectHideFlags: 0
@@ -2187,12 +2232,12 @@ MonoBehaviour:
   visualizer: {fileID: 1675745701}
   neckExtractor: {fileID: 652345820}
   handExtractor: {fileID: 994426890}
-  shoulderExtractor: {fileID: 298837002}
+  shoulderExtractor: {fileID: 298837004}
   solutionPose: {fileID: 1064799459}
   solutionHand: {fileID: 1760972989}
   annotatableScreenPose: {fileID: 1006057045}
   annotatableScreenHand: {fileID: 1119931410}
-  debugExerciseDefinition: {fileID: 0}
+  debugExerciseDefinition: {fileID: 11400000, guid: 276f3d96e5d399043808294c6000e28c, type: 2}
 --- !u!1 &1886216815
 GameObject:
   m_ObjectHideFlags: 0

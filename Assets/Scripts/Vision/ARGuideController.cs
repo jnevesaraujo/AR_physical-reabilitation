@@ -172,7 +172,7 @@ namespace App.Vision
             // Calcula a distância para sabermos onde a linha acaba
             float amplitude = Mathf.Abs(maxY - startPos.y);
             float margin = amplitude * 0.15f;
-            float lineWidth = 3.0f;
+            float lineWidth = 1.5f;
             // 1. Configura a Linha (O Carril)
             if (_line != null)
             {
@@ -197,7 +197,7 @@ namespace App.Vision
                 _shoulderRenderer = shoulderSliderSphere.GetComponent<Renderer>();
 
                 shoulderSliderSphere.position = new Vector3(startPos.x, startPos.y, startPos.z);
-                float perfectSphereScale = lineWidth * 1.5f;
+                float perfectSphereScale = lineWidth * 3f;
                 shoulderSliderSphere.localScale = new Vector3(perfectSphereScale, perfectSphereScale, perfectSphereScale);
 
                 if (_particles == null)
