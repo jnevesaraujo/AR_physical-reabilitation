@@ -31,7 +31,7 @@ public abstract class BaseExerciseExtractor : MonoBehaviour
         OnInitialize(); // subclass-specific setup
     }
 
-    protected virtual void DestroyImmediate()
+    protected virtual void OnDestroy()
     {
         if (_hud != null)
             _hud.OnCalibrationRequested -= CalibrateAndStart;
@@ -48,13 +48,6 @@ public abstract class BaseExerciseExtractor : MonoBehaviour
 
         if (_pointList != null)
             OnEvaluateFrame();
-
-        if (WorldLandmarkProvider.IsReady)
-        {
-            Vector3 leftShoulder = WorldLandmarkProvider.GetPosition(11);
-            Vector3 rightShoulder = WorldLandmarkProvider.GetPosition(12);
-            Debug.Log($"L Shoulder: {leftShoulder} | R Shoulder: {rightShoulder}");
-        }
     }
 
     // Shared event handlers

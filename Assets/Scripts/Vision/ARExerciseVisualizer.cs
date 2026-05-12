@@ -117,7 +117,7 @@ namespace App.Vision
 
         private void CleanUp()
         {
-            if (_activeGuide != null) Destroy(_activeGuide);
+            if (_activeGuide != null) DestroyImmediate(_activeGuide);
             _guideController = null;
         }
     }
