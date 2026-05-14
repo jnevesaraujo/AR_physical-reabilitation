@@ -37,6 +37,7 @@ namespace App.Vision
         {
             _line = GetComponent<LineRenderer>();
         }
+        
         public void InitializeGuide(float radius, float targetSeconds, Vector3 worldCenter)
         {
             _radius = radius;

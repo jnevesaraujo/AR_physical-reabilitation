@@ -1,0 +1,93 @@
+using Firebase.Auth;
+using System.Threading.Tasks;
+using UnityEngine;
+using Services;
+using UserProfile = App.Data.Models.UserProfile;
+using System;
+
+namespace App.Services
+{
+    public class AuthService
+    {
+        private FirebaseAuth _auth;
+
+        public void Initialize()
+        {
+            _auth = FirebaseAuth.DefaultInstance;
+            Debug.Log($"[AuthService] Auth initialized: {_auth != null}");
+        }
+
+        public async Task<bool> LoginAsync(string email, string password)
+        {
+            try
+            {
+                await _auth.SignInWithEmailAndPasswordAsync(email, password);
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning($"[Auth] Login failed: {e.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> RegisterAsync(string email, string password)
+        {
+            try
+            {
+                await _auth.CreateUserWithEmailAndPasswordAsync(email, password);
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning($"[Auth] Register failed: {e.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> RegisterAsync(string email, string password,
+                                       string firstName, string lastName)
+        {
+            Debug.Log($"email: {email ?? "NULL"}");
+            Debug.Log($"password: {password ?? "NULL"}");
+            Debug.Log($"firstName: {firstName ?? "NULL"}");
+            Debug.Log($"lastName: {lastName ?? "NULL"}");
+            Debug.Log($"_auth is null: {_auth == null}");
+
+            try
+            {
+                var result = await _auth.CreateUserWithEmailAndPasswordAsync(email, password);
+
+                // Create Firestore profile immediately after auth
+                var profile = new UserProfile
+                {
+                    userId = result.User.UserId,
+                    firstName = firstName,
+                    lastName = lastName,
+                    email = email,
+                    registrationDate = DateTime.UtcNow,
+                    totalSessionsCompleted = 0,
+                    affectedSide = "unknown" // set later in profile setup
+                };
+
+                var profileService = new ProfileService();
+                await profileService.CreateProfileAsync(profile);
+
+                // Cache in SessionContext for use across scenes
+                SessionContext.CurrentUser = profile;
+
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning($"[Auth] Register failed: {e.Message}");
+                return false;
+            }
+        }
+
+        public void Logout() => _auth.SignOut();
+
+        public bool IsLoggedIn => _auth.CurrentUser != null;
+        public string UserId => _auth.CurrentUser?.UserId;
+    }
+}

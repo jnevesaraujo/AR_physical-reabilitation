@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "566790442182",
+    "firebase_url": "https://motor-rehab-app-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "motor-rehab-app",
+    "storage_bucket": "motor-rehab-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:566790442182:android:97265ded6012a400a31bc7",
+        "android_client_info": {
+          "package_name": "com.jneves.arphysicalrehab"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDAotHzPQasLn-CEybVTndzStVZyzwYVMo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

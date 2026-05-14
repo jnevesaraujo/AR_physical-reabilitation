@@ -340,6 +340,74 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5987288207374909770, guid: af6f87c1f072d207e99065e4712f000d, type: 3}
   m_PrefabInstance: {fileID: 138292642}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &281559808
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 281559810}
+  - component: {fileID: 281559809}
+  - component: {fileID: 281559811}
+  m_Layer: 0
+  m_Name: UI_HUD_Root
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &281559809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 281559808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 11400000, guid: 7bef311e58755b1468f2760798d8b2af, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: 730f81f5d6767fd4faad73cd2776cdd6, type: 3}
+  m_SortingOrder: 0
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
+--- !u!4 &281559810
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 281559808}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 540, y: 960, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &281559811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 281559808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a393f517c178a2048a3b4c73514e19a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::App.UI.ExerciseHUD
 --- !u!1 &298837001
 GameObject:
   m_ObjectHideFlags: 0
@@ -797,7 +865,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &663444800
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1009,9 +1077,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a393f517c178a2048a3b4c73514e19a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::App.UI.ExerciseHUD
-  Confirm_btn: {fileID: 121008994}
-  repetitionText: {fileID: 1379070115}
-  warningText: {fileID: 1594128531}
 --- !u!1 &927413606 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 764270978808325597, guid: af6f87c1f072d207e99065e4712f000d, type: 3}
@@ -2228,7 +2293,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f12bca40c3cc7c4f82e5725d83c5c3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::App.Core.ExerciseAppManager
-  exerciseHUD: {fileID: 916854669}
+  exerciseHUD: {fileID: 281559811}
   visualizer: {fileID: 1675745701}
   neckExtractor: {fileID: 652345820}
   handExtractor: {fileID: 994426890}
@@ -2639,6 +2704,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8571076842338426120, guid: 140d1d2c406167c50819d89f86d9092e, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8571076842338426121, guid: 140d1d2c406167c50819d89f86d9092e, type: 3}
       propertyPath: m_Name
       value: Main Canvas
@@ -2836,6 +2905,7 @@ RectTransform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 281559810}
   - {fileID: 1969388817}
   - {fileID: 1806680261}
   - {fileID: 8571076842648159877}

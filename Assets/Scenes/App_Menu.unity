@@ -755,7 +755,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &203844587
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2064,7 +2064,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1099084907}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: App.UI.ExerciseMenuManager, Assembly-CSharp
         m_MethodName: OnClick_LaunchShoulderSlide
         m_Mode: 1
@@ -2548,7 +2548,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1099084907}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: App.UI.ExerciseMenuManager, Assembly-CSharp
         m_MethodName: OnClick_LaunchHandGrip
         m_Mode: 1
@@ -2616,7 +2616,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &961739750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2630,9 +2630,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_RenderShadows: 1
-  m_RequiresDepthTextureOption: 2
+  m_RequiresDepthTextureOption: 0
   m_RequiresOpaqueTextureOption: 2
-  m_CameraType: 0
+  m_CameraType: 1
   m_Cameras: []
   m_RendererIndex: -1
   m_VolumeLayerMask:
@@ -2640,7 +2640,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -2678,8 +2678,8 @@ Camera:
   m_GameObject: {fileID: 961739749}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 4
+  m_BackGroundColor: {r: 0.98823535, g: 0.9725491, b: 0.98823535, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -2708,7 +2708,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 0
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -2878,6 +2878,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1086525753}
   - component: {fileID: 1086525754}
+  - component: {fileID: 1086525755}
+  - component: {fileID: 1086525756}
   m_Layer: 0
   m_Name: UI_Root
   m_TagString: Untagged
@@ -2923,6 +2925,35 @@ MonoBehaviour:
   m_PivotReferenceSize: 0
   m_Pivot: 0
   m_WorldSpaceCollider: {fileID: 0}
+--- !u!114 &1086525755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1086525752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2171ca3288be7624bb0c4e23e1a523ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::App.UI.Toolkit.UINavigationManager
+  _exerciseMenuManager: {fileID: 1086525756}
+--- !u!114 &1086525756
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1086525752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6b348d99ddc1a64dabfc48f52b79ce9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  neckRotationData: {fileID: 11400000, guid: 276f3d96e5d399043808294c6000e28c, type: 2}
+  handGripData: {fileID: 11400000, guid: d68021a75e15fbe4f9ae6474960f4ddf, type: 2}
+  shoulderSlideData: {fileID: 11400000, guid: ee0db31bf18307a4297b4a716a04aab3, type: 2}
+  arSceneName: App_Exercise
 --- !u!1 &1099084904
 GameObject:
   m_ObjectHideFlags: 0
@@ -2933,14 +2964,13 @@ GameObject:
   m_Component:
   - component: {fileID: 1099084906}
   - component: {fileID: 1099084905}
-  - component: {fileID: 1099084907}
   m_Layer: 0
   m_Name: __APP_MANAGER__
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1099084905
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2948,7 +2978,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1099084904}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ece06849870bfe34880da8d90e1a0dc8, type: 3}
   m_Name: 
@@ -2971,22 +3001,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1099084907
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1099084904}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b6b348d99ddc1a64dabfc48f52b79ce9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  neckRotationData: {fileID: 11400000, guid: 276f3d96e5d399043808294c6000e28c, type: 2}
-  handGripData: {fileID: 11400000, guid: d68021a75e15fbe4f9ae6474960f4ddf, type: 2}
-  shoulderSlideData: {fileID: 11400000, guid: ee0db31bf18307a4297b4a716a04aab3, type: 2}
-  arSceneName: App_Exercise
 --- !u!1 &1293787977
 GameObject:
   m_ObjectHideFlags: 0
@@ -3643,7 +3657,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1099084907}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: App.UI.ExerciseMenuManager, Assembly-CSharp
         m_MethodName: OnClick_LaunchHandGrip
         m_Mode: 1
@@ -4443,7 +4457,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1099084907}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: App.UI.ExerciseMenuManager, Assembly-CSharp
         m_MethodName: OnClick_LaunchNeckRotation
         m_Mode: 1
@@ -5170,9 +5184,9 @@ CanvasRenderer:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 1086525753}
   - {fileID: 961739753}
   - {fileID: 203844589}
   - {fileID: 2081227632}
   - {fileID: 39642462}
   - {fileID: 1099084906}
-  - {fileID: 1086525753}

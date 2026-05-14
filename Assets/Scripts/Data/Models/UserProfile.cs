@@ -6,7 +6,8 @@ namespace App.Data.Models
     public class UserProfile
     {
         public string userId;
-        public string fullName;
+        public string firstName;
+        public string lastName;
         public string email;
         public DateTime registrationDate;
         public int totalSessionsCompleted;
