@@ -10,10 +10,12 @@ namespace App.Services
     public class AuthService
     {
         private FirebaseAuth _auth;
+        private ProfileService _profileService;
 
         public void Initialize()
         {
             _auth = FirebaseAuth.DefaultInstance;
+            _profileService = new ProfileService();
             Debug.Log($"[AuthService] Auth initialized: {_auth != null}");
         }
 
@@ -21,7 +23,11 @@ namespace App.Services
         {
             try
             {
-                await _auth.SignInWithEmailAndPasswordAsync(email, password);
+                AuthResult authResult = await _auth.SignInWithEmailAndPasswordAsync(email, password);
+                FirebaseUser firebaseUser = authResult.User;
+                UserProfile userProfile = await _profileService.LoadProfileAsync(firebaseUser.UserId);
+                SessionContext.CurrentUser = userProfile; // Cache profile for use across scenes
+                Debug.Log($"[Auth] Login successful: {email} (UserName: {userProfile.firstName} {userProfile.lastName})");
                 return true;
             }
             catch (System.Exception e)

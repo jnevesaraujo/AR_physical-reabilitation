@@ -15,6 +15,7 @@ namespace Services
         public static void Clear()
         {
             CurrentExercise = null;
+            CurrentUser = null;
         }
     }
 }

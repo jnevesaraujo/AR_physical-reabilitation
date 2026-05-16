@@ -37,19 +37,7 @@ namespace App.UI.Toolkit
             AppScreen.Profile,
             AppScreen.Exercises
         };
-        void Start()
-        {
-            FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
-            {
-                if (task.Result == DependencyStatus.Available)
-                {
-                    // Set database URL manually if not in config
-                    var options = FirebaseApp.DefaultInstance.Options;
-                    Debug.Log($"Database URL: {options.DatabaseUrl}");
-                    Debug.Log("<color=green>Firebase ready!</color>");
-                }
-            });
-        }
+        
         private void OnEnable()
         {
             _root = GetComponent<UIDocument>().rootVisualElement;
@@ -99,8 +87,6 @@ namespace App.UI.Toolkit
                 (_ => NavigateTo(AppScreen.Login));
             /*             _root.Q<Button>("btn_login")?.RegisterCallback<ClickEvent>
                             (_ => NavigateTo(AppScreen.Profile)); */ // Simulate successful login
-            foreach (var tf in _root.Query<TextField>().ToList())
-                Debug.Log($"TextField name: '{tf.name}'");
 
             _root.Q<Button>("btn_register")?.RegisterCallback<ClickEvent>
                 (_ =>
@@ -139,7 +125,6 @@ namespace App.UI.Toolkit
                 (_ => _exerciseMenuManager.OnClick_LaunchHandGrip());
             _root.Q<VisualElement>("btn-shoulderSlide")?.RegisterCallback<ClickEvent>
                 (_ => _exerciseMenuManager.OnClick_LaunchShoulderSlide());
-
 
             if (SessionContext.ReturnToExerciseMenu)
             {
@@ -235,6 +220,8 @@ namespace App.UI.Toolkit
                         SessionContext.CurrentUser = await profileService
                             .LoadProfileAsync(_auth.UserId);
 
+                        UpdateProfileUI();
+                        
                         NavigateTo(AppScreen.Home);
                     }
                     else
@@ -272,6 +259,20 @@ namespace App.UI.Toolkit
                             errorLabel.text = "Registration failed. Try again.";
                     }
                 });
+        }
+
+        private void UpdateProfileUI()
+        {
+            var profile_lbl_username = _root.Q<Label>("profile_lbl_username");
+
+            if (profile_lbl_username != null && SessionContext.CurrentUser != null)
+            {
+                profile_lbl_username.text = $"Olá {SessionContext.CurrentUser.firstName}!";
+            }
+            else
+            {
+                Debug.LogWarning("[NavManager] Falha ao atualizar UI: Label ausente ou Contexto nulo.");
+            }
         }
     }
 }
