@@ -8,6 +8,7 @@ namespace App.Vision
         [Header("Visual Settings")]
         public float visualScaleMultiplier = 100f;
         public float zOffset = -2f;
+        public float neckRadiusModifier = 1.5f;
         private GameObject _activeGuide;
         private ARGuideController _guideController;
         private Vector3 _anchorOffset;
@@ -20,7 +21,7 @@ namespace App.Vision
             if (def is NeckRotationDefinition neckDef)
             {
 
-                float visualRadius = neckDef.minimumRotationAmplitude * visualScaleMultiplier;
+                float visualRadius = neckDef.minimumRotationAmplitude * visualScaleMultiplier * neckRadiusModifier;
 
                 if (neckDef.visualGuidePrefab != null)
                 {

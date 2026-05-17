@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6c06595b73bd0147be9721999f15323, type: 3}
   m_Name: HandGripDef
   m_EditorClassIdentifier: Assembly-CSharp::App.Data.ScriptableObjects.HandGripDefinition
-  exerciseId: 
-  exerciseName: 
+  exerciseId: 2
+  exerciseName: "Flex\xE3o Punho"
   description: 
   requiredTrackingModel: 1
   targetRepetitions: 10

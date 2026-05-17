@@ -2,6 +2,7 @@ using Firebase.Firestore;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using App.Data.Models;
+using System;
 
 namespace App.Services
 {
@@ -24,12 +25,18 @@ namespace App.Services
                 .Collection("sessions")
                 .Document();
 
+            session.sessionId = docRef.Id;
+
             var data = new Dictionary<string, object>
             {
-                { "exerciseId",  session.exerciseId },
-                { "date",        session.sessionTimestamp.ToString("o") },
-                { "repCount",    session.completedReps },
-                { "accuracyScore", session.accuracyScore }
+                { "sessionId",       session.sessionId },
+                { "exerciseId",      session.exerciseId },
+                { "sessionTimestamp", session.sessionTimestamp.ToString("o") },
+                { "completedReps",   session.completedReps },
+                { "targetReps",      session.targetReps },
+                { "accuracyScore",   session.accuracyScore },
+                { "durationSeconds", session.durationSeconds },
+                { "isCompleted",     session.isCompleted }
             };
 
             await docRef.SetAsync(data);
@@ -50,9 +57,15 @@ namespace App.Services
             {
                 sessions.Add(new SessionRecord
                 {
-                    exerciseId  = doc.GetValue<string>("exerciseId"),
-                    completedReps    = doc.GetValue<int>("completedReps"),
-                    accuracyScore = doc.GetValue<float>("accuracyScore")
+                    sessionId = doc.Id,
+                    exerciseId = doc.GetValue<string>("exerciseId"),
+                    sessionTimestamp = DateTime.Parse(doc.GetValue<string>("sessionTimestamp")),
+                    completedReps = doc.GetValue<int>("completedReps"),
+                    targetReps = doc.ContainsField("targetReps") ? doc.GetValue<int>("targetReps") : 0,
+                    // Firestore frequently stores floats as doubles, explicit conversion prevents it
+                    accuracyScore = Convert.ToSingle(doc.GetValue<double>("accuracyScore")),
+                    durationSeconds = Convert.ToSingle(doc.GetValue<double>("durationSeconds")),
+                    isCompleted = doc.ContainsField("isCompleted") && doc.GetValue<bool>("isCompleted")
                 });
             }
             return sessions;

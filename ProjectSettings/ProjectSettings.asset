@@ -69,7 +69,7 @@ PlayerSettings:
   disableDepthAndStencilBuffers: 0
   androidStartInFullscreen: 1
   androidRenderOutsideSafeArea: 1
-  androidUseSwappy: 0
+  androidUseSwappy: 1
   androidDisplayOptions: 1
   androidBlitType: 0
   androidResizeableActivity: 1
@@ -459,7 +459,9 @@ PlayerSettings:
       m_Height: 36
       m_Kind: 0
       m_SubKind: 
-    - m_Textures: []
+    - m_Textures:
+      - {fileID: 10904, guid: 0000000000000000f000000000000000, type: 0}
+      - {fileID: 2800000, guid: e7483714a734b8346a3266b752877e4f, type: 3}
       m_Width: 432
       m_Height: 432
       m_Kind: 2

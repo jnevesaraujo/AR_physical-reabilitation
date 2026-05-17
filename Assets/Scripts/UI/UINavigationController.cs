@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using App.Core;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -6,7 +7,7 @@ namespace App.UI.Toolkit
 {
     public enum AppScreen
     {
-        Login, Register, ForgotPassword, Home, Profile, Exercises
+        Login, Register, ForgotPassword, Home, Profile, Exercises, Summary
     }
 
     public class UINavigationManager : MonoBehaviour
@@ -17,7 +18,7 @@ namespace App.UI.Toolkit
 
         private static readonly HashSet<AppScreen> _appScreens = new()
         {
-            AppScreen.Home, AppScreen.Profile, AppScreen.Exercises
+            AppScreen.Home, AppScreen.Profile, AppScreen.Exercises, AppScreen.Summary
         };
 
         private void Awake()
@@ -34,13 +35,17 @@ namespace App.UI.Toolkit
                 { AppScreen.ForgotPassword, _root.Q("panel_forgotPassword") },
                 { AppScreen.Home,           _root.Q("panel_home") },
                 { AppScreen.Profile,        _root.Q("panel_profile") },
-                { AppScreen.Exercises,      _root.Q("panel_exercises") }
+                { AppScreen.Exercises,      _root.Q("panel_exercises") },
+                { AppScreen.Summary,        _root.Q("panel_summary") }
             };
 
             BindNavigationBar();
-            
+
             // Initial screen
-            NavigateTo(AppScreen.Login);
+            if (SessionContext.ReturnToExerciseMenu)
+                NavigateTo(AppScreen.Summary);
+            else
+                NavigateTo(AppScreen.Login);
         }
 
         private void BindNavigationBar()

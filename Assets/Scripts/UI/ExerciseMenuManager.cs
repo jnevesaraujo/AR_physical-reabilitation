@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using App.Data.ScriptableObjects;
-using Services;
+using App.Core;
 
 namespace App.UI
 {

@@ -2,7 +2,6 @@ using UnityEngine;
 using App.Data.ScriptableObjects;
 using App.UI;
 using App.Vision;
-using Services;
 using App.Vision.Extractors;
 using System; // Onde se encontra o SessionContext
 

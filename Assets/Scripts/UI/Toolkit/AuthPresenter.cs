@@ -3,7 +3,7 @@ using UnityEngine.UIElements;
 using App.Services;
 using Firebase;
 using Firebase.Extensions;
-using Services;
+using App.Core;
 
 namespace App.UI.Toolkit
 {
@@ -21,6 +21,7 @@ namespace App.UI.Toolkit
             _navManager = GetComponent<UINavigationManager>();
             _profileService = new ProfileService();
 
+            _root.RegisterCallback<PointerDownEvent>(OnRootPointerDown, TrickleDown.TrickleDown);
             BindAuthUI();
 
             FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
@@ -44,7 +45,8 @@ namespace App.UI.Toolkit
             // Login form
             _root.Q<Button>("btn_login")?.RegisterCallback<ClickEvent>(_ =>
             {
-                Debug.Log("[AuthPresenter] Login button clicked");
+                _root.focusController.focusedElement?.Blur();
+
                 var email = _root.Q<TextField>("login_email")?.value;
                 var password = _root.Q<TextField>("login_password")?.value;
                 HandleLogin(email, password);
@@ -113,6 +115,15 @@ namespace App.UI.Toolkit
 
             home_lbl_username.MarkDirtyRepaint();
             profile_lbl_username.MarkDirtyRepaint();
+        }
+
+        private void OnRootPointerDown(PointerDownEvent evt)
+        {
+            // if the click is outside of a TextField, blur the currently focused element to dismiss the on-screen keyboard
+            if (!(evt.target is TextField))
+            {
+                _root.focusController.focusedElement?.Blur();
+            }
         }
     }
 }

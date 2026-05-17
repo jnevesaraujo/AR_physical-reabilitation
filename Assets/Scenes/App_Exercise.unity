@@ -270,7 +270,7 @@ PrefabInstance:
       objectReference: {fileID: 1229135959}
     - target: {fileID: 4854035044496938716, guid: af6f87c1f072d207e99065e4712f000d, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4854035044496938716, guid: af6f87c1f072d207e99065e4712f000d, type: 3}
       propertyPath: _maskScreen
@@ -330,7 +330,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 138292642}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 927413606}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 618f0a05cbf326799b0869858fb2a76a, type: 3}
   m_Name: 
@@ -351,6 +351,7 @@ GameObject:
   - component: {fileID: 281559810}
   - component: {fileID: 281559809}
   - component: {fileID: 281559811}
+  - component: {fileID: 281559812}
   m_Layer: 0
   m_Name: UI_HUD_Root
   m_TagString: Untagged
@@ -408,6 +409,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a393f517c178a2048a3b4c73514e19a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::App.UI.ExerciseHUD
+  _timerController: {fileID: 0}
+--- !u!114 &281559812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 281559808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4c59688feb3fc64fbd0d1f499f7f48e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
 --- !u!1 &298837001
 GameObject:
   m_ObjectHideFlags: 0
@@ -1077,6 +1091,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a393f517c178a2048a3b4c73514e19a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::App.UI.ExerciseHUD
+  _timerController: {fileID: 0}
 --- !u!1 &927413606 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 764270978808325597, guid: af6f87c1f072d207e99065e4712f000d, type: 3}
@@ -1089,7 +1104,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 927413606}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f152430ce9da8f9f2ae5cfd135b4d061, type: 3}
   m_Name: 
@@ -2040,7 +2055,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::App.Vision.ARExerciseVisualizer
   visualScaleMultiplier: 100
-  zOffset: -10
+  zOffset: -15
+  neckRadiusModifier: 1.5
 --- !u!1 &1760972989
 GameObject:
   m_ObjectHideFlags: 0
@@ -2261,9 +2277,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ece06849870bfe34880da8d90e1a0dc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::App.UI.NavigationManager
-  loginPanel: {fileID: 0}
-  registerPanel: {fileID: 0}
-  mainMenuPanel: {fileID: 0}
 --- !u!114 &1871017063
 MonoBehaviour:
   m_ObjectHideFlags: 0

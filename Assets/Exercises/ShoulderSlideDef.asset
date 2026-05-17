@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b96d012f073b1f4a8531bb6e40a0ccb, type: 3}
   m_Name: ShoulderSlideDef
   m_EditorClassIdentifier: Assembly-CSharp::App.Data.ScriptableObjects.ShoulderSlideDefinition
-  exerciseId: 
-  exerciseName: 
+  exerciseId: 3
+  exerciseName: Deslizar Ombro
   description: 
   requiredTrackingModel: 0
   targetRepetitions: 10

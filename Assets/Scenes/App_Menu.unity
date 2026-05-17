@@ -2681,7 +2681,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1099084905}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: App.UI.NavigationManager, Assembly-CSharp
         m_MethodName: ShowMainMenu
         m_Mode: 1
@@ -2743,6 +2743,8 @@ GameObject:
   - component: {fileID: 1086525754}
   - component: {fileID: 1086525755}
   - component: {fileID: 1086525757}
+  - component: {fileID: 1086525758}
+  - component: {fileID: 1086525759}
   - component: {fileID: 1086525756}
   m_Layer: 0
   m_Name: UI_Root
@@ -2829,53 +2831,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c22e8ab86f166bc45864d56e53697271, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::App.UI.Toolkit.AuthPresenter
---- !u!1 &1099084904
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1099084906}
-  - component: {fileID: 1099084905}
-  m_Layer: 0
-  m_Name: __APP_MANAGER__
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &1099084905
+--- !u!114 &1086525758
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1099084904}
-  m_Enabled: 0
+  m_GameObject: {fileID: 1086525752}
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ece06849870bfe34880da8d90e1a0dc8, type: 3}
+  m_Script: {fileID: 11500000, guid: d606ff82d11530642a39bb478a908965, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GestorNavegacao
-  loginPanel: {fileID: 1624798633}
-  registerPanel: {fileID: 1895991151}
-  mainMenuPanel: {fileID: 1744608301}
---- !u!4 &1099084906
-Transform:
+  m_EditorClassIdentifier: Assembly-CSharp::App.UI.Toolkit.ExerciseMenuPresenter
+  _exerciseMenuManager: {fileID: 1086525756}
+--- !u!114 &1086525759
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1099084904}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 627.2411, y: -0.00001, z: 29080.215}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_GameObject: {fileID: 1086525752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f239868392868c746815f39b7891be64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::App.UI.Toolkit.SummaryPresenter
 --- !u!1 &1293787977
 GameObject:
   m_ObjectHideFlags: 0
@@ -3736,7 +3716,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1624798634
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4257,7 +4237,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1099084905}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: App.UI.NavigationManager, Assembly-CSharp
         m_MethodName: ShowRegistration
         m_Mode: 1
@@ -4811,7 +4791,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &2081227629
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4819,7 +4799,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2081227628}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
   m_Name: 
@@ -5201,4 +5181,3 @@ SceneRoots:
   - {fileID: 203844589}
   - {fileID: 2081227632}
   - {fileID: 39642462}
-  - {fileID: 1099084906}

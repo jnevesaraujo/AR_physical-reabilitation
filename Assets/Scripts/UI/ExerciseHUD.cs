@@ -1,66 +1,6 @@
-/* using UnityEngine;
-using TMPro;
 using System;
-using UnityEngine.UI;
-
-namespace App.UI
-{
-    public class ExerciseHUD : MonoBehaviour
-    {
-        public event Action OnPeakConfirmRequested;
-        public Button Confirm_btn;
-        [Header("Text References")]
-        public TextMeshProUGUI repetitionText;
-        public TextMeshProUGUI warningText;
-        public event Action OnCalibrationRequested;
-
-        public void InitializeHUD(int targetRepetitions)
-        {
-            UpdateRepetitionCount(0, targetRepetitions);
-            HideWarning();
-        }
-
-        public void UpdateRepetitionCount(int currentReps, int targetReps)
-        {
-            repetitionText.text = $"Reps: {currentReps} / {targetReps}";
-        }
-
-        public void ShowWarning(string message)
-        {
-            warningText.text = message;
-            warningText.color = Color.red;
-            warningText.gameObject.SetActive(true);
-        }
-
-        public void HideWarning()
-        {
-            warningText.gameObject.SetActive(false);
-        }
-
-        public void TriggerCalibration()
-        {
-            Debug.Log("[HUD] Botão de calibração pressionado!");
-            OnCalibrationRequested?.Invoke();
-        }
-
-        public void ShowConfirmPeakButton()
-        {
-            Confirm_btn.gameObject.SetActive(true);
-        }
-
-        public void HideConfirmPeakButton()
-        {
-            Confirm_btn.gameObject.SetActive(false);
-        }
-        public void OnConfirmPeakButtonPressed()
-        {
-            OnPeakConfirmRequested?.Invoke();
-            HideConfirmPeakButton();
-        }
-    }
-} */
-using System;
-using Services;
+using App.UI.Toolkit;
+using App.Core;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
@@ -71,8 +11,9 @@ namespace App.UI
     public class ExerciseHUD : MonoBehaviour
     {
         public event Action OnPeakConfirmRequested, OnCalibrationRequested;
+        public ExerciseTimerController _timerController;
         // UI Toolkit
-        private Label _lblRepetitions, _lblFeedback;
+        private Label _lblRepetitions, _lblFeedback, _lblTimer;
         private VisualElement _btnConfirm, _btnCalibrate, _btnBack, _visualFeedback;
         public static bool isReturningFromSession;
 
@@ -82,9 +23,10 @@ namespace App.UI
             var root = GetComponent<UIDocument>().rootVisualElement;
 
             _visualFeedback = root.Q<VisualElement>("visual_feedback");
+
             _lblRepetitions = root.Q<Label>("label_reps");
             _lblFeedback = root.Q<Label>("label_feedback");
-
+            _lblTimer = root.Q<Label>("label_timer");
             _btnConfirm = root.Q<VisualElement>("btn_confirm");
             _btnCalibrate = root.Q<VisualElement>("btn_calibrate");
             _btnBack = root.Q<VisualElement>("btn_back");
@@ -111,10 +53,9 @@ namespace App.UI
 
         public void UpdateRepetitionCount(int currentReps, int targetReps)
         {
-            if (_lblRepetitions != null)
-            {
-                _lblRepetitions.text = $"{currentReps} / {targetReps}";
-            }
+            SessionContext.CurrentRepetitions = currentReps;
+            _lblRepetitions.text = $"{currentReps} / {targetReps}";
+
         }
 
         public void ShowWarning(string message)
@@ -139,6 +80,8 @@ namespace App.UI
         {
             Debug.Log("[HUD] Botão de calibração pressionado!");
             OnCalibrationRequested?.Invoke();
+            _timerController = GetComponent<ExerciseTimerController>();
+            _timerController?.StartTimer();
         }
 
         public void ShowConfirmPeakButton()
@@ -165,6 +108,8 @@ namespace App.UI
 
         public void ReturnToMainMenu()
         {
+            _timerController?.PauseTimer();
+            SessionContext.ElapsedSeconds = _timerController.ElapsedSeconds;
             SessionContext.ReturnToExerciseMenu = true;
             isReturningFromSession = true;
             SceneManager.LoadScene("App_Menu");

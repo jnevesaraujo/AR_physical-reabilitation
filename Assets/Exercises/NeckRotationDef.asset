@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dac62966677d057439b8265a3aaeea28, type: 3}
   m_Name: NeckRotationDef
   m_EditorClassIdentifier: Assembly-CSharp::App.Data.ScriptableObjects.NeckRotationDefinition
-  exerciseId: 
-  exerciseName: 
+  exerciseId: 1
+  exerciseName: "Rota\xE7\xE3o Cervical"
   description: 
+  requiredTrackingModel: 0
   targetRepetitions: 10
   durationInSeconds: 60
   basePointsPerRep: 50
@@ -27,4 +28,5 @@ MonoBehaviour:
   shoulderAlignmentTolerance: 1.5
   minimumRotationAmplitude: 0.08
   neutralZoneRadius: 0.05
-  targetSecondsPerRep: 6
+  shoulderTwistTolerance: 0.5
+  targetSecondsPerRep: 5

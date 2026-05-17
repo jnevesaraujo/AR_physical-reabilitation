@@ -1,7 +1,7 @@
 using Firebase.Auth;
 using System.Threading.Tasks;
 using UnityEngine;
-using Services;
+using App.Core;
 using UserProfile = App.Data.Models.UserProfile;
 using System;
 
