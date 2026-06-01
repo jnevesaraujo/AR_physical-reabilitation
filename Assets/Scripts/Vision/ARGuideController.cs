@@ -17,7 +17,7 @@ namespace App.Vision
         public Transform shoulderSliderSphere;
         private LineRenderer _line;
         private ParticleSystem _particles;
-        // Váriaveis Neck
+        // VVariables Neck
         private float _targetSeconds;
         private float _radius;
         private float _currentAngle = 0f;
@@ -25,19 +25,22 @@ namespace App.Vision
         private bool _wasSynchronized = false;
         private Vector3 _worldCenter;
 
-        // Variáveis Hand
+        // Variables Hand
         private bool _isHandMode = false;
         private Vector3 _originalSphereScale;
 
-        // Variáveis Shoulder
+        // Variables Shoulder
         private bool _isShoulderMode = false;
+
+        // Variables Elbow
+        private bool _isElbowMode = false;
         private Renderer _shoulderRenderer;
 
         private void Awake()
         {
             _line = GetComponent<LineRenderer>();
         }
-        
+
         public void InitializeGuide(float radius, float targetSeconds, Vector3 worldCenter)
         {
             _radius = radius;
@@ -254,6 +257,45 @@ namespace App.Vision
             {
                 _line.startColor = targetColor;
                 _line.endColor = targetColor;
+            }
+        }
+
+        public void InitializeElbowGuide()
+        {
+            _isElbowMode = true;
+
+            if (_line != null)
+            {
+                _line.enabled = true;
+                _line.useWorldSpace = true;
+                _line.positionCount = 3; // Desenha duas linhas: Ombro-Cotovelo e Cotovelo-Pulso
+                _line.startWidth = 0.5f;
+                _line.endWidth = 0.5f;
+            }
+        }
+
+        public void UpdateElbowGuide(Vector3 shoulder, Vector3 elbow, Vector3 wrist, float progress, bool isDiscovering, float zOffset)
+        {
+            if (!_isElbowMode || _line == null) return;
+
+            // Aplica o deslocamento Z para garantir sobreposição à imagem da câmara
+            Vector3 adjShoulder = new Vector3(shoulder.x, shoulder.y, shoulder.z + zOffset);
+            Vector3 adjElbow = new Vector3(elbow.x, elbow.y, elbow.z + zOffset);
+            Vector3 adjWrist = new Vector3(wrist.x, wrist.y, wrist.z + zOffset);
+
+            _line.SetPosition(0, adjShoulder);
+            _line.SetPosition(1, adjElbow);
+            _line.SetPosition(2, adjWrist);
+
+            // Feedback visual através da cor da linha
+            if (isDiscovering)
+            {
+                SetColor(Color.blue); // Modo de calibração
+            }
+            else
+            {
+                // Transição de Amarelo (extensão) para Verde (flexão concluída)
+                SetColor(Color.Lerp(Color.yellow, Color.green, progress));
             }
         }
     }

@@ -13,7 +13,7 @@ namespace App.Vision
         private ARGuideController _guideController;
         private Vector3 _anchorOffset;
 
-        public void InitializeGuide(ExerciseDefinition def, Vector3 startPosition, float targetY = 0f)
+        public void InitializeGuide(ExerciseDefinition def, Vector3 startPosition, float targetY = 0f, float visualRadius = 0f)
         {
             Debug.Log($"[Visualizer] A iniciar guia para o tipo: {def.GetType().Name}");
             CleanUp();
@@ -21,7 +21,7 @@ namespace App.Vision
             if (def is NeckRotationDefinition neckDef)
             {
 
-                float visualRadius = neckDef.minimumRotationAmplitude * visualScaleMultiplier * neckRadiusModifier;
+                //float visualRadius = neckDef.minimumRotationAmplitude * visualScaleMultiplier * neckRadiusModifier;
 
                 if (neckDef.visualGuidePrefab != null)
                 {
@@ -37,7 +37,9 @@ namespace App.Vision
                     _guideController = _activeGuide.GetComponent<ARGuideController>();
                     if (_guideController != null)
                     {
-                        _guideController.InitializeGuide(visualRadius, neckDef.targetSecondsPerRep, startPosition);
+                        float radius = visualRadius > 0f ? visualRadius : neckDef.minimumRotationAmplitude * visualScaleMultiplier * neckRadiusModifier;
+
+                        _guideController.InitializeGuide(radius, neckDef.targetSecondsPerRep, startPosition);
                     }
                 }
             }
@@ -63,14 +65,29 @@ namespace App.Vision
                 if (shoulderDef.visualGuidePrefab != null)
                 {
                     _activeGuide = Instantiate(shoulderDef.visualGuidePrefab);
-                    _activeGuide.transform.position = Vector3.zero; 
+                    _activeGuide.transform.position = Vector3.zero;
 
                     _guideController = _activeGuide.GetComponent<ARGuideController>();
                     if (_guideController != null)
                     {
                         Vector3 trackStartPos = new Vector3(startPosition.x, startPosition.y, startPosition.z + zOffset);
-                        
+
                         _guideController.InitializeShoulderGuide(trackStartPos, targetY);
+                    }
+                }
+            }
+            else if (def is ElbowFlexionDefinition elbowDef)
+            {
+                if (elbowDef.visualGuidePrefab != null)
+                {
+                    _activeGuide = Instantiate(elbowDef.visualGuidePrefab);
+                    _activeGuide.transform.position = new Vector3(startPosition.x, startPosition.y, startPosition.z + zOffset);
+
+                    _guideController = _activeGuide.GetComponent<ARGuideController>();
+
+                    if (_guideController != null)
+                    {
+                        _guideController.InitializeElbowGuide();
                     }
                 }
             }
@@ -97,6 +114,14 @@ namespace App.Vision
             {
                 // Usa o zOffset global da classe para manter a consistência
                 _guideController.UpdateShoulderGuide(wristPos, progress, isDiscovering, zOffset);
+            }
+        }
+
+        public void UpdateElbowVisuals(Vector3 shoulder, Vector3 elbow, Vector3 wrist, float progress, bool isDiscovering)
+        {
+            if (_guideController != null)
+            {
+                _guideController.UpdateElbowGuide(shoulder, elbow, wrist, progress, isDiscovering, zOffset);
             }
         }
 

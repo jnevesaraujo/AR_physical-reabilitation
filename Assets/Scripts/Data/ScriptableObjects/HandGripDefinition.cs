@@ -6,14 +6,14 @@ namespace App.Data.ScriptableObjects
     public class HandGripDefinition : ExerciseDefinition
     {
         [Header("Hand Grip Biometrics")]
-        [Tooltip("Distância euclidiana máxima entre a ponta do polegar (4) e o dedo alvo (8) para registar o fecho da pinça.")]
+        [Tooltip("Maximum Euclidean distance between the thumb tip (4) and the target finger (8) to register the pinch closure.")]
         public float targetGripDistance = 0.02f;
 
-        [Tooltip("Distância euclidiana mínima para considerar que a mão regressou à posição neutra/aberta.")]
+        [Tooltip("Minimum Euclidean distance for considering that the hand has returned to the neutral/open position.")]
         public float releaseDistance = 0.08f;
 
         [Header("Pacing Dynamics")]
-        [Tooltip("Tempo em segundos que a paciente deve manter a contração isométrica (pinça fechada).")]
+        [Tooltip("Time in seconds that the user must hold the grip to count as a valid repetition.")]
         public float isometricHoldTime = 2.0f;
     }
 }

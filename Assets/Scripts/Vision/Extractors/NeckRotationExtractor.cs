@@ -33,7 +33,13 @@ namespace App.Vision.Extractors
             _evaluator.CalibrateOrigin(_nose.position, _leftShoulder.position, _rightShoulder.position);
             _isCalibrated = true;
 
-            _visualizer.InitializeGuide(_exerciseDef, _nose.position);
+            float shoulderWidth = Vector2.Distance(
+                new Vector2(_leftShoulder.position.x, _leftShoulder.position.y),
+                new Vector2(_rightShoulder.position.x, _rightShoulder.position.y)
+            );
+            float visualRadius = shoulderWidth * 0.4f;
+
+            _visualizer.InitializeGuide(_exerciseDef, _nose.position, visualRadius);
 
             if (_hud != null) _hud.HideWarning();
         }
@@ -43,8 +49,8 @@ namespace App.Vision.Extractors
             // Cache neck-specific landmarks from the shared _pointList
             if (_nose == null)
             {
-                _nose          = _pointList.GetChild(0);
-                _leftShoulder  = _pointList.GetChild(11);
+                _nose = _pointList.GetChild(0);
+                _leftShoulder = _pointList.GetChild(11);
                 _rightShoulder = _pointList.GetChild(12);
             }
 

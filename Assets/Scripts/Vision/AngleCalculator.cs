@@ -57,5 +57,18 @@ namespace App.Vision
         {
             return Vector3.Distance(origin, target);
         }
+
+        /// <summary>
+        /// Calculates the inner angle (0 to 180 degrees) formed at a central joint (e.g., elbow) 
+        /// between two connected segments (e.g., shoulder and wrist).
+        /// </summary>
+        public static float CalculateJointAngle3D(Vector3 centralJoint, Vector3 endPointA, Vector3 endPointB)
+        {
+            Vector3 directionA = (endPointA - centralJoint).normalized;
+            Vector3 directionB = (endPointB - centralJoint).normalized;
+
+            return Vector3.Angle(directionA, directionB);
+        }
+
     }
 }

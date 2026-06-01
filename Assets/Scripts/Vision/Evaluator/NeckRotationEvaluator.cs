@@ -21,6 +21,9 @@ namespace App.Vision
         public event Action<string> OnWarningTriggered;
         public event Action<float> OnMovementTracked;
         public event Action OnRepetitionCompleted;
+        private int _startQuadrant = -1;
+        private bool _isClockwise = false;
+        private int _lastQuadrant = -1;
 
         public NeckRotationEvaluator(NeckRotationDefinition definition)
         {
@@ -35,6 +38,9 @@ namespace App.Vision
             _isCalibrated = true;
 
             Array.Clear(_reachedQuadrants, 0, _reachedQuadrants.Length);
+
+            _quadrantSequence.Clear();
+            _lastQuadrant = -1;
         }
 
         public void EvaluateFrame(Transform nose, Transform leftShoulder, Transform rightShoulder)
@@ -79,22 +85,88 @@ namespace App.Vision
             }
         }
 
+        /*         private void TrackQuadrant(float angle)
+                {
+                    int quadrant = Mathf.FloorToInt(angle / 90f) % 4;
+
+                    int expectedNext = _quadrantSequence.Count == 0 ? quadrant : (_quadrantSequence[^1] + 1) % 4;
+
+                    if (quadrant == expectedNext &&
+                        (_quadrantSequence.Count == 0 || quadrant != _quadrantSequence[0]))
+                    {
+                        _quadrantSequence.Add(quadrant);
+                    }
+
+                    if (_quadrantSequence.Count == 4)
+                    {
+                        OnRepetitionCompleted?.Invoke();
+                        _quadrantSequence.Clear();
+                    }
+                }
+            } */
+
         private void TrackQuadrant(float angle)
         {
             int quadrant = Mathf.FloorToInt(angle / 90f) % 4;
 
-            int expectedNext = _quadrantSequence.Count == 0 ? quadrant : (_quadrantSequence[^1] + 1) % 4;
+            // Ignore if still in the same quadrant
+            if (quadrant == _lastQuadrant) return;
 
-            if (quadrant == expectedNext &&
-                (_quadrantSequence.Count == 0 || quadrant != _quadrantSequence[0]))
+            if (_quadrantSequence.Count == 0)
+            {
+                // First quadrant — determine direction on second entry
+                _quadrantSequence.Add(quadrant);
+                _startQuadrant = quadrant;
+                _lastQuadrant = quadrant;
+                return;
+            }
+
+            if (_quadrantSequence.Count == 1)
+            {
+                // Second quadrant — detect direction
+                int prev = _quadrantSequence[^1];
+                int cwNext = (prev + 1) % 4;
+                int ccwNext = (prev + 3) % 4; // equivalent to -1 mod 4
+
+                if (quadrant == cwNext)
+                    _isClockwise = true;
+                else if (quadrant == ccwNext)
+                    _isClockwise = false;
+                else
+                {
+                    // Jumped two quadrants — reset, likely noise
+                    _quadrantSequence.Clear();
+                    _lastQuadrant = -1;
+                    return;
+                }
+
+                _quadrantSequence.Add(quadrant);
+                _lastQuadrant = quadrant;
+                return;
+            }
+
+            // Subsequent quadrants — must follow established direction
+            int last = _quadrantSequence[^1];
+            int expected = _isClockwise ? (last + 1) % 4 : (last + 3) % 4;
+
+            if (quadrant == expected)
             {
                 _quadrantSequence.Add(quadrant);
+                _lastQuadrant = quadrant;
+            }
+            else
+            {
+                // Wrong direction or jump — reset
+                _quadrantSequence.Clear();
+                _lastQuadrant = -1;
+                return;
             }
 
             if (_quadrantSequence.Count == 4)
             {
                 OnRepetitionCompleted?.Invoke();
                 _quadrantSequence.Clear();
+                _lastQuadrant = -1;
             }
         }
     }
