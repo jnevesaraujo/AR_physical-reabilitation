@@ -17,6 +17,7 @@ namespace App.Core
         [SerializeField] private NeckRotationExtractor neckExtractor;
         [SerializeField] private HandGripExtractor handExtractor;
         [SerializeField] private ShoulderSlideExtractor shoulderExtractor;
+        [SerializeField] private ElbowFlexionExtractor elbowExtractor;
         [Header("Solution Objects)")]
         public GameObject solutionPose;
         public GameObject solutionHand;
@@ -75,6 +76,11 @@ namespace App.Core
                     enableMediaPipeExtractor("Shoulder");
                     shoulderExtractor.Initialize(exercise as ShoulderSlideDefinition, exerciseHUD, visualizer);
                 }
+                else if (exercise is ElbowFlexionDefinition)
+                {
+                    enableMediaPipeExtractor("Elbow");
+                    elbowExtractor.Initialize(exercise as ElbowFlexionDefinition, exerciseHUD, visualizer);
+                }
             }
             else if (exercise.requiredTrackingModel == ExerciseDefinition.TrackingModelType.HandsOnly)
             {
@@ -90,6 +96,7 @@ namespace App.Core
             neckExtractor.gameObject.SetActive(false);
             handExtractor.gameObject.SetActive(false);
             shoulderExtractor.gameObject.SetActive(false);
+            elbowExtractor.gameObject.SetActive(false);
         }
 
         private void DisableMediaPipeVisuals()
@@ -124,6 +131,9 @@ namespace App.Core
                     break;
                 case "Shoulder":
                     shoulderExtractor.gameObject.SetActive(true);
+                    break;
+                case "Elbow":
+                    elbowExtractor.gameObject.SetActive(true);
                     break;
                 default:
                     Debug.LogWarning($"Extractor '{extractorName}' desconhecido. Nenhum extractor ativado.");

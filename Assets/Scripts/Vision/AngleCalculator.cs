@@ -17,17 +17,17 @@ namespace App.Vision
         {
             // Vector pointing from center to target
             Vector2 direction = target - center;
-            
+
             // Atan2 returns radians between -PI and PI.
             float angleInRadians = Mathf.Atan2(direction.y, direction.x);
             float angleInDegrees = angleInRadians * Mathf.Rad2Deg;
-            
+
             // Normalize to 0-360 range for easier quadrant tracking
             if (angleInDegrees < 0)
             {
                 angleInDegrees += 360f;
             }
-            
+
             return angleInDegrees;
         }
 
@@ -44,7 +44,7 @@ namespace App.Vision
         {
             return Mathf.Abs(point1.z - point2.z);
         }
-        
+
         /// <summary>
         /// Calculates the 2D distance between two points, ignoring depth (Z-axis).
         /// Useful for checking if a movement meets the minimum required amplitude.
@@ -59,15 +59,20 @@ namespace App.Vision
         }
 
         /// <summary>
-        /// Calculates the inner angle (0 to 180 degrees) formed at a central joint (e.g., elbow) 
-        /// between two connected segments (e.g., shoulder and wrist).
+        /// Calculates the interior angle (in degrees) at the middle joint,
+        /// given three joint positions: proximal → joint → distal.
+        /// Uses the law of cosines on the two bone vectors.
         /// </summary>
-        public static float CalculateJointAngle3D(Vector3 centralJoint, Vector3 endPointA, Vector3 endPointB)
+        public static float CalculateJointAngle(Vector3 proximal, Vector3 joint, Vector3 distal)
         {
-            Vector3 directionA = (endPointA - centralJoint).normalized;
-            Vector3 directionB = (endPointB - centralJoint).normalized;
+            Vector3 boneA = proximal - joint;
+            Vector3 boneB = distal - joint;
 
-            return Vector3.Angle(directionA, directionB);
+            // Clamp to [-1, 1] to guard against floating-point errors in Acos
+            float cosAngle = Vector3.Dot(boneA.normalized, boneB.normalized);
+            cosAngle = Mathf.Clamp(cosAngle, -1f, 1f);
+
+            return Mathf.Acos(cosAngle) * Mathf.Rad2Deg;
         }
 
     }

@@ -15,6 +15,12 @@ namespace App.Vision
         [Header("Shoulder Slide Settings")]
         [Tooltip("Sphere which will slide along the line.")]
         public Transform shoulderSliderSphere;
+        [Header("Elbow Guide Settings")]
+        [Tooltip("Small dot placed at the elbow joint to show the rotation pivot.")]
+        public Transform elbowPivotDot;
+        [Tooltip("Particle system that fires on rep completion. Direct reference avoids child-search ambiguity.")]
+        public ParticleSystem successParticles;
+
         private LineRenderer _line;
         private ParticleSystem _particles;
         // VVariables Neck
@@ -31,14 +37,28 @@ namespace App.Vision
 
         // Variables Shoulder
         private bool _isShoulderMode = false;
+        private Renderer _shoulderRenderer;
 
         // Variables Elbow
         private bool _isElbowMode = false;
-        private Renderer _shoulderRenderer;
+        private Vector3 _elbowPivot;
+        private float _arcRadius;
+        private float _restAngleDeg;
+        private float _peakAngleDeg;
+        private Renderer _elbowSphereRenderer;
+        private bool _isElbowRingMode = false;
+        private GameObject _restRing;
+        private GameObject _peakRing;
+        private Transform _wristIndicator;
+        private Renderer _wristRenderer;
+        private Renderer _peakRingRenderer;
+
 
         private void Awake()
         {
             _line = GetComponent<LineRenderer>();
+            if (successParticles != null)
+                _particles = successParticles;
         }
 
         public void InitializeGuide(float radius, float targetSeconds, Vector3 worldCenter)
@@ -235,18 +255,34 @@ namespace App.Vision
             }
         }
 
+        /*         public void PlaySuccessParticles()
+                {
+                    if (_particles != null)
+                    {
+                        // Reinicia o rasto visual da estrela para modo explosão
+                        var main = _particles.main;
+                        main.startColor = Color.yellow;
+
+                        var emission = _particles.emission;
+                        emission.rateOverTime = 0; // Para a emissão contínua
+
+                        // Dispara um Burst (explosão de 30 partículas)
+                        _particles.Emit(30);
+                    }
+                } */
+
         public void PlaySuccessParticles()
         {
             if (_particles != null)
             {
-                // Reinicia o rasto visual da estrela para modo explosão
+                _particles.transform.position = _peakRing != null
+                    ? _peakRing.transform.position
+                    : transform.position;
+
                 var main = _particles.main;
-                main.startColor = Color.yellow;
-
+                main.startColor = new Color(0.11f, 0.62f, 0.46f);
                 var emission = _particles.emission;
-                emission.rateOverTime = 0; // Para a emissão contínua
-
-                // Dispara um Burst (explosão de 30 partículas)
+                emission.rateOverTime = 0;
                 _particles.Emit(30);
             }
         }
@@ -259,44 +295,228 @@ namespace App.Vision
                 _line.endColor = targetColor;
             }
         }
+        /*
+                public void InitializeElbowGuide(
+             Vector3 elbowPivot,
+             Vector3 wristAtRest,
+             Vector3 wristAtPeak,
+             float targetSecondsPerRep,
+             float zOffset = -0.05f)
+                {
+                    _isElbowMode = true;
+                    _elbowPivot = elbowPivot;
+                    _arcRadius = Vector3.Distance(elbowPivot, wristAtRest);
+                    _targetSeconds = targetSecondsPerRep;
 
-        public void InitializeElbowGuide()
+                    if (elbowPivotDot != null)
+                        elbowPivotDot.position = new Vector3(elbowPivot.x, elbowPivot.y, elbowPivot.z + zOffset);
+
+                    // Derive the two angle bounds from the actual wrist positions.
+                    // We work in the elbow's local XY plane (ignoring Z depth).
+                    Vector2 toRest = new Vector2(
+                        wristAtRest.x - elbowPivot.x,
+                        wristAtRest.y - elbowPivot.y);
+                    Vector2 toPeak = new Vector2(
+                        wristAtPeak.x - elbowPivot.x,
+                        wristAtPeak.y - elbowPivot.y);
+
+                    _restAngleDeg = Mathf.Atan2(toRest.y, toRest.x) * Mathf.Rad2Deg;
+                    _peakAngleDeg = Mathf.Atan2(toPeak.y, toPeak.x) * Mathf.Rad2Deg;
+
+                    if (_line != null)
+                    {
+                        _line.enabled = true;
+                        _line.useWorldSpace = true;
+                        _line.loop = false;
+
+                        DrawArc();
+
+                        float w = _arcRadius * 0.08f;
+                        _line.startWidth = w;
+                        _line.endWidth = w;
+                        _line.startColor = new Color(1f, 1f, 1f, 0.4f);
+                        _line.endColor = new Color(1f, 1f, 1f, 0.4f);
+                    }
+
+                    // The pacer sphere slides along the arc
+                    if (shoulderSliderSphere != null)
+                    {
+                        _elbowSphereRenderer = shoulderSliderSphere.GetComponent<Renderer>();
+                        float sphereScale = _arcRadius * 0.18f;
+                        shoulderSliderSphere.localScale = Vector3.one * sphereScale;
+
+                        // Place it at rest position to start
+                        shoulderSliderSphere.position = ArcPoint(_restAngleDeg);
+                    }
+
+                    if (_particles == null && shoulderSliderSphere != null)
+                        _particles = shoulderSliderSphere.GetComponentInChildren<ParticleSystem>();
+
+                    _currentAngle = _restAngleDeg;
+                    _isRunning = true;
+                }
+
+                private void DrawArc()
+                {
+                    int segments = 40;
+                    _line.positionCount = segments + 1;
+
+                    float startA = _restAngleDeg;
+                    float endA = _peakAngleDeg;
+
+                    // Ensure we always sweep the short way (flexion arc, not reflex)
+                    float delta = Mathf.DeltaAngle(startA, endA);
+
+                    for (int i = 0; i <= segments; i++)
+                    {
+                        float t = i / (float)segments;
+                        float angle = startA + delta * t;
+                        _line.SetPosition(i, ArcPoint(angle));
+                    }
+                }
+
+                private Vector3 ArcPoint(float angleDeg, float zOffset = -0.05f)
+                {
+                    float rad = angleDeg * Mathf.Deg2Rad;
+                    return new Vector3(
+                        _elbowPivot.x + Mathf.Cos(rad) * _arcRadius,
+                        _elbowPivot.y + Mathf.Sin(rad) * _arcRadius,
+                        _elbowPivot.z + zOffset
+                    );
+                }
+
+                public void UpdateElbowGuide(Vector3 wristPos, float progress, float zOffset = -0.05f)
+                {
+                    if (!_isElbowMode) return;
+
+                    if (shoulderSliderSphere != null)
+                    {
+                        shoulderSliderSphere.position = new Vector3(
+                            wristPos.x,
+                            wristPos.y,
+                            _elbowPivot.z + zOffset);
+                    }
+
+                    // 2. Colour: yellow at rest → green at peak
+                    if (_elbowSphereRenderer != null)
+                        _elbowSphereRenderer.material.color = Color.Lerp(Color.yellow, Color.green, progress);
+
+                    // 3. Recolour the arc to show how much of the ROM has been completed
+                    if (_line != null)
+                    {
+                        Color arcCol = Color.Lerp(
+                            new Color(1f, 1f, 1f, 0.3f),
+                            new Color(0.3f, 1f, 0.4f, 0.7f),
+                            progress);
+                        _line.startColor = arcCol;
+                        _line.endColor = arcCol;
+                    }
+                }
+            } */
+
+        // Call this on first calibration (arm at rest, button tapped)
+        public void PlaceRestRing(Vector3 wristWorldPos, float armLengthEstimate)
         {
-            _isElbowMode = true;
+            _isElbowRingMode = true;
 
-            if (_line != null)
+            float ringRadius = armLengthEstimate * 5f;   // ~12–24px — wrist-sized ring
+            float sphereScale = armLengthEstimate * 5f;   // ~9–18px — visible sphere
+
+            if (_restRing == null)
+                _restRing = CreateRing("RestRing",
+                                       new Color(0.6f, 0.6f, 0.6f, 0.5f),
+                                       ringRadius);
+
+            _restRing.transform.position = wristWorldPos;
+
+            if (shoulderSliderSphere != null)
             {
-                _line.enabled = true;
-                _line.useWorldSpace = true;
-                _line.positionCount = 3; // Desenha duas linhas: Ombro-Cotovelo e Cotovelo-Pulso
-                _line.startWidth = 0.5f;
-                _line.endWidth = 0.5f;
+                _wristIndicator = shoulderSliderSphere;
+                _wristRenderer = _wristIndicator.GetComponent<Renderer>();
+                _wristIndicator.localScale = Vector3.one * sphereScale;
+                if (_wristRenderer != null)
+                    _wristRenderer.material.color = Color.white;
+                _wristIndicator.position = wristWorldPos;
+            }
+
+            if (_line != null) _line.enabled = false;
+
+            // Find particles
+            if (_particles == null)
+                _particles = GetComponentInChildren<ParticleSystem>();
+        }
+
+        // Call this when the patient confirms peak position
+        public void PlacePeakRing(Vector3 wristWorldPos, float armLengthEstimate, float zOffset = -0.05f)
+        {
+            float ringRadius = armLengthEstimate * 5f;
+
+            if (_peakRing == null)
+                _peakRing = CreateRing("PeakRing", new Color(0.11f, 0.62f, 0.46f, 0.85f), ringRadius);
+
+            _peakRing.transform.position = new Vector3(
+                wristWorldPos.x, wristWorldPos.y, wristWorldPos.z + zOffset);
+
+            _peakRingRenderer = _peakRing.GetComponentInChildren<Renderer>();
+        }
+
+        // Call every frame after both rings are placed
+        public void UpdateElbowRings(Vector3 wristWorldPos, float progress, float zOffset = -0.05f)
+        {
+            if (!_isElbowRingMode || _wristIndicator == null) return;
+
+            _wristIndicator.position = new Vector3(
+                wristWorldPos.x, wristWorldPos.y, wristWorldPos.z + zOffset);
+
+            // Colour: white at rest → green at peak
+            if (_wristRenderer != null)
+                _wristRenderer.material.color = Color.Lerp(Color.white,
+                                                            new Color(0.11f, 0.62f, 0.46f),
+                                                            progress);
+
+            // Pulse the peak ring brighter when the wrist is close
+            if (_peakRingRenderer != null)
+            {
+                float proximity = Mathf.Clamp01(progress * 1.2f); // slightly anticipates
+                _peakRingRenderer.material.color = Color.Lerp(
+                    new Color(0.11f, 0.62f, 0.46f, 0.4f),
+                    new Color(0.11f, 0.62f, 0.46f, 1.0f),
+                    proximity);
             }
         }
 
-        public void UpdateElbowGuide(Vector3 shoulder, Vector3 elbow, Vector3 wrist, float progress, bool isDiscovering, float zOffset)
+
+
+        // ── Ring factory ──────────────────────────────────────────────
+        private GameObject CreateRing(string name, Color color, float radius)
         {
-            if (!_isElbowMode || _line == null) return;
+            var go = new GameObject(name);
+            go.transform.SetParent(transform);
+            var lr = go.AddComponent<LineRenderer>();
+            lr.useWorldSpace = false;
+            lr.loop = true;
+            lr.positionCount = 32;
 
-            // Aplica o deslocamento Z para garantir sobreposição à imagem da câmara
-            Vector3 adjShoulder = new Vector3(shoulder.x, shoulder.y, shoulder.z + zOffset);
-            Vector3 adjElbow = new Vector3(elbow.x, elbow.y, elbow.z + zOffset);
-            Vector3 adjWrist = new Vector3(wrist.x, wrist.y, wrist.z + zOffset);
+            var mat = new Material(Shader.Find("Sprites/Default"));
+            mat.color = color;
+            lr.material = mat;
 
-            _line.SetPosition(0, adjShoulder);
-            _line.SetPosition(1, adjElbow);
-            _line.SetPosition(2, adjWrist);
+            float thickness = radius * 0.18f;
+            lr.startWidth = thickness;
+            lr.endWidth = thickness;
 
-            // Feedback visual através da cor da linha
-            if (isDiscovering)
+            for (int i = 0; i < 32; i++)
             {
-                SetColor(Color.blue); // Modo de calibração
+                float angle = (i / 32f) * Mathf.PI * 2f;
+                lr.SetPosition(i, new Vector3(
+                    Mathf.Cos(angle) * radius,
+                    Mathf.Sin(angle) * radius,
+                    0f));
             }
-            else
-            {
-                // Transição de Amarelo (extensão) para Verde (flexão concluída)
-                SetColor(Color.Lerp(Color.yellow, Color.green, progress));
-            }
+            return go;
         }
+
+
+
     }
 }

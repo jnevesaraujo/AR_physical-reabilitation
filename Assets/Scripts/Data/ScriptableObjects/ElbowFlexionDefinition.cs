@@ -1,18 +1,26 @@
 using UnityEngine;
+using App.Data.ScriptableObjects;
 
 namespace App.Data.ScriptableObjects
 {
-    [CreateAssetMenu(fileName = "ElbowFlexionDef", menuName = "RehabApp/Exercises/Elbow Flexion")]
+    [CreateAssetMenu(fileName = "ElbowFlexionDef",
+                     menuName = "RehabApp/Exercises/Elbow Flexion")]
     public class ElbowFlexionDefinition : ExerciseDefinition
     {
-        [Header("Biomechanics")]
-        [Tooltip("Maximum angle (extended arm) tolerated to initiate repetition.")]
-        public float extensionThresholdAngle = 160f; 
-        
-        [Tooltip("Minimum angle (flexed arm) required to validate repetition.")]
-        public float flexionTargetAngle = 40f;
+        [Header("Elbow Flexion Biometrics")]
+        [Tooltip("True = right arm, false = left arm.")]
+        public bool isRightArm = true;
 
-        [Tooltip("Time in seconds that the user must hold the flexion to count as a valid repetition.")]
-        public float holdTimeSeconds = 2f;
+        [Tooltip("Minimum joint angle (degrees) to count as a full curl (peak).")]
+        public float peakAngleThreshold = 60f;
+
+        [Tooltip("Maximum joint angle (degrees) to count as arm fully lowered (rest).")]
+        public float restAngleThreshold = 150f;
+
+        [Tooltip("Max allowed deviation of wrist X from shoulder X.")]
+        public float horizontalTolerance = 50f;
+        
+        [Tooltip("Expected arc sweep in degrees from rest to peak. 90-120 is typical.")]
+        public float expectedRomDegrees = 100f;
     }
 }

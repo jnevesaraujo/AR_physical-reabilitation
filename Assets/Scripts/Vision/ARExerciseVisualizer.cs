@@ -13,7 +13,9 @@ namespace App.Vision
         private ARGuideController _guideController;
         private Vector3 _anchorOffset;
 
-        public void InitializeGuide(ExerciseDefinition def, Vector3 startPosition, float targetY = 0f, float visualRadius = 0f)
+        public void InitializeGuide(ExerciseDefinition def, Vector3 startPosition,
+                             float targetY = 0f, float visualRadius = 0f,
+                             float armLength = 1f)
         {
             Debug.Log($"[Visualizer] A iniciar guia para o tipo: {def.GetType().Name}");
             CleanUp();
@@ -78,17 +80,25 @@ namespace App.Vision
             }
             else if (def is ElbowFlexionDefinition elbowDef)
             {
-                if (elbowDef.visualGuidePrefab != null)
+                if (elbowDef.visualGuidePrefab == null)
                 {
-                    _activeGuide = Instantiate(elbowDef.visualGuidePrefab);
-                    _activeGuide.transform.position = new Vector3(startPosition.x, startPosition.y, startPosition.z + zOffset);
+                    Debug.LogError("[Visualizer] ElbowFlexionDefinition has no visualGuidePrefab.");
+                    return;
+                }
 
-                    _guideController = _activeGuide.GetComponent<ARGuideController>();
+                _activeGuide = Instantiate(elbowDef.visualGuidePrefab);
+                _activeGuide.transform.position = Vector3.zero;
+                _guideController = _activeGuide.GetComponent<ARGuideController>();
 
-                    if (_guideController != null)
-                    {
-                        _guideController.InitializeElbowGuide();
-                    }
+                if (_guideController != null)
+                {
+                    // Z: stay at same plane as landmarks, small negative offset to render in front
+                    Vector3 restPos = new Vector3(
+                        startPosition.x,
+                        startPosition.y,
+                        startPosition.z - 5f);  // 5px in front in landmark space
+
+                    _guideController.PlaceRestRing(restPos, armLength);
                 }
             }
 
@@ -117,12 +127,25 @@ namespace App.Vision
             }
         }
 
-        public void UpdateElbowVisuals(Vector3 shoulder, Vector3 elbow, Vector3 wrist, float progress, bool isDiscovering)
+        // Called on first calibration tap (arm at rest)
+        public void PlaceElbowRestRing(Vector3 wristPos, float armLength)
         {
-            if (_guideController != null)
-            {
-                _guideController.UpdateElbowGuide(shoulder, elbow, wrist, progress, isDiscovering, zOffset);
-            }
+            // Override zOffset for elbow — use relative depth, not fixed world units
+            float z = wristPos.z - 0.05f;
+            _guideController?.PlaceRestRing(
+                new Vector3(wristPos.x, wristPos.y, z), armLength);
+        }
+
+        public void PlaceElbowPeakRing(Vector3 wristPos, float armLength)
+        {
+            _guideController?.PlacePeakRing(
+                new Vector3(wristPos.x, wristPos.y, wristPos.z - 5f),
+                armLength);
+        }
+
+        public void UpdateElbowRings(Vector3 wristPos, float progress)
+        {
+            _guideController?.UpdateElbowRings(wristPos, progress);
         }
 
         public void TriggerSuccessFeedback()

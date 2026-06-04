@@ -33,6 +33,7 @@ public abstract class BaseExerciseExtractor : MonoBehaviour
 
     protected virtual void OnDestroy()
     {
+        
         if (_hud != null)
             _hud.OnCalibrationRequested -= CalibrateAndStart;
     }
