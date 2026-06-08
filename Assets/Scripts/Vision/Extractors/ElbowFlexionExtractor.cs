@@ -47,9 +47,14 @@ namespace App.Vision.Extractors
             Vector3 restPos = SmoothedWristPos;
             if (float.IsNaN(restPos.x)) return;
 
-            // Compute forearm length in landmark space — this is your scale reference
-            _armLength = Vector3.Distance(_elbow.position, _wrist.position);
-            Debug.Log($"[ElbowFlexion] Forearm length in landmark space: {_armLength:F2}px");
+            float upperArmLength = Vector3.Distance(_shoulder.position, _elbow.position);
+            float foreArmLength = Vector3.Distance(_elbow.position, _wrist.position);
+
+            _armLength = Mathf.Max(upperArmLength, foreArmLength);
+
+            Debug.Log($"[ElbowFlexion] upperArm={upperArmLength:F1}px " +
+                      $"foreArm={foreArmLength:F1}px " +
+                      $"using={_armLength:F1}px");
 
             _visualizer.InitializeGuide(_exerciseDef, restPos, armLength: _armLength);
 
@@ -65,10 +70,18 @@ namespace App.Vision.Extractors
             Vector3 peakPos = SmoothedWristPos;
             if (float.IsNaN(peakPos.x)) return;
 
-            _evaluator.CalibrateAndBegin(_shoulder.position, _elbow.position, peakPos);
+            Transform otherShoulder = _pointList.GetChild(
+                (_exerciseDef as ElbowFlexionDefinition).isRightArm ? 11 : 12);
+            float shoulderWidth = Vector3.Distance(_shoulder.position, otherShoulder.position);
+
+            _evaluator.CalibrateAndBegin(
+                _shoulder.position, _elbow.position, peakPos, shoulderWidth);
+
             _visualizer.PlaceElbowPeakRing(peakPos, _armLength);
 
             _isCalibrated = true;
+            _peakConfirmed = true;
+
             _hud?.HideConfirmPeakButton();
             _hud?.ShowWarning("Agora comece o exercício.");
         }
@@ -88,12 +101,12 @@ namespace App.Vision.Extractors
 
             // Phase 2: fill the smoothing buffer every frame as long as wrist exists.
             // Also runs before calibration so the buffer is ready when the patient taps.
-            if (_wrist != null && Time.frameCount % 60 == 0)
-            {
-                Debug.Log($"[ElbowFlexion] shoulder={_shoulder.position} " +
-                          $"elbow={_elbow.position} " +
-                          $"wrist={_wrist.position}");
-            }
+            /*             if (_wrist != null && Time.frameCount % 60 == 0)
+                        {
+                            Debug.Log($"[ElbowFlexion] shoulder={_shoulder.position} " +
+                                      $"elbow={_elbow.position} " +
+                                      $"wrist={_wrist.position}");
+                        } */
             if (_wrist != null)
             {
                 Vector3 pos = _wrist.position;
@@ -106,7 +119,13 @@ namespace App.Vision.Extractors
             }
 
             // Phase 3: evaluation only runs after full calibration.
-            if (!_isCalibrated || !_peakConfirmed) return;
+            // if (!_isCalibrated || !_peakConfirmed) return;
+            if (!_isCalibrated || !_peakConfirmed)
+            {
+                if (Time.frameCount % 60 == 0)
+                    Debug.Log($"[ElbowFlexion] Blocked: calibrated={_isCalibrated} peakConfirmed={_peakConfirmed}");
+                return;
+            }
 
             _evaluator.EvaluateFrame(
                 _shoulder.position,

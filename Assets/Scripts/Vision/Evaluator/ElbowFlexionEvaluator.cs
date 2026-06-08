@@ -17,15 +17,19 @@ namespace App.Vision.Evaluators
         private enum FlexionState { Idle, AtRest, MovingUp, AtPeak }
         private FlexionState _state = FlexionState.Idle;
         private bool _isWarningActive = false;
+        private float _horizontalTolerance;
 
         public ElbowFlexionEvaluator(ElbowFlexionDefinition def)
         {
             _definition = def;
+            _horizontalTolerance = _definition.horizontalTolerance;
         }
 
         // Called once on calibration button press
-        public void CalibrateAndBegin(Vector3 shoulderPos, Vector3 elbowPos, Vector3 wristPos)
+        public void CalibrateAndBegin(Vector3 shoulderPos, Vector3 elbowPos, Vector3 wristPos,
+                                      float shoulderWidth)
         {
+            _horizontalTolerance = shoulderWidth * 0.6f;
             WristAtRest = wristPos;
 
             // Estimate the peak wrist position by rotating the rest vector
@@ -53,7 +57,7 @@ namespace App.Vision.Evaluators
             progress = 0f;
             if (_state == FlexionState.Idle) return;
 
-            if (!ValidatePosture(shoulderPos, wristPos)) return;
+            //            if (!ValidatePosture(shoulderPos, wristPos)) return;
 
             float angle = AngleCalculator.CalculateJointAngle(shoulderPos, elbowPos, wristPos);
 
@@ -62,6 +66,10 @@ namespace App.Vision.Evaluators
                 Debug.Log($"[ElbowEval] angle={angle:F1} state={_state} " +
                           $"peak<{_definition.peakAngleThreshold} " +
                           $"rest>{_definition.restAngleThreshold}");
+            if (Time.frameCount % 30 == 0)
+                Debug.Log($"[ElbowEval] angle={angle:F1} state={_state} " +
+                          $"horizontalDev={Mathf.Abs(wristPos.x - shoulderPos.x):F1} " +
+                          $"tolerance={_definition.horizontalTolerance}");
 
             progress = Mathf.Clamp01(
                 1f - Mathf.InverseLerp(_definition.peakAngleThreshold,
@@ -86,7 +94,7 @@ namespace App.Vision.Evaluators
         private bool ValidatePosture(Vector3 shoulderPos, Vector3 wristPos)
         {
             float horizontalDeviation = Mathf.Abs(wristPos.x - shoulderPos.x);
-            bool isDrifting = horizontalDeviation > _definition.horizontalTolerance;
+            bool isDrifting = horizontalDeviation > _horizontalTolerance;
 
             if (isDrifting)
             {

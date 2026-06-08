@@ -419,8 +419,8 @@ namespace App.Vision
         {
             _isElbowRingMode = true;
 
-            float ringRadius = armLengthEstimate * 5f;   // ~12–24px — wrist-sized ring
-            float sphereScale = armLengthEstimate * 5f;   // ~9–18px — visible sphere
+            float ringRadius = armLengthEstimate * 0.4f;   // ~12–24px — wrist-sized ring
+            float sphereScale = armLengthEstimate * 0.3f;   // ~9–18px — visible sphere
 
             if (_restRing == null)
                 _restRing = CreateRing("RestRing",
@@ -449,7 +449,7 @@ namespace App.Vision
         // Call this when the patient confirms peak position
         public void PlacePeakRing(Vector3 wristWorldPos, float armLengthEstimate, float zOffset = -0.05f)
         {
-            float ringRadius = armLengthEstimate * 5f;
+            float ringRadius = armLengthEstimate * 0.4f;   // same size as rest ring for consistency
 
             if (_peakRing == null)
                 _peakRing = CreateRing("PeakRing", new Color(0.11f, 0.62f, 0.46f, 0.85f), ringRadius);
