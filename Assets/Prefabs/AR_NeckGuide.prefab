@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 47343691812471832}
   - component: {fileID: 2784012207446946021}
+  - component: {fileID: -4127445174020293980}
   - component: {fileID: 8234351255875024578}
   m_Layer: 0
   m_Name: AR_NeckGuide
@@ -144,7 +145,7 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
---- !u!114 &8234351255875024578
+--- !u!114 &-4127445174020293980
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -153,10 +154,28 @@ MonoBehaviour:
   m_GameObject: {fileID: 1522755408299056861}
   m_Enabled: 1
   m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abf719ee12a4ef941a14854a221d3f67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::App.Vision.Guides.NeckGuide
+  pacerObject: {fileID: 8564340548140908709}
+  successParticles: {fileID: 0}
+--- !u!114 &8234351255875024578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1522755408299056861}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04a29cf836c7b347a7084c3b0b81b84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::App.Vision.ARGuideController
   pacerObject: {fileID: 8564340548140908709}
+  energySphere: {fileID: 0}
+  shoulderSliderSphere: {fileID: 0}
+  elbowPivotDot: {fileID: 0}
+  successParticles: {fileID: 0}
 --- !u!1 &5388616066698726055
 GameObject:
   m_ObjectHideFlags: 0

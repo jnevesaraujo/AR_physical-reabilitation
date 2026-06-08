@@ -1,6 +1,7 @@
 using UnityEngine;
 using App.Data.ScriptableObjects;
 using App.Vision.Evaluators;
+using App.Vision.Guides;
 
 namespace App.Vision.Extractors
 {
@@ -39,7 +40,8 @@ namespace App.Vision.Extractors
             _evaluator.CalibrateOrigin(_thumbTip.position, _indexTip.position);
             _isCalibrated = true;
 
-            _visualizer.InitializeGuide(_exerciseDef, PalmCenter);
+            float handScale = Vector3.Distance(_thumbTip.position, _indexTip.position);
+            _visualizer.InitializeGuide(_exerciseDef, PalmCenter, handScale);
 
             if (_hud != null) _hud.HideWarning();
             Debug.Log("[HandGrip] Calibrated.");

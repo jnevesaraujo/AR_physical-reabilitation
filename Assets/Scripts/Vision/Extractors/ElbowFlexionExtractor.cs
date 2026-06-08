@@ -56,7 +56,7 @@ namespace App.Vision.Extractors
                       $"foreArm={foreArmLength:F1}px " +
                       $"using={_armLength:F1}px");
 
-            _visualizer.InitializeGuide(_exerciseDef, restPos, armLength: _armLength);
+            _visualizer.InitializeGuide(_exerciseDef, SmoothedWristPos, _armLength);
 
             _hud?.ShowWarning("Levante o braço até onde for confortável, depois confirme.");
             _hud?.ShowConfirmPeakButton();
@@ -77,7 +77,7 @@ namespace App.Vision.Extractors
             _evaluator.CalibrateAndBegin(
                 _shoulder.position, _elbow.position, peakPos, shoulderWidth);
 
-            _visualizer.PlaceElbowPeakRing(peakPos, _armLength);
+            _visualizer.PlacePeakMarker(SmoothedWristPos, _armLength);
 
             _isCalibrated = true;
             _peakConfirmed = true;
@@ -133,7 +133,7 @@ namespace App.Vision.Extractors
                 _wrist.position,
                 out float progress);
 
-            _visualizer.UpdateElbowRings(_wrist.position, progress);
+            _visualizer.UpdateVisuals(_wrist.position, progress);
         }
 
         protected override void OnSessionComplete()

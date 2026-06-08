@@ -1,4 +1,4 @@
-using UnityEngine;
+/* using UnityEngine;
 using App.Data.ScriptableObjects;
 
 namespace App.Vision
@@ -169,5 +169,85 @@ namespace App.Vision
             if (_activeGuide != null) DestroyImmediate(_activeGuide);
             _guideController = null;
         }
+    }
+} */
+
+using UnityEngine;
+using App.Data.ScriptableObjects;
+using App.Vision.Guides;
+
+namespace App.Vision
+{
+    public class ARExerciseVisualizer : MonoBehaviour
+    {
+        private IExerciseGuide _activeGuide;
+
+        // Called by extractor on first calibration
+        public void InitializeGuide(ExerciseDefinition def, Vector3 anchorPos, float bodyScale)
+        {
+            CleanUp();
+
+            if (def.visualGuidePrefab == null)
+            {
+                Debug.LogError($"[Visualizer] {def.GetType().Name} has no visualGuidePrefab.");
+                return;
+            }
+
+            var go = Instantiate(def.visualGuidePrefab);
+            _activeGuide = go.GetComponent<IExerciseGuide>();
+
+            if (_activeGuide == null)
+            {
+                Debug.LogError($"[Visualizer] Prefab for {def.GetType().Name} " +
+                               $"has no IExerciseGuide component.");
+                Destroy(go);
+                return;
+            }
+
+            _activeGuide.Initialize(anchorPos, bodyScale);
+        }
+
+        // Called by extractors that have a two-step calibration (ShoulderSlide, ElbowFlexion)
+        public void PlacePeakMarker(Vector3 peakPos, float bodyScale)
+        {
+            _activeGuide?.PlacePeakMarker(peakPos, bodyScale);
+        }
+
+        // Called every frame
+        public void UpdateVisuals(Vector3 trackedPos, float progress)
+        {
+            _activeGuide?.UpdateVisuals(trackedPos, progress);
+        }
+
+        // Called on rep completion
+        public void TriggerSuccessFeedback()
+        {
+            _activeGuide?.PlaySuccess();
+        }
+
+        // Called on posture change
+        public void SetFeedbackMode(bool isGood)
+        {
+            _activeGuide?.SetPostureFeedback(isGood);
+        }
+
+        private void CleanUp()
+        {
+            if (_activeGuide != null)
+            {
+                _activeGuide.Cleanup();
+                // The guide's GameObject is the prefab instance — destroy it
+                var mono = _activeGuide as MonoBehaviour;
+                if (mono != null) Destroy(mono.gameObject);
+                _activeGuide = null;
+            }
+        }
+
+        public void UpdateHandGripVisuals(Vector3 palmCenter, float apertureRatio, float holdProgress)
+        {
+            (_activeGuide as HandGripGuide)?.UpdateHandGripVisuals(palmCenter, apertureRatio, holdProgress);
+        }
+
+        private void OnDestroy() => CleanUp();
     }
 }

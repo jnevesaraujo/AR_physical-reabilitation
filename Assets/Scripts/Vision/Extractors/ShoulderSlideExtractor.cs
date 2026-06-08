@@ -24,6 +24,10 @@ public class ShoulderSlideExtractor : BaseExerciseExtractor
     {
         if (_wrist == null) return;
         _evaluator.CalibrateBaseline(_wrist.position);
+
+        float _armLength = CalculateArmLength();
+
+        _visualizer.InitializeGuide(_exerciseDef, _wrist.position, _armLength);
         _isCalibrated = true;
     }
 
@@ -46,7 +50,7 @@ public class ShoulderSlideExtractor : BaseExerciseExtractor
             _wrist.position,
             out float currentProgress,
             out bool isDiscovering);
-        _visualizer.UpdateShoulderSlideVisuals(_wrist.position, currentProgress, isDiscovering);
+        _visualizer.UpdateVisuals(_wrist.position, currentProgress);
     }
 
     protected override void OnSessionComplete()
@@ -60,7 +64,12 @@ public class ShoulderSlideExtractor : BaseExerciseExtractor
     {
         _evaluator.ConfirmPeak(_wrist.position);
         Vector3 startPos = new Vector3(_evaluator.StartX, _evaluator.StartY, _wrist.position.z);
-        _visualizer.InitializeGuide(_exerciseDef, startPos, _evaluator.MaxY);
+
+        float _armLength = CalculateArmLength();
+
+        _visualizer.InitializeGuide(_exerciseDef, startPos, _armLength); // re-init with correct startPos
+        _visualizer.PlacePeakMarker(new Vector3(_evaluator.StartX, _evaluator.MaxY, _wrist.position.z),
+                                     _armLength);
     }
     private void HandleCalibrationReady()
     {
@@ -73,5 +82,16 @@ public class ShoulderSlideExtractor : BaseExerciseExtractor
         _hud.HideConfirmPeakButton();
         _hud.HideWarning();
         _hud.ShowWarning("Agora comece o exercicio.");
+    }
+
+    private float CalculateArmLength()
+    {
+
+        float upperArmLength = Vector3.Distance(_shoulder.position, _elbow.position);
+        float foreArmLength = Vector3.Distance(_elbow.position, _wrist.position);
+
+        float armLength = Mathf.Max(upperArmLength, foreArmLength);
+
+        return armLength;
     }
 }

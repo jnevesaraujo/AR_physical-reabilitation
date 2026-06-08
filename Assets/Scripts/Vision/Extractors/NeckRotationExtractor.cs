@@ -1,6 +1,7 @@
 using UnityEngine;
 using App.Data.ScriptableObjects;
 using App.UI;
+using App.Vision.Guides;
 
 namespace App.Vision.Extractors
 {
@@ -24,26 +25,31 @@ namespace App.Vision.Extractors
 
         protected override void CalibrateAndStart()
         {
-            if (_nose == null || _leftShoulder == null || _rightShoulder == null)
-            {
-                Debug.LogWarning("[NeckRotation] Cannot calibrate: landmarks not detected yet.");
-                return;
-            }
+            if (_nose == null || _leftShoulder == null || _rightShoulder == null) return;
 
             _evaluator.CalibrateOrigin(_nose.position, _leftShoulder.position, _rightShoulder.position);
             _isCalibrated = true;
 
             float shoulderWidth = Vector2.Distance(
                 new Vector2(_leftShoulder.position.x, _leftShoulder.position.y),
-                new Vector2(_rightShoulder.position.x, _rightShoulder.position.y)
-            );
-            float visualRadius = shoulderWidth * 0.4f;
+                new Vector2(_rightShoulder.position.x, _rightShoulder.position.y));
+            float visualRadius = shoulderWidth * 0.2f;
+            Debug.Log($"[NeckRotation] Calibrated with shoulderWidth={shoulderWidth:F1}px, visualRadius={visualRadius:F1}px");
 
+            // Tell the guide its pacer speed before Initialize fires
+            var def = _exerciseDef as NeckRotationDefinition;
             _visualizer.InitializeGuide(_exerciseDef, _nose.position, visualRadius);
+
+            // After InitializeGuide the guide exists — cast and set speed
+            // Alternatively use a dedicated visualizer helper; this is the simplest path
+            if (def != null)
+            {
+                var guide = FindFirstObjectByType<NeckGuide>();
+                guide?.SetPacerSpeed(def.targetSecondsPerRep);
+            }
 
             if (_hud != null) _hud.HideWarning();
         }
-
         protected override void OnEvaluateFrame()
         {
             // Cache neck-specific landmarks from the shared _pointList
@@ -56,7 +62,6 @@ namespace App.Vision.Extractors
 
             if (!_isCalibrated) return;
 
-            _visualizer.UpdatePacerFeedback(_nose.position);
             _evaluator.EvaluateFrame(_nose, _leftShoulder, _rightShoulder);
         }
 

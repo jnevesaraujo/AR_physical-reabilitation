@@ -5047,7 +5047,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1278744246219327275}
-  - component: {fileID: 1031123648014500378}
+  - component: {fileID: 6722485167920775050}
   - component: {fileID: 5667386514319728609}
   m_Layer: 0
   m_Name: AR_ElbowGuide
@@ -5074,7 +5074,7 @@ Transform:
   - {fileID: 2120732294322381331}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1031123648014500378
+--- !u!114 &6722485167920775050
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5083,13 +5083,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 8665913423867894841}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f04a29cf836c7b347a7084c3b0b81b84, type: 3}
+  m_Script: {fileID: 11500000, guid: e5f8242fae81e214f8d28f1a0c3573de, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::App.Vision.ARGuideController
-  pacerObject: {fileID: 1817464498500540484}
-  energySphere: {fileID: 0}
-  shoulderSliderSphere: {fileID: 1817464498500540484}
-  elbowPivotDot: {fileID: 8715653357867056690}
+  m_EditorClassIdentifier: Assembly-CSharp::App.Vision.Guides.ElbowGuide
+  wristSphere: {fileID: 1817464498500540484}
   successParticles: {fileID: 5006587305683054382}
 --- !u!120 &5667386514319728609
 LineRenderer:
@@ -5099,7 +5096,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8665913423867894841}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1

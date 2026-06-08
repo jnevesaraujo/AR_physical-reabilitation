@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 722745165326858100}
   - component: {fileID: 5209626725707981883}
   - component: {fileID: 658536681869396568}
-  - component: {fileID: 8254258615326581468}
+  - component: {fileID: 8138643691973073652}
   m_Layer: 0
   m_Name: AR_HandGuide
   m_TagString: Untagged
@@ -113,7 +113,7 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8254258615326581468
+--- !u!114 &8138643691973073652
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -122,8 +122,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 7298251019150613943}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f04a29cf836c7b347a7084c3b0b81b84, type: 3}
+  m_Script: {fileID: 11500000, guid: 779c68b191f9dca43a62c2144a779f9a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::App.Vision.ARGuideController
-  pacerObject: {fileID: 0}
+  m_EditorClassIdentifier: Assembly-CSharp::App.Vision.Guides.HandGripGuide
   energySphere: {fileID: 4954196924290540729}
+  successParticles: {fileID: 0}

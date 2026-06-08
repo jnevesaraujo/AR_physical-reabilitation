@@ -18,6 +18,9 @@ namespace App.Vision.Evaluators
         private FlexionState _state = FlexionState.Idle;
         private bool _isWarningActive = false;
         private float _horizontalTolerance;
+        private float _peakEntryTime = -1f;
+        private float _minCycleSeconds = 0.8f;
+
 
         public ElbowFlexionEvaluator(ElbowFlexionDefinition def)
         {
@@ -28,6 +31,7 @@ namespace App.Vision.Evaluators
         public void CalibrateAndBegin(Vector3 shoulderPos, Vector3 elbowPos, Vector3 wristPos,
                                       float shoulderWidth)
         {
+            _state = FlexionState.AtRest;
             _horizontalTolerance = shoulderWidth * 0.6f;
             WristAtRest = wristPos;
 
@@ -95,7 +99,6 @@ namespace App.Vision.Evaluators
         {
             progress = 0f;
             if (_state == FlexionState.Idle) return;
-
             if (!ValidatePosture(shoulderPos, wristPos)) return;
 
             float angle = AngleCalculator.CalculateJointAngle(shoulderPos, elbowPos, wristPos);
@@ -107,45 +110,60 @@ namespace App.Vision.Evaluators
                 1f - Mathf.InverseLerp(_definition.peakAngleThreshold,
                                        _definition.restAngleThreshold, angle));
 
-            // Hysteresis margins — prevents boundary oscillation from firing false reps
-            float peakEnterAngle = _definition.peakAngleThreshold;        // e.g. 60°
-            float peakExitAngle = _definition.peakAngleThreshold + 15f;  // e.g. 75°
-            float restEnterAngle = _definition.restAngleThreshold;        // e.g. 150°
-            float restExitAngle = _definition.restAngleThreshold - 15f;  // e.g. 135°
+            float peakEnter = _definition.peakAngleThreshold;        // 60°
+            float peakExit = _definition.peakAngleThreshold + 15f;  // 75°
+            float restEnter = _definition.restAngleThreshold;        // 150°
 
             switch (_state)
             {
                 case FlexionState.AtRest:
-                    // Must curl past peakEnterAngle to leave rest
-                    if (angle <= peakEnterAngle)
+                    if (angle <= peakEnter)
+                    {
                         _state = FlexionState.MovingUp;
+                        _peakEntryTime = -1f;
+                    }
                     break;
 
                 case FlexionState.MovingUp:
-                    // If they start lowering before reaching peak, follow them back
-                    if (angle >= restEnterAngle)
+                    if (angle >= restEnter)
                         _state = FlexionState.AtRest;
-                    // Reached peak
-                    if (angle <= peakEnterAngle)
+                    if (angle <= peakEnter)
+                    {
                         _state = FlexionState.AtPeak;
+                        _peakEntryTime = Time.time;
+                    }
                     break;
 
                 case FlexionState.AtPeak:
-                    // Must exit peak zone before counting as lowering
-                    if (angle >= peakExitAngle)
+                    // Must stay near peak for at least one frame before lowering counts
+                    if (angle >= peakExit)
                         _state = FlexionState.MovingDown;
                     break;
 
                 case FlexionState.MovingDown:
-                    // Must reach full rest before counting the rep
-                    if (angle >= restEnterAngle)
+                    if (angle <= peakExit)
                     {
-                        OnRepetitionCompleted?.Invoke();
+                        _state = FlexionState.AtPeak; // reversed mid-lowering
+                        break;
+                    }
+                    if (angle >= restEnter)
+                    {
+                        // Time gate: reject reps that complete too fast (likely noise)
+                        float cycleTime = _peakEntryTime >= 0f
+                            ? Time.time - _peakEntryTime
+                            : float.MaxValue;
+
+                        if (cycleTime >= _minCycleSeconds)
+                        {
+                            OnRepetitionCompleted?.Invoke();
+                            Debug.Log($"[ElbowEval] Rep counted! cycle={cycleTime:F2}s");
+                        }
+                        else
+                        {
+                            Debug.Log($"[ElbowEval] Rep rejected: too fast ({cycleTime:F2}s < {_minCycleSeconds}s)");
+                        }
                         _state = FlexionState.AtRest;
                     }
-                    // If they curl back up mid-lowering, follow them
-                    if (angle <= peakExitAngle)
-                        _state = FlexionState.AtPeak;
                     break;
             }
         }

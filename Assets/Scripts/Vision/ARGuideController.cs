@@ -91,7 +91,7 @@ namespace App.Vision
                 float x = Mathf.Cos(angle * Mathf.Deg2Rad) * _radius;
                 float y = Mathf.Sin(angle * Mathf.Deg2Rad) * _radius;
                 _line.SetPosition(i, new Vector3(x, y, 0f));
-                angle += (360f / 50f);
+                angle += 360f / 50f;
             }
         }
 
