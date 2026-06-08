@@ -14,7 +14,7 @@ namespace App.Vision.Evaluators
 
         public Vector3 WristAtRest { get; private set; }
         public Vector3 WristAtPeak { get; private set; }
-        private enum FlexionState { Idle, AtRest, MovingUp, AtPeak }
+        private enum FlexionState { Idle, AtRest, MovingUp, AtPeak, MovingDown }
         private FlexionState _state = FlexionState.Idle;
         private bool _isWarningActive = false;
         private float _horizontalTolerance;
@@ -22,7 +22,6 @@ namespace App.Vision.Evaluators
         public ElbowFlexionEvaluator(ElbowFlexionDefinition def)
         {
             _definition = def;
-            _horizontalTolerance = _definition.horizontalTolerance;
         }
 
         // Called once on calibration button press
@@ -51,42 +50,102 @@ namespace App.Vision.Evaluators
             _state = FlexionState.AtRest;
         }
 
+        /*         public void EvaluateFrame(Vector3 shoulderPos, Vector3 elbowPos, Vector3 wristPos,
+                                          out float progress)
+                {
+                    progress = 0f;
+                    if (_state == FlexionState.Idle) return;
+
+                    //            if (!ValidatePosture(shoulderPos, wristPos)) return;
+
+                    float angle = AngleCalculator.CalculateJointAngle(shoulderPos, elbowPos, wristPos);
+
+                    // Temporary — remove once reps are counting
+                    if (Time.frameCount % 30 == 0)
+                        Debug.Log($"[ElbowEval] angle={angle:F1} state={_state} " +
+                                  $"peak<{_definition.peakAngleThreshold} " +
+                                  $"rest>{_definition.restAngleThreshold}");
+                    if (Time.frameCount % 30 == 0)
+                        Debug.Log($"[ElbowEval] angle={angle:F1} state={_state} " +
+                                  $"horizontalDev={Mathf.Abs(wristPos.x - shoulderPos.x):F1} " +
+                                  $"tolerance={_definition.horizontalTolerance}");
+
+                    progress = Mathf.Clamp01(
+                        1f - Mathf.InverseLerp(_definition.peakAngleThreshold,
+                                               _definition.restAngleThreshold, angle));
+
+                    switch (_state)
+                    {
+                        case FlexionState.AtRest:
+                            if (angle <= _definition.peakAngleThreshold)
+                                _state = FlexionState.AtPeak;
+                            break;
+                        case FlexionState.AtPeak:
+                            if (angle >= _definition.restAngleThreshold)
+                            {
+                                OnRepetitionCompleted?.Invoke();
+                                _state = FlexionState.AtRest;
+                            }
+                            break;
+                    }
+                } */
+
         public void EvaluateFrame(Vector3 shoulderPos, Vector3 elbowPos, Vector3 wristPos,
-                                  out float progress)
+                          out float progress)
         {
             progress = 0f;
             if (_state == FlexionState.Idle) return;
 
-            //            if (!ValidatePosture(shoulderPos, wristPos)) return;
+            if (!ValidatePosture(shoulderPos, wristPos)) return;
 
             float angle = AngleCalculator.CalculateJointAngle(shoulderPos, elbowPos, wristPos);
 
-            // Temporary — remove once reps are counting
             if (Time.frameCount % 30 == 0)
-                Debug.Log($"[ElbowEval] angle={angle:F1} state={_state} " +
-                          $"peak<{_definition.peakAngleThreshold} " +
-                          $"rest>{_definition.restAngleThreshold}");
-            if (Time.frameCount % 30 == 0)
-                Debug.Log($"[ElbowEval] angle={angle:F1} state={_state} " +
-                          $"horizontalDev={Mathf.Abs(wristPos.x - shoulderPos.x):F1} " +
-                          $"tolerance={_definition.horizontalTolerance}");
+                Debug.Log($"[ElbowEval] angle={angle:F1} state={_state}");
 
             progress = Mathf.Clamp01(
                 1f - Mathf.InverseLerp(_definition.peakAngleThreshold,
                                        _definition.restAngleThreshold, angle));
 
+            // Hysteresis margins — prevents boundary oscillation from firing false reps
+            float peakEnterAngle = _definition.peakAngleThreshold;        // e.g. 60°
+            float peakExitAngle = _definition.peakAngleThreshold + 15f;  // e.g. 75°
+            float restEnterAngle = _definition.restAngleThreshold;        // e.g. 150°
+            float restExitAngle = _definition.restAngleThreshold - 15f;  // e.g. 135°
+
             switch (_state)
             {
                 case FlexionState.AtRest:
-                    if (angle <= _definition.peakAngleThreshold)
+                    // Must curl past peakEnterAngle to leave rest
+                    if (angle <= peakEnterAngle)
+                        _state = FlexionState.MovingUp;
+                    break;
+
+                case FlexionState.MovingUp:
+                    // If they start lowering before reaching peak, follow them back
+                    if (angle >= restEnterAngle)
+                        _state = FlexionState.AtRest;
+                    // Reached peak
+                    if (angle <= peakEnterAngle)
                         _state = FlexionState.AtPeak;
                     break;
+
                 case FlexionState.AtPeak:
-                    if (angle >= _definition.restAngleThreshold)
+                    // Must exit peak zone before counting as lowering
+                    if (angle >= peakExitAngle)
+                        _state = FlexionState.MovingDown;
+                    break;
+
+                case FlexionState.MovingDown:
+                    // Must reach full rest before counting the rep
+                    if (angle >= restEnterAngle)
                     {
                         OnRepetitionCompleted?.Invoke();
                         _state = FlexionState.AtRest;
                     }
+                    // If they curl back up mid-lowering, follow them
+                    if (angle <= peakExitAngle)
+                        _state = FlexionState.AtPeak;
                     break;
             }
         }
