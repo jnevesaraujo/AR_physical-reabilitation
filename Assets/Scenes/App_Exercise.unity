@@ -522,6 +522,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a68728f46bce934da15075c70a7bbbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::App.Vision.Extractors.ShoulderDataExtractor
+  _filterMinCutoff: 1
+  _filterBeta: 0.1
 --- !u!1 &420786853
 GameObject:
   m_ObjectHideFlags: 0
@@ -905,6 +907,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f517309220b2da4a917e69411920233, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::App.Vision.PoseDataExtractor
+  _filterMinCutoff: 1
+  _filterBeta: 0.1
 --- !u!4 &652345821
 Transform:
   m_ObjectHideFlags: 0
@@ -1198,6 +1202,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bdb3b8b2d0debd489c2f865d6142438, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::App.Vision.Extractors.HandDataExtractor
+  _filterMinCutoff: 1
+  _filterBeta: 0.1
 --- !u!4 &994426891
 Transform:
   m_ObjectHideFlags: 0
@@ -2521,6 +2527,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 534cbf7825dc27948b18900bc244758f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::App.Vision.Extractors.ElbowFlexionExtractor
+  _filterMinCutoff: 1
+  _filterBeta: 0.1
 --- !u!1 &1969388814
 GameObject:
   m_ObjectHideFlags: 0

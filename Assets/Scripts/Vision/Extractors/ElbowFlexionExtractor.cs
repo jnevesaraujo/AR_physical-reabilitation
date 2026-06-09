@@ -8,6 +8,7 @@ namespace App.Vision.Extractors
     public class ElbowFlexionExtractor : BaseExerciseExtractor
     {
         private ElbowFlexionEvaluator _evaluator;
+        private ElbowFlexionDefinition _def;
         private Transform _shoulder, _elbow, _wrist;
         private bool _peakConfirmed = false;
         private Queue<Vector3> _wristBuffer = new Queue<Vector3>();
@@ -16,7 +17,8 @@ namespace App.Vision.Extractors
 
         protected override void OnInitialize()
         {
-            _evaluator = new ElbowFlexionEvaluator(_exerciseDef as ElbowFlexionDefinition);
+            _def = _exerciseDef as ElbowFlexionDefinition;
+            _evaluator = new ElbowFlexionEvaluator(_def);
             _evaluator.OnWarningTriggered += HandleBadPosture;
             _evaluator.OnPostureRestored += HandlePostureRestored;
             _evaluator.OnRepetitionCompleted += HandleRepetitionSuccess;
@@ -37,6 +39,7 @@ namespace App.Vision.Extractors
         // Step 1 — patient taps calibrate with arm at rest
         protected override void CalibrateAndStart()
         {
+            ResetLandmarkFilters();
             if (_shoulder == null || _elbow == null || _wrist == null) return;
             if (_wristBuffer.Count == 0)
             {
@@ -70,8 +73,7 @@ namespace App.Vision.Extractors
             Vector3 peakPos = SmoothedWristPos;
             if (float.IsNaN(peakPos.x)) return;
 
-            Transform otherShoulder = _pointList.GetChild(
-                (_exerciseDef as ElbowFlexionDefinition).isRightArm ? 11 : 12);
+            Transform otherShoulder = _pointList.GetChild(_def.isRightArm ? 11 : 12);
             float shoulderWidth = Vector3.Distance(_shoulder.position, otherShoulder.position);
 
             _evaluator.CalibrateAndBegin(
@@ -88,12 +90,12 @@ namespace App.Vision.Extractors
 
         protected override void OnEvaluateFrame()
         {
+            bool right = _def != null && _def.isRightArm;
+
             // Phase 1: cache landmarks as soon as pointList is available.
-            // This runs every frame unconditionally — no calibration dependency.
+            // runs every frame unconditionally: no calibration dependency.
             if (_shoulder == null)
-            {
-                var def = _exerciseDef as ElbowFlexionDefinition;
-                bool right = def != null && def.isRightArm;
+            {                
                 _shoulder = _pointList.GetChild(right ? 12 : 11);
                 _elbow = _pointList.GetChild(right ? 14 : 13);
                 _wrist = _pointList.GetChild(right ? 16 : 15);
@@ -101,15 +103,10 @@ namespace App.Vision.Extractors
 
             // Phase 2: fill the smoothing buffer every frame as long as wrist exists.
             // Also runs before calibration so the buffer is ready when the patient taps.
-            /*             if (_wrist != null && Time.frameCount % 60 == 0)
-                        {
-                            Debug.Log($"[ElbowFlexion] shoulder={_shoulder.position} " +
-                                      $"elbow={_elbow.position} " +
-                                      $"wrist={_wrist.position}");
-                        } */
+
             if (_wrist != null)
             {
-                Vector3 pos = _wrist.position;
+                Vector3 pos = GetFilteredLandmark(_def.isRightArm ? 16 : 15);
                 if (!float.IsNaN(pos.x) && !float.IsNaN(pos.y) && !float.IsNaN(pos.z))
                 {
                     _wristBuffer.Enqueue(pos);
@@ -119,19 +116,13 @@ namespace App.Vision.Extractors
             }
 
             // Phase 3: evaluation only runs after full calibration.
-            // if (!_isCalibrated || !_peakConfirmed) return;
-            if (!_isCalibrated || !_peakConfirmed)
-            {
-                if (Time.frameCount % 60 == 0)
-                    Debug.Log($"[ElbowFlexion] Blocked: calibrated={_isCalibrated} peakConfirmed={_peakConfirmed}");
-                return;
-            }
+            if (!_isCalibrated || !_peakConfirmed) return;
 
-            _evaluator.EvaluateFrame(
-                _shoulder.position,
-                _elbow.position,
-                _wrist.position,
-                out float progress);
+            Vector3 shoulder = GetFilteredLandmark(right ? 12 : 11);
+            Vector3 elbow = GetFilteredLandmark(right ? 14 : 13);
+            Vector3 wrist = GetFilteredLandmark(right ? 16 : 15);
+
+            _evaluator.EvaluateFrame(shoulder, elbow, wrist, out float progress);
 
             _visualizer.UpdateVisuals(_wrist.position, progress);
         }

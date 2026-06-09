@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using App.Core;
 using App.Data.ScriptableObjects;
 using App.UI;
 using App.Vision;
@@ -18,6 +20,37 @@ public abstract class BaseExerciseExtractor : MonoBehaviour
     protected Transform _pointList;
     protected virtual int RequiredLandmarkCount => 33;
 
+    [Header("Landmark Smoothing")]
+    [Range(0.1f, 3.0f)]
+    [Tooltip("Lower = smoother when still, more lag. Start at 1.0.")]
+    [SerializeField] private float _filterMinCutoff = 1.0f;
+
+    [Range(0.0f, 2.0f)]
+    [Tooltip("Higher = less lag during fast movement. Start at 0.1.")]
+    [SerializeField] private float _filterBeta = 0.1f;
+
+    private Dictionary<int, OneEuroFilterV3> _landmarkFilters = new Dictionary<int, OneEuroFilterV3>();
+
+    protected Vector3 GetFilteredLandmark(int childIndex)
+    {
+        if (_pointList == null) return Vector3.zero;
+
+        var raw = _pointList.GetChild(childIndex).position;
+
+        if (!_landmarkFilters.TryGetValue(childIndex, out var filter))
+        {
+            filter = new OneEuroFilterV3(_filterMinCutoff, _filterBeta);
+            _landmarkFilters[childIndex] = filter;
+        }
+
+        return filter.Filter(raw, Time.time);
+    }
+
+    protected void ResetLandmarkFilters()
+    {
+        foreach (var f in _landmarkFilters.Values)
+            f.Reset();
+    }
     // Shared initialization wiring
     public void Initialize(ExerciseDefinition definition, ExerciseHUD hud, ARExerciseVisualizer visualizer)
     {
@@ -33,7 +66,7 @@ public abstract class BaseExerciseExtractor : MonoBehaviour
 
     protected virtual void OnDestroy()
     {
-        
+
         if (_hud != null)
             _hud.OnCalibrationRequested -= CalibrateAndStart;
     }

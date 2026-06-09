@@ -31,6 +31,7 @@ namespace App.Vision.Extractors
 
         protected override void CalibrateAndStart()
         {
+            ResetLandmarkFilters();
             if (_thumbTip == null || _indexTip == null || _wrist == null)
             {
                 Debug.LogWarning("[HandGrip] Cannot calibrate: hand landmarks not detected yet.");
@@ -67,11 +68,10 @@ namespace App.Vision.Extractors
 
             if (!_isCalibrated) return;
 
-            _evaluator.EvaluateFrame(
-                _thumbTip.position,
-                _indexTip.position,
-                out float currentApertureRatio,
-                out float currentHoldProgress);
+            Vector3 thumbPos = GetFilteredLandmark(4);
+            Vector3 indexPos = GetFilteredLandmark(8);
+
+            _evaluator.EvaluateFrame(thumbPos, indexPos, out float currentApertureRatio, out float currentHoldProgress);
 
             _visualizer.UpdateHandGripVisuals(PalmCenter, currentApertureRatio, currentHoldProgress);
         }
