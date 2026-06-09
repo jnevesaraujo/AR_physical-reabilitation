@@ -13,8 +13,8 @@ namespace App.Vision.Guides
         private float _radius;
         private float _targetSeconds;
         private float _currentAngle = 0f;
-        private bool  _isRunning = false;
-        private bool  _wasSynchronized = false;
+        private bool _isRunning = false;
+        private bool _wasSynchronized = false;
         private Vector3 _worldCenter;
 
         // NeckGuide uses a two-value Initialize — radius passed as bodyScale,
@@ -27,9 +27,13 @@ namespace App.Vision.Guides
 
         public void Initialize(Vector3 anchorPos, float bodyScale)
         {
-            _radius       = bodyScale;   // caller passes shoulderWidth * 0.4f
+
+            Vector3 safeAnchor = new Vector3(anchorPos.x, anchorPos.y, 70f);
+            transform.position = safeAnchor;
+
+            _radius = bodyScale;   // caller passes shoulderWidth * 0.4f
             _targetSeconds = _cachedTargetSeconds > 0f ? _cachedTargetSeconds : 4f;
-            _worldCenter  = anchorPos;
+            _worldCenter = safeAnchor;
 
             _line = GetComponent<LineRenderer>();
             if (_line == null) _line = gameObject.AddComponent<LineRenderer>();
@@ -40,7 +44,7 @@ namespace App.Vision.Guides
                 successParticles = pacerObject.GetComponentInChildren<ParticleSystem>();
 
             _currentAngle = 0f;
-            _isRunning    = true;
+            _isRunning = true;
         }
 
         // NeckRotation has no peak step
@@ -48,7 +52,8 @@ namespace App.Vision.Guides
 
         public void UpdateVisuals(Vector3 nosePos, float progress)
         {
-            // progress is unused here — NeckGuide uses angle synchronisation instead
+            _worldCenter = nosePos;
+            transform.position = nosePos;
             EvaluateSynchronization(nosePos);
         }
 
@@ -66,7 +71,7 @@ namespace App.Vision.Guides
         {
             if (_line == null) return;
             _line.startColor = isGood ? Color.white : Color.red;
-            _line.endColor   = isGood ? Color.white : Color.red;
+            _line.endColor = isGood ? Color.white : Color.red;
         }
 
         public void Cleanup() { }
@@ -88,12 +93,12 @@ namespace App.Vision.Guides
         private void DrawCircle()
         {
             _line.useWorldSpace = false;
-            _line.loop          = true;
+            _line.loop = true;
             _line.positionCount = 50;
 
             float w = _radius * 0.05f;
             _line.startWidth = w;
-            _line.endWidth   = w;
+            _line.endWidth = w;
 
             float angle = 0f;
             for (int i = 0; i < 50; i++)
@@ -123,17 +128,17 @@ namespace App.Vision.Guides
             if (isSynchronized == _wasSynchronized) return;
             _wasSynchronized = isSynchronized;
 
-            var main     = successParticles.main;
+            var main = successParticles.main;
             var emission = successParticles.emission;
 
             if (isSynchronized)
             {
-                main.startColor       = Color.green;
+                main.startColor = Color.green;
                 emission.rateOverTime = 60f;
             }
             else
             {
-                main.startColor       = new Color(1f, 0.5f, 0f);
+                main.startColor = new Color(1f, 0.5f, 0f);
                 emission.rateOverTime = 15f;
             }
 

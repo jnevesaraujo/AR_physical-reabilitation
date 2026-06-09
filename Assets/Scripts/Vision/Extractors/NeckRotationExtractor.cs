@@ -33,8 +33,11 @@ namespace App.Vision.Extractors
             float shoulderWidth = Vector2.Distance(
                 new Vector2(_leftShoulder.position.x, _leftShoulder.position.y),
                 new Vector2(_rightShoulder.position.x, _rightShoulder.position.y));
-            float visualRadius = shoulderWidth * 0.2f;
-            Debug.Log($"[NeckRotation] Calibrated with shoulderWidth={shoulderWidth:F1}px, visualRadius={visualRadius:F1}px");
+            float visualRadius = shoulderWidth * 0.25f;
+            Debug.Log($"[Neck] nose={_nose.position} " +
+                      $"leftShoulder={_leftShoulder.position} " +
+                      $"shoulderWidth={shoulderWidth:F2} " +
+                      $"visualRadius={visualRadius:F2}");
 
             // Tell the guide its pacer speed before Initialize fires
             var def = _exerciseDef as NeckRotationDefinition;
