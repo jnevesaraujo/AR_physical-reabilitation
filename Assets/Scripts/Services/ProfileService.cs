@@ -28,6 +28,7 @@ namespace App.Services
                 var data = new Dictionary<string, object>
                 {
                     { "userId",                  profile.userId },
+                    { "subjectId",               profile.subjectId ?? "" },
                     { "firstName",               profile.firstName },
                     { "lastName",                profile.lastName },
                     { "email",                   profile.email },
@@ -80,6 +81,7 @@ namespace App.Services
                 var profile = new UserProfile
                 {
                     userId       = snapshot.GetValue<string>("userId"),
+                    subjectId    = snapshot.ContainsField("subjectId") ? snapshot.GetValue<string>("subjectId") : "",
                     firstName    = snapshot.GetValue<string>("firstName"),
                     lastName     = snapshot.GetValue<string>("lastName"),
                     email        = snapshot.GetValue<string>("email"),

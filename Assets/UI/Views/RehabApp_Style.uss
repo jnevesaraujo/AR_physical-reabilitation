@@ -23,3 +23,21 @@ VisualElement {}
     height: 100%;
     background-color: rgb(252, 248, 253);
 }
+
+.expand-scroll .unity-scroll-view__content-container {
+    flex-grow: 1;
+    justify-content: space-around;
+}
+
+.btn-tint {
+    transition-duration: 0.2s;
+    transition-property: opacity;
+}
+
+.btn-tint:hover {
+    opacity: 0.8; 
+}
+
+.btn-tint:active {
+    opacity: 0.5;
+}

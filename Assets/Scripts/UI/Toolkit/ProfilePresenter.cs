@@ -39,19 +39,8 @@ namespace App.UI.Toolkit
 
             PopulateFromSession();
 
-            if (_btnSave == null)
-            {
-                Debug.LogError("[ProfilePresenter] btn_save_profile not found — " +
-                               "check name matches UXML exactly");
-                return;
-            }
-
-            Debug.Log("[ProfilePresenter] Save button found. Subscribing to click event.");
             _btnSave?.RegisterCallback<ClickEvent>(OnSaveClicked);
-            if (_btnChangePass != null)
-            {
-                _btnChangePass.RegisterCallback<ClickEvent>(_ => HandleChangePassword());
-            }
+            _btnChangePass?.RegisterCallback<ClickEvent>(_ => HandleChangePassword());
         }
 
         private void OnDisable()
@@ -63,42 +52,43 @@ namespace App.UI.Toolkit
 
         private async void HandleSaveAsync()
         {
-            if (SessionContext.CurrentUser == null)
-            {
-                Debug.LogError("[ProfilePresenter] No authenticated user in session");
-                return;
-            }
+            if (SessionContext.CurrentUser == null) return;
 
             _btnSave.SetEnabled(false);
             _btnSave.text = "A guardar...";
 
+            // Read subject ID from the field — this is the only field the researcher changes
+            string newSubjectId = _txtSubjectId?.value ?? SessionContext.CurrentUser.subjectId;
+
             var profile = new UserProfile
             {
                 userId = SessionContext.CurrentUser.userId,
+                subjectId = newSubjectId,
                 firstName = SessionContext.CurrentUser.firstName,
                 lastName = SessionContext.CurrentUser.lastName,
                 email = SessionContext.CurrentUser.email,
                 registrationDate = SessionContext.CurrentUser.registrationDate,
                 totalSessionsCompleted = SessionContext.CurrentUser.totalSessionsCompleted,
-                affectedSide = _drpAffectedSide?.value ?? "Indefinido",
-                surgeryDate = _txtSurgeryDate?.value ?? "Não especificado"
+                affectedSide = _drpAffectedSide?.value ?? SessionContext.CurrentUser.affectedSide,
+                surgeryDate = _txtSurgeryDate?.value ?? SessionContext.CurrentUser.surgeryDate
             };
 
             try
             {
                 await _profileService.CreateProfileAsync(profile);
 
-                // Update cached session user with new clinical data
+                // Update the cached session user so subsequent sessions use the new subject ID
+                SessionContext.CurrentUser.subjectId = profile.subjectId;
                 SessionContext.CurrentUser.affectedSide = profile.affectedSide;
                 SessionContext.CurrentUser.surgeryDate = profile.surgeryDate;
 
-                _btnSave.text = "Guardado com Sucesso!";
-                Debug.Log("[ProfilePresenter] Profile updated successfully.");
+                _btnSave.text = "Guardado!";
+                Debug.Log($"[Profile] Saved. SubjectId={profile.subjectId}");
             }
             catch (Exception e)
             {
-                Debug.LogError($"[ProfilePresenter] Save failed: {e.Message}");
-                _btnSave.text = "Erro. Tente Novamente.";
+                Debug.LogError($"[Profile] Save failed: {e.Message}");
+                _btnSave.text = "Erro.";
             }
 
             await System.Threading.Tasks.Task.Delay(2000);
@@ -122,8 +112,13 @@ namespace App.UI.Toolkit
         {
             if (SessionContext.CurrentUser == null) return;
 
+            // Email comes from auth — always reflects the actual account email
             if (_txtEmail != null)
                 _txtEmail.value = SessionContext.CurrentUser.email;
+
+            // Subject ID is the configurable participant code
+            if (_txtSubjectId != null)
+                _txtSubjectId.value = SessionContext.CurrentUser.subjectId ?? "";
 
             if (_drpAffectedSide != null &&
                 !string.IsNullOrEmpty(SessionContext.CurrentUser.affectedSide))

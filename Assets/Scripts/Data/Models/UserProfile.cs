@@ -6,6 +6,7 @@ namespace App.Data.Models
     public class UserProfile
     {
         public string userId;
+        public string subjectId; // Unique identifier for the test_subjects
         public string firstName;
         public string lastName;
         public string email;

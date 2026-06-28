@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using App.Data.Models;
 using System;
+using App.Core;
 
 namespace App.Services
 {
@@ -27,8 +28,11 @@ namespace App.Services
 
             session.sessionId = docRef.Id;
 
+            var subjectId = SessionContext.CurrentUser?.subjectId ?? "unknown";
+
             var data = new Dictionary<string, object>
             {
+                { "subjectId",       subjectId},
                 { "sessionId",       session.sessionId },
                 { "exerciseId",      session.exerciseId },
                 { "sessionTimestamp", session.sessionTimestamp.ToString("o") },

@@ -2744,6 +2744,7 @@ GameObject:
   - component: {fileID: 1086525755}
   - component: {fileID: 1086525757}
   - component: {fileID: 1086525758}
+  - component: {fileID: 1086525760}
   - component: {fileID: 1086525759}
   - component: {fileID: 1086525756}
   m_Layer: 0
@@ -2857,6 +2858,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f239868392868c746815f39b7891be64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::App.UI.Toolkit.SummaryPresenter
+--- !u!114 &1086525760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1086525752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f8a000a541ce48419d7f299c5427e56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::App.UI.Toolkit.ProfilePresenter
 --- !u!1 &1293787977
 GameObject:
   m_ObjectHideFlags: 0
