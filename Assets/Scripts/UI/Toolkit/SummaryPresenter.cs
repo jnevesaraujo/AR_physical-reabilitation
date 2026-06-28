@@ -33,6 +33,15 @@ namespace App.UI.Toolkit
 
         private void PopulateSummaryData()
         {
+            if (SessionContext.CurrentExercise == null)
+            {
+                // No session data yet — summary will populate when navigated to
+                if (_lblExerciseName != null) _lblExerciseName.text = string.Empty;
+                if (_lblTimeResult != null) _lblTimeResult.text = string.Empty;
+                if (_lblRepResult != null) _lblRepResult.text = string.Empty;
+                return;
+            }
+
             if (_lblExerciseName != null)
                 _lblExerciseName.text = SessionContext.CurrentExercise.exerciseName;
 
@@ -45,6 +54,12 @@ namespace App.UI.Toolkit
 
         private async void AutoSubmitSessionAsync()
         {
+            if (SessionContext.CurrentExercise == null || SessionContext.UserId == null)
+            {
+                if (_lblStatusInfo != null) _lblStatusInfo.text = string.Empty;
+                return;
+            }
+            
             if (_lblStatusInfo != null) _lblStatusInfo.text = "A sincronizar dados...";
 
             try

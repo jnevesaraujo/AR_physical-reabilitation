@@ -4,6 +4,7 @@ using App.Services;
 using Firebase;
 using Firebase.Extensions;
 using App.Core;
+using System;
 
 namespace App.UI.Toolkit
 {
@@ -72,18 +73,60 @@ namespace App.UI.Toolkit
             });
         }
 
+        /*         private void HandleLogin(string email, string password)
+                {
+                    _auth.LoginAsync(email, password).ContinueWithOnMainThread(async task =>
+                    {
+                        if (task.IsCompletedSuccessfully && task.Result)
+                        {
+                            SessionContext.CurrentUser = await _profileService.LoadProfileAsync(_auth.UserId);
+                            UpdateUsernameUI();
+                            _navManager.NavigateTo(AppScreen.Home);
+                        }
+                        else
+                        {
+                            var errorLabel = _root.Q<Label>("login_error");
+                            if (errorLabel != null) errorLabel.text = "Email ou palavra-passe inválidos.";
+                        }
+                    });
+                } */
+
         private void HandleLogin(string email, string password)
         {
+            Debug.Log($"[Auth] Attempting login for {email}");
+
             _auth.LoginAsync(email, password).ContinueWithOnMainThread(async task =>
             {
+                Debug.Log($"[Auth] Task completed. Success={task.IsCompletedSuccessfully} " +
+                          $"Result={task.Result} Faulted={task.IsFaulted}");
+
+                if (task.IsFaulted)
+                    Debug.LogError($"[Auth] Task faulted: {task.Exception}");
+
                 if (task.IsCompletedSuccessfully && task.Result)
                 {
-                    SessionContext.CurrentUser = await _profileService.LoadProfileAsync(_auth.UserId);
-                    UpdateUsernameUI();
-                    _navManager.NavigateTo(AppScreen.Home);
+                    Debug.Log($"[Auth] Login success, loading profile for {_auth.UserId}");
+
+                    try
+                    {
+                        SessionContext.CurrentUser = await _profileService.LoadProfileAsync(_auth.UserId);
+                        Debug.Log($"[Auth] Profile loaded: {SessionContext.CurrentUser?.firstName}");
+
+                        UpdateUsernameUI();
+                        Debug.Log("[Auth] Navigating to Home");
+                        _navManager.NavigateTo(AppScreen.Home);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError($"[Auth] Profile load failed: {e.Message}\n{e.StackTrace}");
+                        var errorLabel = _root.Q<Label>("login_error");
+                        if (errorLabel != null)
+                            errorLabel.text = "Erro ao carregar perfil. Tente novamente.";
+                    }
                 }
                 else
                 {
+                    Debug.Log("[Auth] Login returned false or task not successful");
                     var errorLabel = _root.Q<Label>("login_error");
                     if (errorLabel != null) errorLabel.text = "Email ou palavra-passe inválidos.";
                 }
