@@ -15,8 +15,8 @@ namespace App.UI.Toolkit
         private TextField _txtSubjectId, _txtEmail, _txtSurgeryDate;
         private DropdownField _drpAffectedSide;
         private Button _btnSave, _btnChangePass;
-
         private ProfileService _profileService;
+        private UINavigationManager _navManager;
 
         private void OnEnable()
         {
@@ -37,7 +37,9 @@ namespace App.UI.Toolkit
             _btnSave = _root.Q<Button>("btn_save_profile");
             _btnChangePass = _root.Q<Button>("btn_change_password");
 
-            PopulateFromSession();
+            _navManager = GetComponent<UINavigationManager>();
+            if (_navManager != null)
+                _navManager.OnNavigatedTo += HandleNavigation;
 
             _btnSave?.RegisterCallback<ClickEvent>(OnSaveClicked);
             _btnChangePass?.RegisterCallback<ClickEvent>(_ => HandleChangePassword());
@@ -48,6 +50,8 @@ namespace App.UI.Toolkit
             // clean subscriptions to avoid memory leaks
             _btnSave?.UnregisterCallback<ClickEvent>(OnSaveClicked);
             if (_btnChangePass != null) _btnChangePass.clicked -= HandleChangePassword;
+            if (_navManager != null)
+                _navManager.OnNavigatedTo -= HandleNavigation;
         }
 
         private async void HandleSaveAsync()
@@ -108,17 +112,33 @@ namespace App.UI.Toolkit
                 }
             });
         }
+        private void HandleNavigation(AppScreen screen)
+        {
+            if (screen == AppScreen.Profile)
+                PopulateFromSession();
+        }
+
         private void PopulateFromSession()
         {
-            if (SessionContext.CurrentUser == null) return;
+            if (SessionContext.CurrentUser == null)
+            {
+                Debug.LogWarning("[ProfilePresenter] PopulateFromSession: CurrentUser is null");
+                return;
+            }
 
-            // Email comes from auth — always reflects the actual account email
+            Debug.Log($"[ProfilePresenter] Populating — " +
+                      $"email={SessionContext.CurrentUser.email} " +
+                      $"subjectId={SessionContext.CurrentUser.subjectId}");
+
             if (_txtEmail != null)
                 _txtEmail.value = SessionContext.CurrentUser.email;
+            else
+                Debug.LogWarning("[ProfilePresenter] profile_email field not found");
 
-            // Subject ID is the configurable participant code
             if (_txtSubjectId != null)
                 _txtSubjectId.value = SessionContext.CurrentUser.subjectId ?? "";
+            else
+                Debug.LogWarning("[ProfilePresenter] profile_subject_id field not found");
 
             if (_drpAffectedSide != null &&
                 !string.IsNullOrEmpty(SessionContext.CurrentUser.affectedSide))

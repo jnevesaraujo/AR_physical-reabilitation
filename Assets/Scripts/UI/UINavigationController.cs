@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using App.Core;
 using UnityEngine;
@@ -15,6 +16,7 @@ namespace App.UI.Toolkit
         private Dictionary<AppScreen, VisualElement> _screens;
         private VisualElement _root, _rootContainer, _topBar, _bottomBar;
         private AppScreen _currentScreen;
+        public event Action<AppScreen> OnNavigatedTo;
 
         private static readonly HashSet<AppScreen> _appScreens = new()
         {
@@ -85,6 +87,7 @@ namespace App.UI.Toolkit
             if (_bottomBar != null)
                 _bottomBar.style.display = isAppScreen ? DisplayStyle.Flex : DisplayStyle.None;
 
+            OnNavigatedTo?.Invoke(screen);
             UpdateBottomNavState(screen);
         }
 
