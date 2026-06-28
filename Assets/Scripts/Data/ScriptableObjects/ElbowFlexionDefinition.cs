@@ -3,7 +3,7 @@ using App.Data.ScriptableObjects;
 
 namespace App.Data.ScriptableObjects
 {
-    [CreateAssetMenu(fileName = "ElbowFlexionDef",
+    [CreateAssetMenu(fileName = "ElbowFlexionDefinition",
                      menuName = "RehabApp/Exercises/Elbow Flexion")]
     public class ElbowFlexionDefinition : ExerciseDefinition
     {

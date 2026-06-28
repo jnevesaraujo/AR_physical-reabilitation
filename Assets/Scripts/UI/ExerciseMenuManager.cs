@@ -12,6 +12,7 @@ namespace App.UI
         public NeckRotationDefinition neckRotationData;
         public HandGripDefinition handGripData;
         public ShoulderSlideDefinition shoulderSlideData;
+        public ElbowFlexionDefinition elbowSlideData;
 
         [Header("Destination Scene")]
         [Tooltip("Scene name where the ExerciseAppManager is located")]
@@ -22,7 +23,6 @@ namespace App.UI
             Debug.Log("[MainMenu] A preparar Rotação Cervical...");
 
             SessionContext.CurrentExercise = neckRotationData;
-
             SceneManager.LoadScene(arSceneName);
         }
 
@@ -39,6 +39,14 @@ namespace App.UI
             Debug.Log("[MainMenu] A preparar Deslizar do Ombro...");
 
             SessionContext.CurrentExercise = shoulderSlideData;
+            SceneManager.LoadScene(arSceneName);
+        }
+
+        public void OnClick_LaunchElbowFlexion()
+        {
+            Debug.Log("[MainMenu] A preparar Flexão do Cotovelo...");
+
+            SessionContext.CurrentExercise = elbowSlideData;
             SceneManager.LoadScene(arSceneName);
         }
 

@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23335a014ae8b0746a6dbc370d5c4596, type: 3}
   m_Name: ElbowFlexionDef
   m_EditorClassIdentifier: Assembly-CSharp::App.Data.ScriptableObjects.ElbowFlexionDefinition
-  exerciseId: 
-  exerciseName: 
+  exerciseId: 4
+  exerciseName: "Flex\xE3o de Cotovelo"
   description: 
   requiredTrackingModel: 0
   targetRepetitions: 10

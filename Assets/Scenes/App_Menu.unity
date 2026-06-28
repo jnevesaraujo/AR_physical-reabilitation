@@ -2782,7 +2782,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
   m_PanelSettings: {fileID: 11400000, guid: ee09daf31ebbd8b47ad5da12c5f807f6, type: 2}
   m_ParentUI: {fileID: 0}
-  sourceAsset: {fileID: 9197481963319205126, guid: 01d1edc2fd8e6fd4aa2e92bfa835a41e, type: 3}
+  sourceAsset: {fileID: 9197481963319205126, guid: 214695517115fa845a0f9a6342bbdd7c, type: 3}
   m_SortingOrder: 0
   m_Position: 0
   m_WorldSpaceSizeMode: 1
@@ -2818,6 +2818,7 @@ MonoBehaviour:
   neckRotationData: {fileID: 11400000, guid: 276f3d96e5d399043808294c6000e28c, type: 2}
   handGripData: {fileID: 11400000, guid: d68021a75e15fbe4f9ae6474960f4ddf, type: 2}
   shoulderSlideData: {fileID: 11400000, guid: ee0db31bf18307a4297b4a716a04aab3, type: 2}
+  elbowSlideData: {fileID: 11400000, guid: f620fed756c854846a6b4303c696dd15, type: 2}
   arSceneName: App_Exercise
 --- !u!114 &1086525757
 MonoBehaviour:

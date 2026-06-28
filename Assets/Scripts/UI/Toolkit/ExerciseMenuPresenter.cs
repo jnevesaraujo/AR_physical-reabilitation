@@ -32,6 +32,9 @@ namespace App.UI.Toolkit
 
             var btnShoulderSlide = _root.Q<VisualElement>("btn-shoulderSlide");
             btnShoulderSlide.RegisterCallback<ClickEvent>(_ => _exerciseMenuManager.OnClick_LaunchShoulderSlide());
+
+            var btnElbowFlexion = _root.Q<VisualElement>("btn-elbowFlexion");
+            btnElbowFlexion.RegisterCallback<ClickEvent>(_ => _exerciseMenuManager.OnClick_LaunchElbowFlexion());
         }
     }
 }
