@@ -33,7 +33,8 @@ namespace App.Services
                     { "email",                   profile.email },
                     { "registrationDate",        profile.registrationDate.ToString("o") },
                     { "totalSessionsCompleted",  profile.totalSessionsCompleted },
-                    { "affectedSide",            profile.affectedSide }
+                    { "affectedSide",            profile.affectedSide },
+                    { "surgeryDate",             profile.surgeryDate }
                 };
 
                 await _db.Collection("users")
@@ -64,13 +65,26 @@ namespace App.Services
                     return null;
                 }
 
+                string loadedSurgeryDate = "Not Specified";
+                if (snapshot.TryGetValue<string>("surgeryDate", out string sDate))
+                {
+                    loadedSurgeryDate = sDate;
+                }
+
+                string loadedAffectedSide = "Undefined";
+                if (snapshot.TryGetValue<string>("affectedSide", out string aSide))
+                {
+                    loadedAffectedSide = aSide;
+                }
+
                 var profile = new UserProfile
                 {
                     userId       = snapshot.GetValue<string>("userId"),
                     firstName    = snapshot.GetValue<string>("firstName"),
                     lastName     = snapshot.GetValue<string>("lastName"),
                     email        = snapshot.GetValue<string>("email"),
-                    affectedSide = snapshot.GetValue<string>("affectedSide"),
+                    affectedSide = loadedAffectedSide,
+                    surgeryDate = loadedSurgeryDate,
                     totalSessionsCompleted = snapshot.GetValue<int>("totalSessionsCompleted"),
                     registrationDate = DateTime.Parse(snapshot.GetValue<string>("registrationDate"))
                 };

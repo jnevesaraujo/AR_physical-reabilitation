@@ -12,5 +12,6 @@ namespace App.Data.Models
         public DateTime registrationDate;
         public int totalSessionsCompleted;
         public string affectedSide;
+        public string surgeryDate;
     }
 }
