@@ -34,6 +34,10 @@ namespace App.UI
             _btnConfirm.RegisterCallback<ClickEvent>(OnBtnConfirmClick);
             _btnCalibrate.RegisterCallback<ClickEvent>(OnBtnCalibrateClick);
             _btnBack.RegisterCallback<ClickEvent>(_ => ReturnToMainMenu());
+
+            VisualElement[] btns = { _btnConfirm, _btnCalibrate, _btnBack };
+            foreach (var btn in btns)
+                btn?.AddTouchFeedback();
         }
 
         private void OnDisable()
@@ -56,6 +60,8 @@ namespace App.UI
             SessionContext.CurrentRepetitions = currentReps;
             _lblRepetitions.text = $"{currentReps} / {targetReps}";
 
+            if (currentReps >= targetReps && targetReps > 0)
+                ReturnToMainMenu();
         }
 
         public void ShowWarning(string message)

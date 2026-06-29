@@ -59,7 +59,7 @@ namespace App.UI.Toolkit
                 if (_lblStatusInfo != null) _lblStatusInfo.text = string.Empty;
                 return;
             }
-            
+
             if (_lblStatusInfo != null) _lblStatusInfo.text = "A sincronizar dados...";
 
             try
@@ -79,6 +79,13 @@ namespace App.UI.Toolkit
                 sessionService.Initialize(SessionContext.UserId);
 
                 await sessionService.SaveSessionAsync(record);
+                
+                var profileService = new ProfileService();
+                await profileService.IncrementSessionCountAsync(SessionContext.UserId);
+
+                // Update cached value so home screen reflects the new count immediately
+                if (SessionContext.CurrentUser != null)
+                    SessionContext.CurrentUser.totalSessionsCompleted++;
 
                 if (_lblStatusInfo != null) _lblStatusInfo.text = "Dados guardados com sucesso.";
                 Debug.Log("[Firestore] Registo submetido via Auto-Save.");

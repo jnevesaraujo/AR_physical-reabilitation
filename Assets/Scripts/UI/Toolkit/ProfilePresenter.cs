@@ -12,6 +12,7 @@ namespace App.UI.Toolkit
     public class ProfilePresenter : MonoBehaviour
     {
         private VisualElement _root;
+        private Label _profile_lbl_username;
         private TextField _txtSubjectId, _txtEmail, _txtSurgeryDate;
         private DropdownField _drpAffectedSide;
         private Button _btnSave, _btnChangePass;
@@ -28,7 +29,7 @@ namespace App.UI.Toolkit
             }
             _root = GetComponent<UIDocument>().rootVisualElement;
             _profileService = new ProfileService();
-
+            _profile_lbl_username = _root.Q<Label>("profile_lbl_username");
             _txtSubjectId = _root.Q<TextField>("profile_subject_id");
             _txtEmail = _root.Q<TextField>("profile_email");
             _txtSurgeryDate = _root.Q<TextField>("profile_surgery_date");
@@ -130,6 +131,9 @@ namespace App.UI.Toolkit
                       $"email={SessionContext.CurrentUser.email} " +
                       $"subjectId={SessionContext.CurrentUser.subjectId}");
 
+            if (_profile_lbl_username != null)
+                _profile_lbl_username.text = $"{SessionContext.CurrentUser.firstName} {SessionContext.CurrentUser.lastName}";
+            
             if (_txtEmail != null)
                 _txtEmail.value = SessionContext.CurrentUser.email;
             else

@@ -108,5 +108,6 @@ namespace App.UI.Toolkit
             if (activeBtn != null)
                 _root.Q(activeBtn)?.AddToClassList("nav-active");
         }
+        
     }
 }

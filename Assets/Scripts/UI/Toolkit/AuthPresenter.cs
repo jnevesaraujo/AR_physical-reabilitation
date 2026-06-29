@@ -5,6 +5,7 @@ using Firebase;
 using Firebase.Extensions;
 using App.Core;
 using System;
+using Firebase.Auth;
 
 namespace App.UI.Toolkit
 {
@@ -25,13 +26,61 @@ namespace App.UI.Toolkit
             _root.RegisterCallback<PointerDownEvent>(OnRootPointerDown, TrickleDown.TrickleDown);
             BindAuthUI();
 
-            FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
+/*             FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
             {
                 if (task.Result == DependencyStatus.Available)
                 {
                     _auth = new AuthService();
                     _auth.Initialize();
 
+                }
+            }); */
+
+            FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(async task =>
+            {
+                if (task.Result == DependencyStatus.Available)
+                {
+                    _auth = new AuthService();
+                    _auth.Initialize();
+
+                    var fbUser = FirebaseAuth.DefaultInstance.CurrentUser;
+
+                    // 1. O Firebase detetou uma sessão ativa? (Voltou dos exercícios ou reabriu a App)
+                    if (fbUser != null)
+                    {
+                        Debug.Log($"[Auth] Sessão Firebase detetada para {fbUser.Email}");
+
+                        // 2. O nosso perfil customizado perdeu-se no reload da cena? Vamos buscá-lo!
+                        if (SessionContext.CurrentUser == null)
+                        {
+                            Debug.Log("[Auth] A restaurar UserProfile da base de dados...");
+                            try 
+                            {
+                                SessionContext.CurrentUser = await _profileService.LoadProfileAsync(fbUser.UserId);
+                            }
+                            catch (Exception e) 
+                            {
+                                Debug.LogError($"[Auth] Erro ao restaurar perfil: {e.Message}");
+                            }
+                        }
+
+                        // 3. O Perfil já está carregado. Roteamento automático!
+                        if (SessionContext.ReturnToExerciseMenu)
+                        {
+                            SessionContext.ReturnToExerciseMenu = true;
+                            _navManager.NavigateTo(AppScreen.Summary);
+                        }
+                        else
+                        {
+                            // Navegar para a Home (Isto vai forçar o HomePresenter a popular os dados!)
+                            _navManager.NavigateTo(AppScreen.Home);
+                        }
+                    }
+                    else
+                    {
+                        // Não há ninguém logado. Garante que fica no ecrã de Login.
+                        _navManager.NavigateTo(AppScreen.Login);
+                    }
                 }
             });
         }
@@ -150,13 +199,12 @@ namespace App.UI.Toolkit
 
         private void UpdateUsernameUI()
         {
-            var home_lbl_username = _root.Q<Label>("home_lbl_username");
+            if (SessionContext.CurrentUser == null) return;
+
+            _navManager.NavigateTo(AppScreen.Home);
             var profile_lbl_username = _root.Q<Label>("profile_lbl_username");
 
-            home_lbl_username.text = $"Olá {SessionContext.CurrentUser.firstName}!";
             profile_lbl_username.text = $"{SessionContext.CurrentUser.firstName} {SessionContext.CurrentUser.lastName}";
-
-            home_lbl_username.MarkDirtyRepaint();
             profile_lbl_username.MarkDirtyRepaint();
         }
 
