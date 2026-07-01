@@ -25,23 +25,24 @@ namespace App.Vision.Evaluators
         public ElbowFlexionEvaluator(ElbowFlexionDefinition def)
         {
             _definition = def;
+            
         }
 
         // Called once on calibration button press
         public void CalibrateAndBegin(Vector3 shoulderPos, Vector3 elbowPos, Vector3 wristPos,
-                                      float shoulderWidth)
+                                      float shoulderWidth, bool isLeftTarget)
         {
             _state = FlexionState.AtRest;
             _horizontalTolerance = shoulderWidth * 0.6f;
             WristAtRest = wristPos;
-
+            
             // Estimate the peak wrist position by rotating the rest vector
             // around the elbow by (restAngle - peakAngle).
             // This gives the visualizer a real arc end even before the user
             // has physically reached peak — they see the target, not just current pos.
             Vector2 toWrist = new Vector2(wristPos.x - elbowPos.x, wristPos.y - elbowPos.y);
             float restAngle = Mathf.Atan2(toWrist.y, toWrist.x) * Mathf.Rad2Deg;
-            float peakAngle = restAngle + (_definition.isLeftArm ? _definition.expectedRomDegrees
+            float peakAngle = restAngle + (isLeftTarget ? _definition.expectedRomDegrees
                                                        : -_definition.expectedRomDegrees);
 
             float rad = peakAngle * Mathf.Deg2Rad;
@@ -50,8 +51,10 @@ namespace App.Vision.Evaluators
                 elbowPos.x + Mathf.Cos(rad) * armLen,
                 elbowPos.y + Mathf.Sin(rad) * armLen,
                 wristPos.z);
-
-            _state = FlexionState.AtRest;
+            
+            Debug.Log($"[Calibrate] Lado={isLeftTarget} | ROM={_definition.expectedRomDegrees} | " +
+                      $"RestAngle={restAngle:F1} | PeakAngle={peakAngle:F1} | " +
+                      $"PeakPos={WristAtPeak}");
         }
 
         /*         public void EvaluateFrame(Vector3 shoulderPos, Vector3 elbowPos, Vector3 wristPos,

@@ -13,6 +13,7 @@ namespace App.Vision.Extractors
         private ElbowFlexionDefinition _def;
         private Transform _shoulder, _elbow, _wrist;
         private bool _peakConfirmed = false;
+        private bool _isLeftTarget;
         private Queue<Vector3> _wristBuffer = new Queue<Vector3>();
         private const int BufferSize = 8;
         private float _armLength = 1f;
@@ -25,8 +26,7 @@ namespace App.Vision.Extractors
             _evaluator.OnPostureRestored += HandlePostureRestored;
             _evaluator.OnRepetitionCompleted += HandleRepetitionSuccess;
 
-            var side = SessionContext.CurrentUser?.affectedSide ?? AffectedSide.Unknown;
-            _def.isLeftArm = side == AffectedSide.Left;
+            _isLeftTarget = (SessionContext.CurrentUser?.affectedSide ?? AffectedSide.Unknown) == AffectedSide.Left;
 
             // Wire peak confirm — same pattern as ShoulderSlide
             if (_hud != null)
@@ -78,11 +78,11 @@ namespace App.Vision.Extractors
             Vector3 peakPos = SmoothedWristPos;
             if (float.IsNaN(peakPos.x)) return;
 
-            Transform otherShoulder = _pointList.GetChild(_def.isLeftArm ? 11 : 12);
+            Transform otherShoulder = _pointList.GetChild(_isLeftTarget  ? 11 : 12);
             float shoulderWidth = Vector3.Distance(_shoulder.position, otherShoulder.position);
 
             _evaluator.CalibrateAndBegin(
-                _shoulder.position, _elbow.position, peakPos, shoulderWidth);
+                _shoulder.position, _elbow.position, peakPos, shoulderWidth, _isLeftTarget);
 
             _visualizer.PlacePeakMarker(SmoothedWristPos, _armLength);
 
@@ -101,9 +101,9 @@ namespace App.Vision.Extractors
             // runs every frame unconditionally: no calibration dependency.
             if (_shoulder == null)
             {                
-                _shoulder = _pointList.GetChild(_def.isLeftArm ? 12 : 11);
-                _elbow = _pointList.GetChild(_def.isLeftArm ? 14 : 13);
-                _wrist = _pointList.GetChild(_def.isLeftArm ? 16 : 15);
+                _shoulder = _pointList.GetChild(_isLeftTarget ? 12 : 11);
+                _elbow = _pointList.GetChild(_isLeftTarget ? 14 : 13);
+                _wrist = _pointList.GetChild(_isLeftTarget ? 16 : 15);
             }
 
             // Phase 2: fill the smoothing buffer every frame as long as wrist exists.
@@ -111,7 +111,7 @@ namespace App.Vision.Extractors
 
             if (_wrist != null)
             {
-                Vector3 pos = GetFilteredLandmark(_def.isLeftArm ? 16 : 15);
+                Vector3 pos = GetFilteredLandmark(_isLeftTarget ? 16 : 15);
                 if (!float.IsNaN(pos.x) && !float.IsNaN(pos.y) && !float.IsNaN(pos.z))
                 {
                     _wristBuffer.Enqueue(pos);
@@ -123,9 +123,9 @@ namespace App.Vision.Extractors
             // Phase 3: evaluation only runs after full calibration.
             if (!_isCalibrated || !_peakConfirmed) return;
 
-            Vector3 shoulder = GetFilteredLandmark(_def.isLeftArm ? 12 : 11);
-            Vector3 elbow = GetFilteredLandmark(_def.isLeftArm ? 14 : 13);
-            Vector3 wrist = GetFilteredLandmark(_def.isLeftArm ? 16 : 15);
+            Vector3 shoulder = GetFilteredLandmark(_isLeftTarget ? 12 : 11);
+            Vector3 elbow = GetFilteredLandmark(_isLeftTarget ? 14 : 13);
+            Vector3 wrist = GetFilteredLandmark(_isLeftTarget ? 16 : 15);
 
             _evaluator.EvaluateFrame(shoulder, elbow, wrist, out float progress);
 
