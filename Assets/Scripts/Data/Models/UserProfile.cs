@@ -12,7 +12,16 @@ namespace App.Data.Models
         public string email;
         public DateTime registrationDate;
         public int totalSessionsCompleted;
-        public string affectedSide;
+        public AffectedSide affectedSide;
         public string surgeryDate;
+
+    }
+
+    public enum AffectedSide
+    {
+        Unknown,
+        Left,
+        Right,
+        Bilateral
     }
 }

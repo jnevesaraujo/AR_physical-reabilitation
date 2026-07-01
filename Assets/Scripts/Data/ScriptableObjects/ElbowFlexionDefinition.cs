@@ -9,7 +9,7 @@ namespace App.Data.ScriptableObjects
     {
         [Header("Elbow Flexion Biometrics")]
         [Tooltip("True = right arm, false = left arm.")]
-        public bool isRightArm = true;
+        public bool isLeftArm = true;
 
         [Tooltip("Minimum joint angle (degrees) to count as a full curl (peak).")]
         public float peakAngleThreshold = 60f;

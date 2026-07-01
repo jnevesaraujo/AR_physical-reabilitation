@@ -42,15 +42,15 @@ namespace App.Data.ScriptableObjects
         [Header("UI Reference")]
         public Sprite tutorialIcon;
 
-/*         public enum TrackingAnchor
-        {
-            ScreenCenter,
-            Nose,
-            RightShoulder,
-            LeftShoulder,
-            RightHand,
-            LeftHand
-        } */
+        /*         public enum TrackingAnchor
+                {
+                    ScreenCenter,
+                    Nose,
+                    RightShoulder,
+                    LeftShoulder,
+                    RightHand,
+                    LeftHand
+                } */
 
         public enum TrackingAnchor
         {

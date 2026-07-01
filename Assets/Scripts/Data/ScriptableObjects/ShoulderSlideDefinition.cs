@@ -7,7 +7,7 @@ namespace App.Data.ScriptableObjects
     {
         [Header("Arm Selection")]
         [Tooltip("True for the right arm, false for the left arm.")]
-        public bool isRightArm = true;
+        public bool isLeftArm = true;
 
         [Header("Biomechanical Parameters")]
         [Tooltip("Maximum allowed deviation for the sides (X-axis) in meters.")]

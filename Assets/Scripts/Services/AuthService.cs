@@ -4,6 +4,7 @@ using UnityEngine;
 using App.Core;
 using UserProfile = App.Data.Models.UserProfile;
 using System;
+using App.Data.Models;
 
 namespace App.Services
 {
@@ -73,7 +74,7 @@ namespace App.Services
                     email = email,
                     registrationDate = DateTime.UtcNow,
                     totalSessionsCompleted = 0,
-                    affectedSide = "unknown" // set later in profile setup
+                    affectedSide = AffectedSide.Unknown // set later in profile setup
                 };
 
                 var profileService = new ProfileService();

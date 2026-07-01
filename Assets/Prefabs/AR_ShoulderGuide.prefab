@@ -123,7 +123,6 @@ GameObject:
   - component: {fileID: 3184773696429862339}
   - component: {fileID: 17328452180291779}
   - component: {fileID: 7980363415657010672}
-  - component: {fileID: 1444212262269985681}
   m_Layer: 0
   m_Name: AR_ShoulderGuide
   m_TagString: Untagged
@@ -270,21 +269,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::App.Vision.Guides.ShoulderGuide
   sliderSphere: {fileID: 3393191767869482679}
-  successParticles: {fileID: 0}
---- !u!114 &1444212262269985681
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8677091056801292145}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f04a29cf836c7b347a7084c3b0b81b84, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::App.Vision.ARGuideController
-  pacerObject: {fileID: 0}
-  energySphere: {fileID: 0}
-  shoulderSliderSphere: {fileID: 3393191767869482679}
-  elbowPivotDot: {fileID: 0}
   successParticles: {fileID: 0}

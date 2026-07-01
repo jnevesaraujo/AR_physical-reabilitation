@@ -102,6 +102,7 @@ namespace App.UI.Toolkit
             SessionContext.Clear();
             var navManager = GetComponent<UINavigationManager>();
             navManager?.NavigateTo(AppScreen.Exercises);
+            SessionContext.ReturnToExerciseMenu = false;
         }
     }
 }

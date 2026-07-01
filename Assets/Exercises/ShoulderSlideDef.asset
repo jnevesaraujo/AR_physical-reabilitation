@@ -25,7 +25,7 @@ MonoBehaviour:
   guideAnchor: 0
   guideOffset: {x: 0, y: 0, z: 0}
   tutorialIcon: {fileID: 0}
-  isRightArm: 1
+  isLeftArm: 0
   horizontalTolerance: 8
   discoveryHoldTime: 3
   minimumDiscoveryAmplitude: 0.5

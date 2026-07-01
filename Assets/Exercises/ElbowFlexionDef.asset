@@ -25,7 +25,7 @@ MonoBehaviour:
   guideAnchor: 0
   guideOffset: {x: 0, y: 0, z: 0}
   tutorialIcon: {fileID: 0}
-  isRightArm: 1
+  isLeftArm: 1
   peakAngleThreshold: 60
   restAngleThreshold: 150
   horizontalTolerance: 0.2

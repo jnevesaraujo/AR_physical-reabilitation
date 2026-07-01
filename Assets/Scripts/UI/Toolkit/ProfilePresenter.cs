@@ -74,7 +74,7 @@ namespace App.UI.Toolkit
                 email = SessionContext.CurrentUser.email,
                 registrationDate = SessionContext.CurrentUser.registrationDate,
                 totalSessionsCompleted = SessionContext.CurrentUser.totalSessionsCompleted,
-                affectedSide = _drpAffectedSide?.value ?? SessionContext.CurrentUser.affectedSide,
+                affectedSide = _drpAffectedSide != null ? MapDropdownToEnum(_drpAffectedSide.value) : SessionContext.CurrentUser.affectedSide,
                 surgeryDate = _txtSurgeryDate?.value ?? SessionContext.CurrentUser.surgeryDate
             };
 
@@ -133,7 +133,7 @@ namespace App.UI.Toolkit
 
             if (_profile_lbl_username != null)
                 _profile_lbl_username.text = $"{SessionContext.CurrentUser.firstName} {SessionContext.CurrentUser.lastName}";
-            
+
             if (_txtEmail != null)
                 _txtEmail.value = SessionContext.CurrentUser.email;
             else
@@ -144,13 +144,35 @@ namespace App.UI.Toolkit
             else
                 Debug.LogWarning("[ProfilePresenter] profile_subject_id field not found");
 
-            if (_drpAffectedSide != null &&
-                !string.IsNullOrEmpty(SessionContext.CurrentUser.affectedSide))
-                _drpAffectedSide.value = SessionContext.CurrentUser.affectedSide;
-
+            if (_drpAffectedSide != null)
+                _drpAffectedSide.value = MapEnumToDropdown(SessionContext.CurrentUser.affectedSide);
+            
             if (_txtSurgeryDate != null &&
                 !string.IsNullOrEmpty(SessionContext.CurrentUser.surgeryDate))
                 _txtSurgeryDate.value = SessionContext.CurrentUser.surgeryDate;
+        }
+
+        private AffectedSide MapDropdownToEnum(string dropdownValue)
+        {
+            if (string.IsNullOrEmpty(dropdownValue)) return AffectedSide.Unknown;
+
+            string val = dropdownValue.ToLower();
+            if (val.Contains("esquerd")) return AffectedSide.Left;
+            if (val.Contains("direit")) return AffectedSide.Right;
+            if (val.Contains("bilateral") || val.Contains("ambos")) return AffectedSide.Bilateral;
+
+            return AffectedSide.Unknown;
+        }
+
+        private string MapEnumToDropdown(AffectedSide side)
+        {
+            return side switch
+            {
+                AffectedSide.Left => "Esquerdo",
+                AffectedSide.Right => "Direito",
+                AffectedSide.Bilateral => "Bilateral",
+                _ => "Indefinido"
+            };
         }
 
         private void OnSaveClicked(ClickEvent evt) => HandleSaveAsync();

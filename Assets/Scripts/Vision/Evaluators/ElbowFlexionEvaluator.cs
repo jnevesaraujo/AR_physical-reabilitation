@@ -41,7 +41,7 @@ namespace App.Vision.Evaluators
             // has physically reached peak — they see the target, not just current pos.
             Vector2 toWrist = new Vector2(wristPos.x - elbowPos.x, wristPos.y - elbowPos.y);
             float restAngle = Mathf.Atan2(toWrist.y, toWrist.x) * Mathf.Rad2Deg;
-            float peakAngle = restAngle + (_definition.isRightArm ? _definition.expectedRomDegrees
+            float peakAngle = restAngle + (_definition.isLeftArm ? _definition.expectedRomDegrees
                                                        : -_definition.expectedRomDegrees);
 
             float rad = peakAngle * Mathf.Deg2Rad;

@@ -37,9 +37,9 @@ public class ShoulderSlideExtractor : BaseExerciseExtractor
         if (_shoulder == null)
         {
             var def = _exerciseDef as ShoulderSlideDefinition;
-            _shoulder = _pointList.GetChild(def.isRightArm ? 12 : 11);
-            _elbow = _pointList.GetChild(def.isRightArm ? 14 : 13);
-            _wrist = _pointList.GetChild(def.isRightArm ? 16 : 15);
+            _shoulder = _pointList.GetChild(def.isLeftArm ? 12 : 11);
+            _elbow = _pointList.GetChild(def.isLeftArm ? 14 : 13);
+            _wrist = _pointList.GetChild(def.isLeftArm ? 16 : 15);
         }
 
         if (!_isCalibrated) return;

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 using App.Core;
+using App.Data.Models;
 
 namespace App.UI.Toolkit
 {
@@ -109,10 +110,17 @@ namespace App.UI.Toolkit
             // Affected side
             if (_lblAffectedSide != null)
             {
-                _lblAffectedSide.text = string.IsNullOrEmpty(user.affectedSide)
-                    ? "Não definido"
-                    : user.affectedSide;
+                string sideText = user.affectedSide switch
+                {
+                    AffectedSide.Left => "Esquerdo",
+                    AffectedSide.Right => "Direito",
+                    AffectedSide.Bilateral => "Bilateral",
+                    _ => "Não definido" // Cobre o AffectedSide.Unknown e nulos
+                };
+
+                _lblAffectedSide.text = sideText;
             }
+            
         }
     }
 }

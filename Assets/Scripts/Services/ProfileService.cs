@@ -16,7 +16,7 @@ namespace App.Services
 
         public ProfileService()
         {
-            _db   = FirebaseFirestore.DefaultInstance;
+            _db = FirebaseFirestore.DefaultInstance;
             _auth = FirebaseAuth.DefaultInstance;
         }
 
@@ -34,7 +34,7 @@ namespace App.Services
                     { "email",                   profile.email },
                     { "registrationDate",        profile.registrationDate.ToString("o") },
                     { "totalSessionsCompleted",  profile.totalSessionsCompleted },
-                    { "affectedSide",            profile.affectedSide },
+                    { "affectedSide",            profile.affectedSide.ToString() },
                     { "surgeryDate",             profile.surgeryDate }
                 };
 
@@ -72,19 +72,26 @@ namespace App.Services
                     loadedSurgeryDate = sDate;
                 }
 
-                string loadedAffectedSide = "Undefined";
-                if (snapshot.TryGetValue<string>("affectedSide", out string aSide))
+                AffectedSide loadedAffectedSide = AffectedSide.Unknown;
+                if (snapshot.TryGetValue<string>("affectedSide", out string aSideStr))
                 {
-                    loadedAffectedSide = aSide;
+                    if (!Enum.TryParse(aSideStr, true, out loadedAffectedSide))
+                    {
+                        // Fallback: se a base de dados antiga tiver "Esquerdo" ou "Indefinido" em português
+                        if (aSideStr.ToLower().Contains("esquerd")) loadedAffectedSide = AffectedSide.Left;
+                        else if (aSideStr.ToLower().Contains("direit")) loadedAffectedSide = AffectedSide.Right;
+                        else if (aSideStr.ToLower().Contains("bilateral")) loadedAffectedSide = AffectedSide.Bilateral;
+                        else loadedAffectedSide = AffectedSide.Unknown;
+                    }
                 }
 
                 var profile = new UserProfile
                 {
-                    userId       = snapshot.GetValue<string>("userId"),
-                    subjectId    = snapshot.ContainsField("subjectId") ? snapshot.GetValue<string>("subjectId") : "",
-                    firstName    = snapshot.GetValue<string>("firstName"),
-                    lastName     = snapshot.GetValue<string>("lastName"),
-                    email        = snapshot.GetValue<string>("email"),
+                    userId = snapshot.GetValue<string>("userId"),
+                    subjectId = snapshot.ContainsField("subjectId") ? snapshot.GetValue<string>("subjectId") : "",
+                    firstName = snapshot.GetValue<string>("firstName"),
+                    lastName = snapshot.GetValue<string>("lastName"),
+                    email = snapshot.GetValue<string>("email"),
                     affectedSide = loadedAffectedSide,
                     surgeryDate = loadedSurgeryDate,
                     totalSessionsCompleted = snapshot.GetValue<int>("totalSessionsCompleted"),
@@ -107,7 +114,7 @@ namespace App.Services
             {
                 await _db.Collection("users")
                          .Document(userId)
-                         .UpdateAsync("totalSessionsCompleted", 
+                         .UpdateAsync("totalSessionsCompleted",
                              FieldValue.Increment(1));
             }
             catch (System.Exception e)
