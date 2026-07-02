@@ -2349,7 +2349,7 @@ MonoBehaviour:
   solutionHand: {fileID: 1760972989}
   annotatableScreenPose: {fileID: 1006057045}
   annotatableScreenHand: {fileID: 1119931410}
-  debugExerciseDefinition: {fileID: 11400000, guid: ee0db31bf18307a4297b4a716a04aab3, type: 2}
+  debugExerciseDefinition: {fileID: 11400000, guid: f620fed756c854846a6b4303c696dd15, type: 2}
 --- !u!1 &1886216815
 GameObject:
   m_ObjectHideFlags: 0

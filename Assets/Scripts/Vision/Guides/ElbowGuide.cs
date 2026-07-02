@@ -1,5 +1,6 @@
 using UnityEngine;
 using App.Vision.Guides;
+using App.Core;
 
 namespace App.Vision.Guides
 {
@@ -8,7 +9,6 @@ namespace App.Vision.Guides
         // Assigned in prefab Inspector
         public Transform wristSphere;
         public ParticleSystem successParticles;
-
         private GameObject _restRing;
         private GameObject _peakRing;
         private Renderer _wristRenderer;
@@ -18,16 +18,16 @@ namespace App.Vision.Guides
 
         public void Initialize(Vector3 restPos, float bodyScale)
         {
-/*             var canvas = FindFirstObjectByType<Canvas>();
-            Debug.Log($"Canvas planeDistance={canvas.planeDistance}"); */
+            /*             var canvas = FindFirstObjectByType<Canvas>();
+                        Debug.Log($"Canvas planeDistance={canvas.planeDistance}"); */
             float ringRadius = bodyScale * 0.2f;
             float sphereScale = bodyScale * 0.3f;
 
             ringStandbyColor = new Color(0.85f, 0.35f, 0.58f, 0.5f);
             ringSuccessColor = new Color(0.11f, 0.62f, 0.46f, 0.85f);
 
-            _restRing = CreateRing("RestRing", ringStandbyColor, ringRadius);           
-            _restRing.transform.position = new Vector3(restPos.x, restPos.y,  restPos.z - 5f);
+            _restRing = CreateRing("RestRing", ringStandbyColor, ringRadius);
+            _restRing.transform.position = new Vector3(restPos.x, restPos.y, restPos.z - 5f);
 
             if (wristSphere != null)
             {
@@ -47,7 +47,7 @@ namespace App.Vision.Guides
             float ringRadius = bodyScale * 0.3f;
 
             _peakRing = CreateRing("PeakRing", ringStandbyColor, ringRadius);
-            _peakRing.transform.position = new Vector3(peakPos.x, peakPos.y,  peakPos.z - 5f);
+            _peakRing.transform.position = new Vector3(peakPos.x, peakPos.y, peakPos.z - 5f);
             _peakRingRenderer = _peakRing.GetComponentInChildren<Renderer>();
 
             _ready = true;
@@ -75,9 +75,24 @@ namespace App.Vision.Guides
         public void PlaySuccess()
         {
             if (successParticles == null) return;
-            successParticles.transform.position = _peakRing != null
+            /* successParticles.transform.position = _peakRing != null
                 ? _peakRing.transform.position
-                : transform.position;
+                : transform.position; */
+            Camera mainCam = Camera.main;
+            if (mainCam!= null)
+            {
+                float rawDepth = Mathf.Abs(mainCam.transform.position.z - transform.position.z);
+                float depth = Mathf.Clamp(rawDepth * 0.5f, 25f, 60f);
+                
+                successParticles.transform.position =
+                    mainCam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, depth));
+            }
+            else
+            {
+                if(SessionContext.debugMode)
+                    Debug.LogWarning("[ElbowGuide] _referenceCamera not assigned;");    
+                successParticles.transform.position = transform.position;
+            }
 
             var main = successParticles.main;
             main.startColor = new Color(0.11f, 0.62f, 0.46f);
