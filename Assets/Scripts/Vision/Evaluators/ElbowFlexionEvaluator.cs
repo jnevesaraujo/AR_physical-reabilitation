@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using App.Data.ScriptableObjects;
+using App.Core;
 
 namespace App.Vision.Evaluators
 {
@@ -25,7 +26,7 @@ namespace App.Vision.Evaluators
         public ElbowFlexionEvaluator(ElbowFlexionDefinition def)
         {
             _definition = def;
-            
+
         }
 
         // Called once on calibration button press
@@ -35,7 +36,7 @@ namespace App.Vision.Evaluators
             _state = FlexionState.AtRest;
             _horizontalTolerance = shoulderWidth * 0.6f;
             WristAtRest = wristPos;
-            
+
             // Estimate the peak wrist position by rotating the rest vector
             // around the elbow by (restAngle - peakAngle).
             // This gives the visualizer a real arc end even before the user
@@ -51,10 +52,12 @@ namespace App.Vision.Evaluators
                 elbowPos.x + Mathf.Cos(rad) * armLen,
                 elbowPos.y + Mathf.Sin(rad) * armLen,
                 wristPos.z);
-            
+
             Debug.Log($"[Calibrate] Lado={isLeftTarget} | ROM={_definition.expectedRomDegrees} | " +
                       $"RestAngle={restAngle:F1} | PeakAngle={peakAngle:F1} | " +
                       $"PeakPos={WristAtPeak}");
+
+            Debug.Log($"[ElbowFlexion] Pre-CalibrateAndBegin: _isLeftTarget={isLeftTarget}, defIsLeftArm={_definition.isLeftArm}");
         }
 
         /*         public void EvaluateFrame(Vector3 shoulderPos, Vector3 elbowPos, Vector3 wristPos,
@@ -106,7 +109,7 @@ namespace App.Vision.Evaluators
 
             float angle = AngleCalculator.CalculateJointAngle(shoulderPos, elbowPos, wristPos);
 
-            if (Time.frameCount % 30 == 0)
+            if (SessionContext.debugMode && Time.frameCount % 30 == 0)
                 Debug.Log($"[ElbowEval] angle={angle:F1} state={_state}");
 
             progress = Mathf.Clamp01(
@@ -159,11 +162,13 @@ namespace App.Vision.Evaluators
                         if (cycleTime >= _minCycleSeconds)
                         {
                             OnRepetitionCompleted?.Invoke();
-                            Debug.Log($"[ElbowEval] Rep counted! cycle={cycleTime:F2}s");
+                            if (SessionContext.debugMode)
+                                Debug.Log($"[ElbowEval] Rep counted! cycle={cycleTime:F2}s");
                         }
                         else
                         {
-                            Debug.Log($"[ElbowEval] Rep rejected: too fast ({cycleTime:F2}s < {_minCycleSeconds}s)");
+                            if (SessionContext.debugMode)
+                                Debug.Log($"[ElbowEval] Rep rejected: too fast ({cycleTime:F2}s < {_minCycleSeconds}s)");
                         }
                         _state = FlexionState.AtRest;
                     }

@@ -13,6 +13,7 @@ namespace App.Core
         public static bool ReturnToExerciseMenu { get; set; }
         public static string UserId => CurrentUser?.userId;
         public static bool IsLoggedIn => CurrentUser != null;
+        public static bool debugMode = false;
 
         public static void Clear()
         {

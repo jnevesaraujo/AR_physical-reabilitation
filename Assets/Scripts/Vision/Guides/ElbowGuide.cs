@@ -13,16 +13,20 @@ namespace App.Vision.Guides
         private GameObject _peakRing;
         private Renderer _wristRenderer;
         private Renderer _peakRingRenderer;
+        private Color ringStandbyColor, ringSuccessColor;
         private bool _ready = false;
 
         public void Initialize(Vector3 restPos, float bodyScale)
         {
 /*             var canvas = FindFirstObjectByType<Canvas>();
             Debug.Log($"Canvas planeDistance={canvas.planeDistance}"); */
-            float ringRadius = bodyScale * 0.3f;
+            float ringRadius = bodyScale * 0.2f;
             float sphereScale = bodyScale * 0.3f;
 
-            _restRing = CreateRing("RestRing", new Color(0.6f, 0.6f, 0.6f, 0.5f), ringRadius);           
+            ringStandbyColor = new Color(0.85f, 0.35f, 0.58f, 0.5f);
+            ringSuccessColor = new Color(0.11f, 0.62f, 0.46f, 0.85f);
+
+            _restRing = CreateRing("RestRing", ringStandbyColor, ringRadius);           
             _restRing.transform.position = new Vector3(restPos.x, restPos.y,  restPos.z - 5f);
 
             if (wristSphere != null)
@@ -40,9 +44,9 @@ namespace App.Vision.Guides
 
         public void PlacePeakMarker(Vector3 peakPos, float bodyScale)
         {
-            float ringRadius = bodyScale * 0.4f;
+            float ringRadius = bodyScale * 0.3f;
 
-            _peakRing = CreateRing("PeakRing", new Color(0.11f, 0.62f, 0.46f, 0.85f), ringRadius);
+            _peakRing = CreateRing("PeakRing", ringStandbyColor, ringRadius);
             _peakRing.transform.position = new Vector3(peakPos.x, peakPos.y,  peakPos.z - 5f);
             _peakRingRenderer = _peakRing.GetComponentInChildren<Renderer>();
 
@@ -63,8 +67,7 @@ namespace App.Vision.Guides
             {
                 float proximity = Mathf.Clamp01(progress * 1.2f);
                 _peakRingRenderer.material.color = Color.Lerp(
-                    new Color(0.11f, 0.62f, 0.46f, 0.4f),
-                    new Color(0.11f, 0.62f, 0.46f, 1.0f),
+                    ringStandbyColor, ringSuccessColor,
                     proximity);
             }
         }
@@ -115,7 +118,7 @@ namespace App.Vision.Guides
 
             for (int i = 0; i < 32; i++)
             {
-                float angle = (i / 32f) * Mathf.PI * 2f;
+                float angle = i / 32f * Mathf.PI * 2f;
                 lr.SetPosition(i, new Vector3(
                     Mathf.Cos(angle) * radius,
                     Mathf.Sin(angle) * radius, 0f));
