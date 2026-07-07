@@ -15,12 +15,17 @@ namespace App.Core
         public static bool IsLoggedIn => CurrentUser != null;
         public static bool debugMode = false;
 
-        public static void Clear()
+        public static void ClearExerciseSession()
         {
             CurrentExercise = null;
-            CurrentUser = null;
             ElapsedSeconds = 0;
             CurrentRepetitions = 0;
+        }
+
+        public static void Clear()
+        {
+            ClearExerciseSession();
+            CurrentUser = null;
         }
     }
 }

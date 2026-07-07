@@ -99,7 +99,7 @@ namespace App.UI.Toolkit
 
         public void CloseSummary()
         {
-            SessionContext.Clear();
+            SessionContext.ClearExerciseSession();
             var navManager = GetComponent<UINavigationManager>();
             navManager?.NavigateTo(AppScreen.Exercises);
             SessionContext.ReturnToExerciseMenu = false;
