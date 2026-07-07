@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::App.Data.ScriptableObjects.HandGripDefinition
   exerciseId: 2
   exerciseName: "Flex\xE3o Punho"
-  description: 
+  description: "Mantenha a m\xE3o aberta, com a palma virada para o ecr\xE3, garantindo
+    que esta fica bem enquadrada dentro da \xE1rea indicada.\n\nQuando estiver pronta,
+    clique no bot\xE3o 'Calibrar' para iniciar a sess\xE3o."
   requiredTrackingModel: 1
   targetRepetitions: 10
   durationInSeconds: 60
@@ -24,7 +26,7 @@ MonoBehaviour:
   visualGuidePrefab: {fileID: 7298251019150613943, guid: 27fb420744531de43b126f35c9fdecb8, type: 3}
   guideAnchor: 0
   guideOffset: {x: 0, y: 0, z: 0}
-  tutorialIcon: {fileID: 0}
+  tutorialIcon: {fileID: 21300000, guid: e7234b5c6c4b25d42ac057ae98ea3eb4, type: 3}
   targetGripDistance: 0.3
   releaseDistance: 0.8
   isometricHoldTime: 2

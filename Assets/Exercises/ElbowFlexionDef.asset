@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::App.Data.ScriptableObjects.ElbowFlexionDefinition
   exerciseId: 4
   exerciseName: "Flex\xE3o de Cotovelo"
-  description: 
+  description: "1) Posicione o bra\xE7o em repouso ao lado do corpo, mantendo o pulso
+    vis\xEDvel no enquadramento da c\xE2mara e carregue em calibrar.\n\n2) Dobre
+    o cotovelo e levante a m\xE3o at\xE9 ao limite de conforto, mantendo o pulso
+    abaixo do ombro e carregue em confirmar"
   requiredTrackingModel: 0
   targetRepetitions: 10
   durationInSeconds: 60
@@ -24,7 +27,7 @@ MonoBehaviour:
   visualGuidePrefab: {fileID: 8665913423867894841, guid: 43797b4a4d3cf5941a5fdbe823adb47a, type: 3}
   guideAnchor: 0
   guideOffset: {x: 0, y: 0, z: 0}
-  tutorialIcon: {fileID: 0}
+  tutorialIcon: {fileID: 21300000, guid: 0d6f23af38b969447810c31bd06b7168, type: 3}
   isLeftArm: 0
   peakAngleThreshold: 60
   restAngleThreshold: 150

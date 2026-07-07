@@ -38,7 +38,8 @@ namespace App.UI.Toolkit
                 { AppScreen.Home,           _root.Q("panel_home") },
                 { AppScreen.Profile,        _root.Q("panel_profile") },
                 { AppScreen.Exercises,      _root.Q("panel_exercises") },
-                { AppScreen.Summary,        _root.Q("panel_summary") }
+                { AppScreen.Summary,        _root.Q("panel_summary") },
+                { AppScreen.Instructions,   _root.Q("panel_instructions") }
             };
 
             BindNavigationBar();

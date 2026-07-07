@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::App.Data.ScriptableObjects.ShoulderSlideDefinition
   exerciseId: 3
   exerciseName: Deslizar Ombro
-  description: 
+  description: "1) Posicione o bra\xE7o em repouso ao lado do corpo, mantendo o pulso
+    vis\xEDvel no enquadramento da c\xE2mara e carregue em calibrar.\n\n2) Levante
+    a m\xE3o at\xE9 ao limite de conforto, mantendo o cotovelo abaixo do ombro e
+    carregue em confirmar"
   requiredTrackingModel: 0
   targetRepetitions: 10
   durationInSeconds: 60
@@ -24,7 +27,7 @@ MonoBehaviour:
   visualGuidePrefab: {fileID: 8677091056801292145, guid: 383bc690113ec9f4b825937aabf5a411, type: 3}
   guideAnchor: 0
   guideOffset: {x: 0, y: 0, z: 0}
-  tutorialIcon: {fileID: 0}
+  tutorialIcon: {fileID: 21300000, guid: 8b657f9daeb21f247b4415bb80d7a480, type: 3}
   isLeftArm: 0
   horizontalTolerance: 8
   discoveryHoldTime: 3

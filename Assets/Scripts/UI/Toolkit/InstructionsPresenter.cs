@@ -13,6 +13,7 @@ public class InstructionsPresenter : MonoBehaviour
 
     private void OnEnable()
     {
+        Debug.Log("[InstructionsPresenter] OnEnable called.");
         _uiDocument = GetComponent<UIDocument>();
         if (_uiDocument == null) return;
 
@@ -49,6 +50,7 @@ public class InstructionsPresenter : MonoBehaviour
 
         _lblName.text = exercise.exerciseName;
         _lblDescription.text = exercise.description;
+        _lblDescription.style.whiteSpace = WhiteSpace.Normal;
 
         if (exercise.tutorialIcon != null)
         {
@@ -63,6 +65,9 @@ public class InstructionsPresenter : MonoBehaviour
         if (!string.IsNullOrEmpty(targetScene))
         {
             SceneManager.LoadScene(targetScene);
+        } else
+        {
+            Debug.LogError("[InstructionsPresenter] Cena de destino não encontrada.");
         }
     }
 }
