@@ -2,7 +2,7 @@ using UnityEngine.UIElements;
 
 public static class GeneralEffects
 {
-    // Extension method you can call on any VisualElement.
+    // Extension method to be called on any VisualElement.
     public static void AddTouchFeedback(this VisualElement el)
     {
         el.RegisterCallback<PointerDownEvent>(_ => el.style.opacity = 0.5f);

@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using App.Data.ScriptableObjects;
 using App.Core;
+using App.UI.Toolkit;
 
 namespace App.UI
 {
@@ -13,17 +14,24 @@ namespace App.UI
         public HandGripDefinition handGripData;
         public ShoulderSlideDefinition shoulderSlideData;
         public ElbowFlexionDefinition elbowSlideData;
+        private UINavigationManager _navigationManager;
 
         [Header("Destination Scene")]
         [Tooltip("Scene name where the ExerciseAppManager is located")]
         public string arSceneName = "App_Exercise";
 
+        void Start()
+        {
+            _navigationManager = FindFirstObjectByType<UINavigationManager>();
+        }
         public void OnClick_LaunchNeckRotation()
         {
             Debug.Log("[MainMenu] A preparar Rotação Cervical...");
 
             SessionContext.CurrentExercise = neckRotationData;
-            SceneManager.LoadScene(arSceneName);
+            SessionContext.TargetARScene = arSceneName;
+            _navigationManager.NavigateTo(AppScreen.Instructions);
+            //SceneManager.LoadScene(arSceneName);
         }
 
         public void OnClick_LaunchHandGrip()

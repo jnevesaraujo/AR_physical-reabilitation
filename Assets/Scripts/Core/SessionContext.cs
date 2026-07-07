@@ -11,6 +11,7 @@ namespace App.Core
         public static int ElapsedSeconds { get; set; } = 0;
         public static int CurrentRepetitions { get; set; } = 0;
         public static bool ReturnToExerciseMenu { get; set; }
+        public static string TargetARScene { get; set; }
         public static string UserId => CurrentUser?.userId;
         public static bool IsLoggedIn => CurrentUser != null;
         public static bool debugMode = false;

@@ -8,7 +8,7 @@ namespace App.UI.Toolkit
 {
     public enum AppScreen
     {
-        Login, Register, ForgotPassword, Home, Profile, Exercises, Summary
+        Login, Register, ForgotPassword, Home, Profile, Exercises, Summary, Instructions
     }
 
     public class UINavigationManager : MonoBehaviour
@@ -20,7 +20,7 @@ namespace App.UI.Toolkit
 
         private static readonly HashSet<AppScreen> _appScreens = new()
         {
-            AppScreen.Home, AppScreen.Profile, AppScreen.Exercises, AppScreen.Summary
+            AppScreen.Home, AppScreen.Profile, AppScreen.Exercises, AppScreen.Summary, AppScreen.Instructions
         };
 
         private void Awake()
