@@ -32,16 +32,6 @@ public class InstructionsPresenter : MonoBehaviour
 
         PopulateFromSession();
     }
-/*     public void Initialize(VisualElement root)
-    {
-        _lblName = root.Q<Label>("lbl_exerciseName");
-        _lblDescription = root.Q<Label>("lbl_description");
-        _imgTutorial = root.Q<VisualElement>("img_tutorial");
-        _btnStart = root.Q<Button>("btn_start");
-
-        _btnStart.clicked -= OnStartClicked;
-        _btnStart.clicked += OnStartClicked;
-    } */
 
     public void PopulateFromSession()
     {

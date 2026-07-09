@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace App.Core
+namespace App.Vision
 {
     /// <summary>
     /// One Euro Filter — adaptive low-pass filter for real-time signal smoothing.

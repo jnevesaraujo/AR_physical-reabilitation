@@ -6,8 +6,8 @@ namespace App.Data.ScriptableObjects
     {
         public enum TrackingModelType
         {
-            BodyPose,   // Loads MediaPipe Pose (33 points) - For Neck, Shoulder, Elbow
-            HandsOnly   // Loads MediaPipe Hands (21 points per hand) - For Grip/Fingers
+            BodyPose,   // Loads MediaPipe Pose (33 points)
+            HandsOnly   // Loads MediaPipe Hands (21 points per hand)
         }
 
         [Header("Identity")]
