@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: HandGripDef
   m_EditorClassIdentifier: Assembly-CSharp::App.Data.ScriptableObjects.HandGripDefinition
   exerciseId: 2
-  exerciseName: "Flex\xE3o Punho"
+  exerciseName: "Flex\xE3o M\xE3o"
   description: "Mantenha a m\xE3o aberta, com a palma virada para o ecr\xE3, garantindo
     que esta fica bem enquadrada dentro da \xE1rea indicada.\n\nQuando estiver pronta,
     clique no bot\xE3o 'Calibrar' para iniciar a sess\xE3o."

@@ -13,7 +13,7 @@ namespace App.UI.Toolkit
         public event Action<string, string> OnLoginRequested;
         public event Action<string, string, string, string> OnRegisterRequested;
         public event Action OnNavigateRegisterRequested;
-        public event Action OnNavigateHomeRequested;
+        //public event Action OnNavigateHomeRequested;
 
         private void OnEnable()
         {

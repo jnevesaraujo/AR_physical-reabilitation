@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ShoulderSlideDef
   m_EditorClassIdentifier: Assembly-CSharp::App.Data.ScriptableObjects.ShoulderSlideDefinition
   exerciseId: 3
-  exerciseName: Deslizar Ombro
+  exerciseName: "Deslizar Bra\xE7o"
   description: "1) Posicione o bra\xE7o em repouso ao lado do corpo, mantendo o pulso
     vis\xEDvel no enquadramento da c\xE2mara e carregue em calibrar.\n\n2) Levante
     a m\xE3o at\xE9 ao limite de conforto, mantendo o cotovelo abaixo do ombro e

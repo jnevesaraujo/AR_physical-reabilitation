@@ -2744,11 +2744,14 @@ GameObject:
   - component: {fileID: 1086525755}
   - component: {fileID: 1086525763}
   - component: {fileID: 1086525764}
-  - component: {fileID: 1086525761}
-  - component: {fileID: 1086525758}
-  - component: {fileID: 1086525762}
-  - component: {fileID: 1086525760}
-  - component: {fileID: 1086525756}
+  - component: {fileID: 1086525768}
+  - component: {fileID: 1086525767}
+  - component: {fileID: 1086525770}
+  - component: {fileID: 1086525769}
+  - component: {fileID: 1086525774}
+  - component: {fileID: 1086525773}
+  - component: {fileID: 1086525772}
+  - component: {fileID: 1086525771}
   - component: {fileID: 1086525766}
   - component: {fileID: 1086525765}
   m_Layer: 0
@@ -2808,72 +2811,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2171ca3288be7624bb0c4e23e1a523ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::App.UI.Toolkit.UINavigationManager
---- !u!114 &1086525756
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1086525752}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b6b348d99ddc1a64dabfc48f52b79ce9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  neckRotationData: {fileID: 11400000, guid: 276f3d96e5d399043808294c6000e28c, type: 2}
-  handGripData: {fileID: 11400000, guid: d68021a75e15fbe4f9ae6474960f4ddf, type: 2}
-  shoulderSlideData: {fileID: 11400000, guid: ee0db31bf18307a4297b4a716a04aab3, type: 2}
-  elbowSlideData: {fileID: 11400000, guid: f620fed756c854846a6b4303c696dd15, type: 2}
-  arSceneName: App_Exercise
---- !u!114 &1086525758
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1086525752}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d606ff82d11530642a39bb478a908965, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::App.UI.Toolkit.ExerciseMenuPresenter
-  _exerciseMenuManager: {fileID: 1086525756}
---- !u!114 &1086525760
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1086525752}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f8a000a541ce48419d7f299c5427e56, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::App.UI.Toolkit.ProfilePresenter
---- !u!114 &1086525761
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1086525752}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70548eeef693081438b97abcfdb3319f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::App.UI.Toolkit.HomePresenter
---- !u!114 &1086525762
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1086525752}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c91ba4fffcc20ae479d882021d653f5f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InstructionsPresenter
 --- !u!114 &1086525763
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2922,6 +2859,107 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 109fdd96ca912bf43b1f831941819604, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::App.UI.Toolkit.SummaryView
+--- !u!114 &1086525767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1086525752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6e07ee4c46fd0642b7fa1177d12056f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::App.UI.Toolkit.HomeController
+--- !u!114 &1086525768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1086525752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b14ba568f6af7bf4e84f019f0ff71520, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::App.UI.Toolkit.HomeView
+--- !u!114 &1086525769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1086525752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80d2011d77a2f744a80fde96ab346c94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::App.UI.Toolkit.ProfileController
+--- !u!114 &1086525770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1086525752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 046ada2bded47fc4fbef243dec2a08b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::App.UI.Toolkit.ProfileView
+--- !u!114 &1086525771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1086525752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 578d3e48e6aa8c4439e799e4357b8630, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::App.UI.Toolkit.InstructionsController
+--- !u!114 &1086525772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1086525752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3861fdb590577c74c8e9500e5d62a314, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::App.UI.Toolkit.InstructionsView
+--- !u!114 &1086525773
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1086525752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8175a7237605637438d54c2c921cabcc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::App.UI.Toolkit.ExerciseMenuController
+  neckRotationData: {fileID: 11400000, guid: 276f3d96e5d399043808294c6000e28c, type: 2}
+  handGripData: {fileID: 11400000, guid: d68021a75e15fbe4f9ae6474960f4ddf, type: 2}
+  shoulderSlideData: {fileID: 11400000, guid: ee0db31bf18307a4297b4a716a04aab3, type: 2}
+  elbowFlexionData: {fileID: 11400000, guid: f620fed756c854846a6b4303c696dd15, type: 2}
+  arSceneName: App_Exercise
+--- !u!114 &1086525774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1086525752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33380fbc9d90f584ba6479ae26bd0f42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::App.UI.Toolkit.ExerciseMenuView
 --- !u!1 &1293787977
 GameObject:
   m_ObjectHideFlags: 0

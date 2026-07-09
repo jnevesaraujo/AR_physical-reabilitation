@@ -6,6 +6,7 @@ using Firebase.Extensions;
 using App.UI.Toolkit;
 using Firebase.Auth;
 using System;
+using System.Threading.Tasks;
 
 namespace App.Controllers
 {
@@ -38,52 +39,49 @@ namespace App.Controllers
         {
             FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(async task =>
             {
-                if (task.Result == DependencyStatus.Available)
+                if (task.Result != DependencyStatus.Available)
                 {
-                    _authService = new AuthService();
-                    _authService.Initialize();
-
-              
-                var fbUser = FirebaseAuth.DefaultInstance.CurrentUser;
-
-                // 1. O Firebase detetou uma sessão ativa? (Voltou dos exercícios ou reabriu a App)
-                if (fbUser != null)
-                {
-                    Debug.Log($"[Auth] Sessão Firebase detetada para {fbUser.Email}");
-
-                    // 2. O nosso perfil customizado perdeu-se no reload da cena? Vamos buscá-lo!
-                    if (SessionContext.CurrentUser == null)
-                    {
-                        Debug.Log("[Auth] A restaurar UserProfile da base de dados...");
-                        try
-                        {
-                            SessionContext.CurrentUser = await _profileService.LoadProfileAsync(fbUser.UserId);
-                        }
-                        catch (Exception e)
-                        {
-                            Debug.LogError($"[Auth] Erro ao restaurar perfil: {e.Message}");
-                        }
-                    }
-
-                    // 3. O Perfil já está carregado. Roteamento automático!
-                    if (SessionContext.ReturnToExerciseMenu)
-                    {
-                        SessionContext.ReturnToExerciseMenu = true;
-                        _navManager.NavigateTo(AppScreen.Summary);
-                    }
-                    else
-                    {
-                        // Navegar para a Home (Isto vai forçar o HomePresenter a popular os dados!)
-                        _navManager.NavigateTo(AppScreen.Home);
-                    }
+                    Debug.LogError($"[Firebase] Falha de dependências: {task.Result}");
+                    return;
                 }
-                else
+
+                _authService = new AuthService();
+                _authService.Initialize();
+
+                await ProcessAuthenticationStateAsync();
+            });
+        }
+
+        private async Task ProcessAuthenticationStateAsync()
+        {
+            var fbUser = FirebaseAuth.DefaultInstance.CurrentUser;
+
+            // if the user is not logged in, navigate to the login screen
+            if (fbUser == null)
+            {
+                _navManager.NavigateTo(AppScreen.Login);
+                return;
+            }
+
+            // profile restoration logic
+            if (SessionContext.CurrentUser == null)
+            {
+                try
                 {
-                    // Não há ninguém logado. Garante que fica no ecrã de Login.
-                    _navManager.NavigateTo(AppScreen.Login);
+                    SessionContext.CurrentUser = await _profileService.LoadProfileAsync(fbUser.UserId);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError($"[Auth] Erro ao restaurar perfil: {e.Message}");
                 }
             }
-            });
+
+            // ternary navigation based on whether the user has a profile
+            AppScreen targetScreen = SessionContext.ReturnToExerciseMenu
+                ? AppScreen.Summary
+                : AppScreen.Home;
+
+            _navManager.NavigateTo(targetScreen);
         }
 
         private void HandleLogin(string email, string password)

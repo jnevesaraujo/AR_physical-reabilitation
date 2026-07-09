@@ -23,10 +23,20 @@ namespace App.Controllers
 
         private void OnEnable()
         {
-            PopulateSummaryData();
+            if (_navManager != null) _navManager.OnNavigatedTo += HandleNavigation;
             AutoSubmitSessionAsync();
+            Debug.Log("[SummaryController] AutoSubmitSessionAsync() called on OnEnable.");
         }
 
+        private void OnDisable()
+        {
+            if (_navManager != null) _navManager.OnNavigatedTo -= HandleNavigation;
+        }
+
+        private void HandleNavigation(AppScreen screen)
+        {
+            if (screen == AppScreen.Summary) PopulateSummaryData();
+        }
         private void PopulateSummaryData()
         {
             if (SessionContext.CurrentExercise == null)
@@ -38,8 +48,8 @@ namespace App.Controllers
 
             _view.SetExerciseName(SessionContext.CurrentExercise.exerciseName);
 
-            string timeString = SessionContext.ElapsedSeconds > 0 
-                ? $"{SessionContext.ElapsedSeconds / 60} minutos e {SessionContext.ElapsedSeconds % 60} segundos" 
+            string timeString = SessionContext.ElapsedSeconds > 0
+                ? $"{SessionContext.ElapsedSeconds / 60} minutos e {SessionContext.ElapsedSeconds % 60} segundos"
                 : "N/A";
 
             _view.SetResults(timeString, SessionContext.CurrentRepetitions.ToString());
@@ -72,7 +82,7 @@ namespace App.Controllers
                 sessionService.Initialize(SessionContext.UserId);
 
                 await sessionService.SaveSessionAsync(record);
-                
+
                 var profileService = new ProfileService();
                 await profileService.IncrementSessionCountAsync(SessionContext.UserId);
 
