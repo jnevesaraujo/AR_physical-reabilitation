@@ -5,6 +5,7 @@ using Firebase.Auth;
 using App.Services;
 using App.Core;
 using UserProfile = App.Data.Models.UserProfile;
+using App.UI.Views;
 
 namespace App.UI.Toolkit
 {

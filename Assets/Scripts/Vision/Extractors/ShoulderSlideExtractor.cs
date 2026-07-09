@@ -23,7 +23,7 @@ public class ShoulderSlideExtractor : BaseExerciseExtractor
         _isLeftTarget = (SessionContext.CurrentUser?.affectedSide ?? AffectedSide.Unknown) == AffectedSide.Left;
         
         if (_hud != null)
-            _hud.OnPeakConfirmRequested += ConfirmPeak;
+            _hud.OnPeakConfirmed += ConfirmPeak;
     }
 
     protected override void CalibrateAndStart()
@@ -62,10 +62,8 @@ public class ShoulderSlideExtractor : BaseExerciseExtractor
     protected override void OnSessionComplete()
     {
         Debug.Log("[ShoulderSlide] Session complete.");
-        // navigate to results screen etc.
     }
 
-    // Shoulder-specific handlers
     private void ConfirmPeak()
     {
         _evaluator.ConfirmPeak(_wrist.position);
@@ -95,7 +93,6 @@ public class ShoulderSlideExtractor : BaseExerciseExtractor
 
         float upperArmLength = Vector3.Distance(_shoulder.position, _elbow.position);
         float foreArmLength = Vector3.Distance(_elbow.position, _wrist.position);
-
         float armLength = Mathf.Max(upperArmLength, foreArmLength);
 
         return armLength;

@@ -30,7 +30,7 @@ namespace App.Vision.Extractors
 
             // Wire peak confirm — same pattern as ShoulderSlide
             if (_hud != null)
-                _hud.OnPeakConfirmRequested += HandlePeakConfirm;
+                _hud.OnPeakConfirmed += HandlePeakConfirm;
 
             // in ElbowFlexionExtractor.OnInitialize()
             Debug.Log($"[ElbowFlexion] CurrentUser={SessionContext.CurrentUser?.userId} " +
@@ -42,7 +42,7 @@ namespace App.Vision.Extractors
         {
             base.OnDestroy();
             if (_hud != null)
-                _hud.OnPeakConfirmRequested -= HandlePeakConfirm;
+                _hud.OnPeakConfirmed -= HandlePeakConfirm;
         }
 
         // Step 1 — patient taps calibrate with arm at rest

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using App.Core;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -15,7 +14,9 @@ namespace App.UI.Toolkit
     {
         private Dictionary<AppScreen, VisualElement> _screens;
         private VisualElement _root, _rootContainer, _topBar, _bottomBar;
+        private VisualElement _navHome, _navProfile, _navExercises;
         private AppScreen _currentScreen;
+        
         public event Action<AppScreen> OnNavigatedTo;
 
         private static readonly HashSet<AppScreen> _appScreens = new()
@@ -42,21 +43,38 @@ namespace App.UI.Toolkit
                 { AppScreen.Instructions,   _root.Q("panel_instructions") }
             };
 
-            BindNavigationBar();
+            _navHome = _root.Q<VisualElement>("nav_home");
+            _navProfile = _root.Q<VisualElement>("nav_profile");
+            _navExercises = _root.Q<VisualElement>("nav_exercises");
+        }
 
-            // Initial screen
-            if (SessionContext.ReturnToExerciseMenu)
-                NavigateTo(AppScreen.Summary);
-            else
-                NavigateTo(AppScreen.Login);
+        private void OnEnable()
+        {
+            BindNavigationBar();
+        }
+
+        private void OnDisable()
+        {
+            UnbindNavigationBar();
         }
 
         private void BindNavigationBar()
         {
-            _root.Q<VisualElement>("nav_home")?.RegisterCallback<ClickEvent>(_ => NavigateTo(AppScreen.Home));
-            _root.Q<VisualElement>("nav_profile")?.RegisterCallback<ClickEvent>(_ => NavigateTo(AppScreen.Profile));
-            _root.Q<VisualElement>("nav_exercises")?.RegisterCallback<ClickEvent>(_ => NavigateTo(AppScreen.Exercises));
+            _navHome?.RegisterCallback<ClickEvent>(OnNavHomeClicked);
+            _navProfile?.RegisterCallback<ClickEvent>(OnNavProfileClicked);
+            _navExercises?.RegisterCallback<ClickEvent>(OnNavExercisesClicked);
         }
+
+        private void UnbindNavigationBar()
+        {
+            _navHome?.UnregisterCallback<ClickEvent>(OnNavHomeClicked);
+            _navProfile?.UnregisterCallback<ClickEvent>(OnNavProfileClicked);
+            _navExercises?.UnregisterCallback<ClickEvent>(OnNavExercisesClicked);
+        }
+
+        private void OnNavHomeClicked(ClickEvent evt) => NavigateTo(AppScreen.Home);
+        private void OnNavProfileClicked(ClickEvent evt) => NavigateTo(AppScreen.Profile);
+        private void OnNavExercisesClicked(ClickEvent evt) => NavigateTo(AppScreen.Exercises);
 
         public void NavigateTo(AppScreen screen)
         {
@@ -109,6 +127,5 @@ namespace App.UI.Toolkit
             if (activeBtn != null)
                 _root.Q(activeBtn)?.AddToClassList("nav-active");
         }
-        
     }
 }

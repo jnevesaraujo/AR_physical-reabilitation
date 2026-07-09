@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace App.UI.Toolkit
+namespace App.UI.Views
 {
     [RequireComponent(typeof(UIDocument))]
     public class ExerciseMenuView : MonoBehaviour

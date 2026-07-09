@@ -7,6 +7,7 @@ using App.UI.Toolkit;
 using Firebase.Auth;
 using System;
 using System.Threading.Tasks;
+using App.UI.Views;
 
 namespace App.Controllers
 {

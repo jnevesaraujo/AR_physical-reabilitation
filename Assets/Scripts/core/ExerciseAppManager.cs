@@ -3,14 +3,15 @@ using App.Data.ScriptableObjects;
 using App.UI;
 using App.Vision;
 using App.Vision.Extractors;
-using System; // Onde se encontra o SessionContext
+using System;
+using App.Controllers; // Onde se encontra o SessionContext
 
 namespace App.Core
 {
     public class ExerciseAppManager : MonoBehaviour
     {
         [Header("UI & Visuals")]
-        [SerializeField] private ExerciseHUD exerciseHUD;
+        [SerializeField] private ExerciseHUDController exerciseHUD;
         [SerializeField] private ARExerciseVisualizer visualizer;
 
         [Header("MediaPipe Extraction & Evaluation")]

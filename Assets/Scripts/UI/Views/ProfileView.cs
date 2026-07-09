@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using App.Data.Models;
 
-namespace App.UI.Toolkit
+namespace App.UI.Views
 {
     [RequireComponent(typeof(UIDocument))]
     public class ProfileView : MonoBehaviour

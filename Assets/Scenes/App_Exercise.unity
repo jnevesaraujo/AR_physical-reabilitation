@@ -410,8 +410,9 @@ GameObject:
   m_Component:
   - component: {fileID: 281559810}
   - component: {fileID: 281559809}
-  - component: {fileID: 281559811}
   - component: {fileID: 281559812}
+  - component: {fileID: 281559814}
+  - component: {fileID: 281559813}
   m_Layer: 0
   m_Name: UI_HUD_Root
   m_TagString: Untagged
@@ -457,19 +458,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &281559811
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 281559808}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a393f517c178a2048a3b4c73514e19a7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::App.UI.ExerciseHUD
-  _timerController: {fileID: 281559812}
 --- !u!114 &281559812
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -482,6 +470,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4c59688feb3fc64fbd0d1f499f7f48e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+--- !u!114 &281559813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 281559808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15d7d90b45e27ae489f76bf6a74a301f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::App.Controllers.ExerciseHUDController
+  timerController: {fileID: 281559812}
+--- !u!114 &281559814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 281559808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05dbde9fc2897394395ac35cded75054, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::App.UI.Views.ExerciseHUDView
 --- !u!1 &298837001
 GameObject:
   m_ObjectHideFlags: 0
@@ -2339,7 +2352,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f12bca40c3cc7c4f82e5725d83c5c3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::App.Core.ExerciseAppManager
-  exerciseHUD: {fileID: 281559811}
+  exerciseHUD: {fileID: 281559813}
   visualizer: {fileID: 1675745701}
   neckExtractor: {fileID: 652345820}
   handExtractor: {fileID: 994426890}

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using App.Controllers;
 using App.Data.ScriptableObjects;
 using App.UI;
 using App.Vision;
@@ -8,7 +9,7 @@ public abstract class BaseExerciseExtractor : MonoBehaviour
 {
     // Shared dependencies
     protected ExerciseDefinition _exerciseDef;
-    protected ExerciseHUD _hud;
+    protected ExerciseHUDController _hud;
     protected ARExerciseVisualizer _visualizer;
 
     // Shared state
@@ -51,14 +52,14 @@ public abstract class BaseExerciseExtractor : MonoBehaviour
             f.Reset();
     }
     // Shared initialization wiring
-    public void Initialize(ExerciseDefinition definition, ExerciseHUD hud, ARExerciseVisualizer visualizer)
+    public void Initialize(ExerciseDefinition definition, ExerciseHUDController hud, ARExerciseVisualizer visualizer)
     {
         _exerciseDef = definition;
         _hud = hud;
         _visualizer = visualizer;
 
         if (_hud != null)
-            _hud.OnCalibrationRequested += CalibrateAndStart;
+            _hud.OnCalibrationStarted += CalibrateAndStart;
 
         OnInitialize(); // subclass-specific setup
     }
@@ -67,7 +68,7 @@ public abstract class BaseExerciseExtractor : MonoBehaviour
     {
 
         if (_hud != null)
-            _hud.OnCalibrationRequested -= CalibrateAndStart;
+            _hud.OnCalibrationStarted -= CalibrateAndStart;
     }
 
     protected void Update()
@@ -100,7 +101,7 @@ public abstract class BaseExerciseExtractor : MonoBehaviour
     {
         _currentRepetitions++;
         if (_hud != null)
-            _hud.UpdateRepetitionCount(_currentRepetitions, _exerciseDef.targetRepetitions);
+            _hud.UpdateRepetitionCount(_currentRepetitions);
         if (_visualizer != null)
             _visualizer.TriggerSuccessFeedback();
 
