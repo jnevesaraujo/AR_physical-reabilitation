@@ -61,7 +61,11 @@ namespace App.Vision.Extractors
 
             if (!_isCalibrated) return;
 
-            _evaluator.EvaluateFrame(_nose, _leftShoulder, _rightShoulder);
+            Vector3 nose = GetFilteredLandmark(0);
+            Vector3 leftShoulder = GetFilteredLandmark(11);
+            Vector3 rightShoulder = GetFilteredLandmark(12);
+
+            _evaluator.EvaluateFrame(nose, leftShoulder, rightShoulder);
         }
 
         protected override void OnSessionComplete()

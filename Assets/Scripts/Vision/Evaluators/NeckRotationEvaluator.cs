@@ -43,13 +43,13 @@ namespace App.Vision
             _lastQuadrant = -1;
         }
 
-        public void EvaluateFrame(Transform nose, Transform leftShoulder, Transform rightShoulder)
+        public void EvaluateFrame(Vector3 nose, Vector3 leftShoulder, Vector3 rightShoulder)
         {
             if (!_isCalibrated) return;
 
             // Posture Validation (Y axis for tilt, Z axis for twist)
-            float currentDiffY = AngleCalculator.GetVerticalDifference(leftShoulder.position, rightShoulder.position);
-            float currentDiffZ = AngleCalculator.GetDepthDifference(leftShoulder.position, rightShoulder.position);
+            float currentDiffY = AngleCalculator.GetVerticalDifference(leftShoulder, rightShoulder);
+            float currentDiffZ = AngleCalculator.GetDepthDifference(leftShoulder, rightShoulder);
 
             float shoulderDeviationY = Mathf.Abs(currentDiffY - _initialShoulderDiffY);
             float shoulderDeviationZ = Mathf.Abs(currentDiffZ - _initialShoulderDiffZ);
@@ -72,11 +72,11 @@ namespace App.Vision
             _wasPostureBad = !postureIsValid;
 
             // Amplitude Validation in pure 3D space
-            float currentAmplitude3D = AngleCalculator.GetDistance3D(_centerOrigin3D, nose.position);
+            float currentAmplitude3D = AngleCalculator.GetDistance3D(_centerOrigin3D, nose);
             if (currentAmplitude3D < _definition.minimumRotationAmplitude) return;
 
             // Movement Tracking
-            float currentAngle = AngleCalculator.CalculateAngle360(_centerOrigin3D, nose.position);
+            float currentAngle = AngleCalculator.CalculateAngle360(_centerOrigin3D, nose);
             OnMovementTracked?.Invoke(currentAngle);
 
             if (postureIsValid)
@@ -84,26 +84,6 @@ namespace App.Vision
                 TrackQuadrant(currentAngle);
             }
         }
-
-        /*         private void TrackQuadrant(float angle)
-                {
-                    int quadrant = Mathf.FloorToInt(angle / 90f) % 4;
-
-                    int expectedNext = _quadrantSequence.Count == 0 ? quadrant : (_quadrantSequence[^1] + 1) % 4;
-
-                    if (quadrant == expectedNext &&
-                        (_quadrantSequence.Count == 0 || quadrant != _quadrantSequence[0]))
-                    {
-                        _quadrantSequence.Add(quadrant);
-                    }
-
-                    if (_quadrantSequence.Count == 4)
-                    {
-                        OnRepetitionCompleted?.Invoke();
-                        _quadrantSequence.Clear();
-                    }
-                }
-            } */
 
         private void TrackQuadrant(float angle)
         {
@@ -134,7 +114,7 @@ namespace App.Vision
                     _isClockwise = false;
                 else
                 {
-                    // Jumped two quadrants — reset, likely noise
+                    // Jumped two quadrants: reset
                     _quadrantSequence.Clear();
                     _lastQuadrant = -1;
                     return;
@@ -145,7 +125,7 @@ namespace App.Vision
                 return;
             }
 
-            // Subsequent quadrants — must follow established direction
+            // Subsequent quadrants must follow established direction
             int last = _quadrantSequence[^1];
             int expected = _isClockwise ? (last + 1) % 4 : (last + 3) % 4;
 

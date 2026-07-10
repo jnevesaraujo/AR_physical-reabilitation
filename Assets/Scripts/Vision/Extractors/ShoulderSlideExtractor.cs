@@ -21,7 +21,7 @@ public class ShoulderSlideExtractor : BaseExerciseExtractor
         _evaluator.OnCalibrationReady += HandleCalibrationReady;
         _evaluator.OnDiscoveryCompleted += HandleDiscoveryCompleted;
         _isLeftTarget = (SessionContext.CurrentUser?.affectedSide ?? AffectedSide.Unknown) == AffectedSide.Left;
-        
+
         if (_hud != null)
             _hud.OnPeakConfirmed += ConfirmPeak;
     }
@@ -42,7 +42,7 @@ public class ShoulderSlideExtractor : BaseExerciseExtractor
         // Cache landmarks if needed
         if (_shoulder == null)
         {
-            
+
             _shoulder = _pointList.GetChild(_isLeftTarget ? 12 : 11);
             _elbow = _pointList.GetChild(_isLeftTarget ? 14 : 13);
             _wrist = _pointList.GetChild(_isLeftTarget ? 16 : 15);
@@ -50,10 +50,14 @@ public class ShoulderSlideExtractor : BaseExerciseExtractor
 
         if (!_isCalibrated) return;
 
+        Vector3 shoulder = GetFilteredLandmark(_isLeftTarget ? 12 : 11);
+        Vector3 elbow = GetFilteredLandmark(_isLeftTarget ? 14 : 13);
+        Vector3 wrist = GetFilteredLandmark(_isLeftTarget ? 16 : 15);
+
         _evaluator.EvaluateFrame(
-            _shoulder.position,
-            _elbow.position,
-            _wrist.position,
+            shoulder,
+            elbow,
+            wrist,
             out float currentProgress,
             out bool isDiscovering);
         _visualizer.UpdateVisuals(_wrist.position, currentProgress);
