@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 using App.Core;
 using App.UI.Views;
 
-namespace App.UI.Toolkit
+namespace App.UI.Controllers
 {
     [RequireComponent(typeof(InstructionsView))]
     public class InstructionsController : MonoBehaviour

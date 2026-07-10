@@ -2,8 +2,9 @@ using UnityEngine;
 using App.Core;
 using App.Data.Models;
 using App.UI.Views;
+using App.UI.Toolkit;
 
-namespace App.UI.Toolkit
+namespace App.Controllers
 {
     [RequireComponent(typeof(HomeView), typeof(UINavigationManager))]
     public class HomeController : MonoBehaviour

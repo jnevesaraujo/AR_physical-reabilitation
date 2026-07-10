@@ -2,8 +2,9 @@ using UnityEngine;
 using App.Core;
 using App.Data.ScriptableObjects;
 using App.UI.Views;
+using App.UI.Toolkit;
 
-namespace App.UI.Toolkit
+namespace App.Controllers
 {
     [RequireComponent(typeof(ExerciseMenuView), typeof(UINavigationManager))]
     public class ExerciseMenuController : MonoBehaviour

@@ -6,8 +6,9 @@ using App.Services;
 using App.Core;
 using UserProfile = App.Data.Models.UserProfile;
 using App.UI.Views;
+using App.UI.Toolkit;
 
-namespace App.UI.Toolkit
+namespace App.UI.Controllers
 {
     [RequireComponent(typeof(ProfileView), typeof(UINavigationManager))]
     public class ProfileController : MonoBehaviour
