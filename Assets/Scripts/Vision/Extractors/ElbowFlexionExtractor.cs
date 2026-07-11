@@ -32,10 +32,6 @@ namespace App.Vision.Extractors
             if (_hud != null)
                 _hud.OnPeakConfirmed += HandlePeakConfirm;
 
-            // in ElbowFlexionExtractor.OnInitialize()
-            Debug.Log($"[ElbowFlexion] CurrentUser={SessionContext.CurrentUser?.userId} " +
-                      $"affectedSide={SessionContext.CurrentUser?.affectedSide} isLeftTarget={_isLeftTarget}");
-
         }
 
         protected override void OnDestroy()
@@ -45,7 +41,7 @@ namespace App.Vision.Extractors
                 _hud.OnPeakConfirmed -= HandlePeakConfirm;
         }
 
-        // Step 1 — patient taps calibrate with arm at rest
+        // calibrate with arm at rest
         protected override void CalibrateAndStart()
         {
             ResetLandmarkFilters();
@@ -64,16 +60,13 @@ namespace App.Vision.Extractors
 
             _armLength = Mathf.Max(upperArmLength, foreArmLength);
 
-            // in ElbowFlexionExtractor.CalibrateAndStart(), before the early-return check
-            Debug.Log($"[ElbowFlexion] shoulder={_shoulder} elbow={_elbow} wrist={_wrist} bufferCount={_wristBuffer.Count}");
-
             _visualizer.InitializeGuide(_exerciseDef, SmoothedWristPos, _armLength);
 
             _hud?.ShowWarning("Levante o braço até onde for confortável, depois confirme.");
             _hud?.ShowConfirmPeakButton();
         }
 
-        // Step 2 — patient taps confirm at peak
+        // confirm at peak
         private void HandlePeakConfirm()
         {
             if (_wrist == null || _wristBuffer.Count == 0) return;
@@ -98,7 +91,6 @@ namespace App.Vision.Extractors
 
         protected override void OnEvaluateFrame()
         {
-            //          bool left = _def != null && _isLeftTarget;
 
             // Phase 1: cache landmarks as soon as pointList is available.
             // runs every frame unconditionally: no calibration dependency.

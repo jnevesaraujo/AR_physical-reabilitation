@@ -55,8 +55,6 @@ namespace App.Vision.Extractors
                 GameObject handList = GameObject.Find("Point List Annotation");
                 if (handList == null) return;
 
-                Debug.Log($"Found: '{handList.name}' | Parent: '{handList.transform.parent?.name}' | Children: {handList.transform.childCount}");
-
                 if (handList.transform.childCount < 21) return;
 
                 _wrist = handList.transform.GetChild(0);

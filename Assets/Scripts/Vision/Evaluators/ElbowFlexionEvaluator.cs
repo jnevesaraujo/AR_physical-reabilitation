@@ -52,53 +52,7 @@ namespace App.Vision.Evaluators
                 elbowPos.x + Mathf.Cos(rad) * armLen,
                 elbowPos.y + Mathf.Sin(rad) * armLen,
                 wristPos.z);
-
-            Debug.Log($"[Calibrate] Lado={isLeftTarget} | ROM={_definition.expectedRomDegrees} | " +
-                      $"RestAngle={restAngle:F1} | PeakAngle={peakAngle:F1} | " +
-                      $"PeakPos={WristAtPeak}");
-
-            Debug.Log($"[ElbowFlexion] Pre-CalibrateAndBegin: _isLeftTarget={isLeftTarget}, defIsLeftArm={_definition.isLeftArm}");
         }
-
-        /*         public void EvaluateFrame(Vector3 shoulderPos, Vector3 elbowPos, Vector3 wristPos,
-                                          out float progress)
-                {
-                    progress = 0f;
-                    if (_state == FlexionState.Idle) return;
-
-                    //            if (!ValidatePosture(shoulderPos, wristPos)) return;
-
-                    float angle = AngleCalculator.CalculateJointAngle(shoulderPos, elbowPos, wristPos);
-
-                    // Temporary — remove once reps are counting
-                    if (Time.frameCount % 30 == 0)
-                        Debug.Log($"[ElbowEval] angle={angle:F1} state={_state} " +
-                                  $"peak<{_definition.peakAngleThreshold} " +
-                                  $"rest>{_definition.restAngleThreshold}");
-                    if (Time.frameCount % 30 == 0)
-                        Debug.Log($"[ElbowEval] angle={angle:F1} state={_state} " +
-                                  $"horizontalDev={Mathf.Abs(wristPos.x - shoulderPos.x):F1} " +
-                                  $"tolerance={_definition.horizontalTolerance}");
-
-                    progress = Mathf.Clamp01(
-                        1f - Mathf.InverseLerp(_definition.peakAngleThreshold,
-                                               _definition.restAngleThreshold, angle));
-
-                    switch (_state)
-                    {
-                        case FlexionState.AtRest:
-                            if (angle <= _definition.peakAngleThreshold)
-                                _state = FlexionState.AtPeak;
-                            break;
-                        case FlexionState.AtPeak:
-                            if (angle >= _definition.restAngleThreshold)
-                            {
-                                OnRepetitionCompleted?.Invoke();
-                                _state = FlexionState.AtRest;
-                            }
-                            break;
-                    }
-                } */
 
         public void EvaluateFrame(Vector3 shoulderPos, Vector3 elbowPos, Vector3 wristPos,
                           out float progress)

@@ -53,7 +53,6 @@ namespace App.Vision.Evaluators
             _maxY = Mathf.Max(_maxY, wristPos.y);
 
             float rom = _maxY - _startY;
-            Debug.Log($"[ShoulderSlide] Amplitude detectada: {rom:F3} unidade(s)");
             
             _currentState = SlideState.MovingUp;
             OnDiscoveryCompleted?.Invoke();

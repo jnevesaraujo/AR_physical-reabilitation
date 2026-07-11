@@ -11,7 +11,7 @@ namespace App.Vision.Evaluators
 
         private Vector3 _centerOrigin3D;
 
-        // Eventos de comunicação com a UI e Visualizador AR
+        // Communication events for external systems to respond to evaluation results
         public event Action<string> OnWarningTriggered;
         public event Action OnPostureRestored;
         public event Action OnRepetitionCompleted;
@@ -30,17 +30,17 @@ namespace App.Vision.Evaluators
 
         public void CalibrateOrigin(Vector3 thumbPos, Vector3 indexPos)
         {
-            // 1. Cálculo do ponto central no espaço 3D (Vector3) para posicionar o biofeedback
+            // Central point between thumb and index finger for reference
             _centerOrigin3D = (thumbPos + indexPos) / 2f;
 
-            // 2. Registo da abertura máxima calibrada (float) para os rácios de contração
+            // Maximum distance between thumb and index finger when fully open
             float distance = Vector3.Distance(thumbPos, indexPos);
-            _calibratedMaxAperture = Mathf.Max(distance, 0.01f); // Evita divisão por zero
+            _calibratedMaxAperture = Mathf.Max(distance, 0.01f); // Avoid division by zero and ensure a minimum threshold
         }
 
         public void EvaluateFrame(Vector3 thumbPos, Vector3 indexPos, out float apertureRatio, out float holdProgress)
         {
-            // Valores por defeito de segurança
+            // Default values for output parameters
             apertureRatio = 1.0f;
             holdProgress = 0.0f;
 
@@ -50,7 +50,7 @@ namespace App.Vision.Evaluators
             float currentDistance = Vector3.Distance(thumbPos, indexPos);
             apertureRatio = currentDistance / maxAperture;
 
-            // Calcula a percentagem do tempo já decorrido (de 0.0 a 1.0)
+            // Calculate hold progress only if the user is currently holding and the defined hold time is greater than zero
             if (_isHolding && _definition.isometricHoldTime > 0)
             {
                 holdProgress = Mathf.Clamp01(_holdTimer / _definition.isometricHoldTime);
@@ -59,36 +59,31 @@ namespace App.Vision.Evaluators
             _logCooldown -= Time.deltaTime;
             if (_logCooldown <= 0f)
             {
-                // Remova ou comente a linha abaixo quando estiver tudo a funcionar
-                Debug.Log($"[HandGripEvaluator] Rácio atual: {apertureRatio:F2} | Alvo Grip: {_definition.targetGripDistance} | Alvo Release: {_definition.releaseDistance}");
                 _logCooldown = 0.5f;
             }
 
-            // 1. Fase de Libertação (Release / Mão Aberta)
+            // Release phase: if the hand is open beyond the release threshold, reset the state and trigger the posture restored event
             if (apertureRatio >= _definition.releaseDistance)
             {
                 if (_requiresRelease)
                 {
-                    Debug.Log("<color=green>[HandGripEvaluator] Mão reaberta. O ciclo foi reiniciado.</color>");
                     _requiresRelease = false;
                     OnPostureRestored?.Invoke();
                 }
                 
                 if (_isHolding)
                 {
-                    Debug.LogWarning("<color=orange>[HandGripEvaluator] Contração interrompida precocemente!</color>");
                     _isHolding = false;
                     _holdTimer = 0f;
-                    holdProgress = 0f; // Reset ao progresso visual
+                    holdProgress = 0f; // Reset hold progress when the contraction is interrupted
                     OnWarningTriggered?.Invoke("Contração interrompida. Mantenha a pinça fechada.");
                 }
             }
-            // 2. Fase de Contração Isométrica (Grip / Mão Fechada)
+            // Contraction phase: if the hand is closed beyond the target grip distance and a release is not required, start or continue the hold timer
             else if (!_requiresRelease && apertureRatio <= _definition.targetGripDistance)
             {
                 if (!_isHolding)
                 {
-                    Debug.Log("<color=cyan>[HandGripEvaluator] Mão fechada! A iniciar temporizador...</color>");
                     _isHolding = true;
                     _holdTimer = 0f;
                 }
@@ -97,7 +92,26 @@ namespace App.Vision.Evaluators
 
                 if (_holdTimer >= _definition.isometricHoldTime)
                 {
-                    Debug.Log($"<color=yellow>[HandGripEvaluator] Sucesso! Repetição registada após {_definition.isometricHoldTime}s.</color>");
+                    OnRepetitionCompleted?.Invoke();
+                    
+                    _isHolding = false;
+                    _requiresRelease = true; 
+                    
+                    OnWarningTriggered?.Invoke("Repetição válida. Abra a mão para continuar.");
+                }
+            }
+            else if (!_requiresRelease && apertureRatio <= _definition.targetGripDistance)
+            {
+                if (!_isHolding)
+                {
+                    _isHolding = true;
+                    _holdTimer = 0f;
+                }
+
+                _holdTimer += Time.deltaTime;
+
+                if (_holdTimer >= _definition.isometricHoldTime)
+                {
                     OnRepetitionCompleted?.Invoke();
                     
                     _isHolding = false;
