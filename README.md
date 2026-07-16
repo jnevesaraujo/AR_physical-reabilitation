@@ -181,7 +181,7 @@ users/{userId}
   ├── registrationDate (ISO 8601 string)
   └── totalSessionsCompleted (int)
   └── sessions/{sessionId}
-        ├── sessionTimestamp (ISO 8601 string)  ← field name is "sessionTimestamp", not "date"
+        ├── sessionTimestamp (ISO 8601 string)
         ├── exerciseId, completedReps, targetReps
         ├── accuracyScore, durationSeconds, isCompleted
         └── subjectId
@@ -262,4 +262,4 @@ The **Shadow.cs** custom UI element is adapted from work by David Tattersall and
 
 ---
 
-*Developed as a final-year undergraduate project (Projeto Final de Licenciatura), 2024–2025.*
+*Developed as a final-year undergraduate project (Projeto Final de Licenciatura), 2025–2026.*
